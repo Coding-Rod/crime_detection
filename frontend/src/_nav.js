@@ -1,13 +1,13 @@
 export default [
   {
     component: 'CNavTitle',
-    name: 'About',
+    name: 'Information',
   },
   {
     component: 'CNavItem',
-    name: 'Home',
+    name: 'Information',
     to: '/',
-    icon: 'cil-home'
+    icon: 'cil-info'
   },
   {
     component: 'CNavItem',
@@ -15,6 +15,14 @@ export default [
     to: '/about',
     icon: 'cil-laptop'
   },
+  
+  {
+    component: 'CNavItem',
+    name: 'How To use this app',
+    to: '/howto',
+    icon: 'cil-puzzle'
+  },
+
   // NOTE: CNavTitle separator
   {
     component: 'CNavTitle',
