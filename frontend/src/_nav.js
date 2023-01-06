@@ -211,72 +211,6 @@ export default [
   //     },
   //   ],
   // },
-  // {
-  //   component: 'CNavGroup',
-  //   name: 'Notifications',
-  //   to: '/notifications',
-  //   icon: 'cil-bell',
-  //   items: [
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Alerts',
-  //       to: '/notifications/alerts',
-  //     },
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Badges',
-  //       to: '/notifications/badges',
-  //     },
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Modals',
-  //       to: '/notifications/modals',
-  //     },
-  //   ],
-  // },
-  // {
-  //   component: 'CNavItem',
-  //   name: 'Widgets',
-  //   to: '/widgets',
-  //   icon: 'cil-calculator',
-  //   badge: {
-  //     color: 'primary',
-  //     text: 'NEW',
-  //     shape: 'pill',
-  //   },
-  // },
-  // {
-  //   component: 'CNavTitle',
-  //   name: 'Extras',
-  // },
-  // {
-  //   component: 'CNavGroup',
-  //   name: 'Pages',
-  //   to: '/pages',
-  //   icon: 'cil-star',
-  //   items: [
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Login',
-  //       to: '/pages/login',
-  //     },
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Register',
-  //       to: '/pages/register',
-  //     },
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Error 404',
-  //       to: '/pages/404',
-  //     },
-  //     {
-  //       component: 'CNavItem',
-  //       name: 'Error 500',
-  //       to: '/pages/500',
-  //     },
-  //   ],
-  // },
   {
     component: 'CNavTitle',
     name: 'About',
@@ -308,5 +242,39 @@ export default [
     name: 'Recorded Videos',
     to: '/videos',
     icon: 'cil-media-play'
+  },
+
+  // FIXME: Erase this when the feature is implemented
+  {
+    component: 'CNavTitle',
+    name: 'Extras',
+  },
+  {
+    component: 'CNavGroup',
+    name: 'Pages',
+    to: '/pages',
+    icon: 'cil-star',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Login',
+        to: '/pages/login',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Register',
+        to: '/pages/register',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Error 404',
+        to: '/pages/404',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Error 500',
+        to: '/pages/500',
+      },
+    ],
   },
 ]
