@@ -30,13 +30,13 @@
                   </CInputGroup>
                   <CRow>
                     <CCol :xs="6">
-                      <CButton color="primary" class="px-4"> Login </CButton>
+                      <CButton color="primary" class="px-4 text-white"> Login </CButton>
                     </CCol>
-                    <CCol :xs="6" class="text-right">
+                    <!-- <CCol :xs="6" class="text-right">
                       <CButton color="link" class="px-0">
                         Forgot password?
                       </CButton>
-                    </CCol>
+                    </CCol> -->
                   </CRow>
                 </CForm>
               </CCardBody>
@@ -50,7 +50,9 @@
                     sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </p>
-                  <CButton color="light" variant="outline" class="mt-3">
+                  <CButton color="light" variant="outline" class="mt-3" @click="() => {
+                    this.$router.push('register')
+                    }">
                     Register Now!
                   </CButton>
                 </div>
