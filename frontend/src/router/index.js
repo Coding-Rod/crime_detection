@@ -79,7 +79,20 @@ const routes = [
         component: () => import('@/views/system/RecordedVideos'),
       },
     ]
-  }
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: DefaultLayout,
+    redirect: '/settings/userSettings',
+    children: [
+      {
+        path: 'userSettings',
+        name: 'UserSettings',
+        component: () => import('@/views/Settings'),
+      },
+    ]
+  },
 ]
 
 const router = createRouter({

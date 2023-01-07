@@ -1,3 +1,5 @@
+// FIXME: This component routes automatically to home page when clicked on dropdown item
+
 <template>
   <CDropdown variant="nav-item">
     <CDropdownToggle placement="bottom-end" class="py-0" :caret="false">
@@ -7,8 +9,17 @@
       <CDropdownHeader component="h6" class="bg-light fw-semibold py-2">
         Account
       </CDropdownHeader>
-      <CDropdownItem> <CIcon icon="cil-settings" /> Settings </CDropdownItem>
-      <CDropdownItem> <CIcon icon="cil-lock-locked" /> Logout </CDropdownItem>
+      <CDropdownItem
+      >
+        <router-link to="/settings" style="text-decoration: none; color: inherit;">
+          <CIcon icon="cil-settings" /> Settings 
+        </router-link>
+      </CDropdownItem>
+      <CDropdownItem> 
+        <router-link to="/pages/login" style="text-decoration: none; color: inherit;">
+          <CIcon icon="cil-lock-locked" /> Logout 
+        </router-link>
+      </CDropdownItem>
     </CDropdownMenu>
   </CDropdown>
 </template>
