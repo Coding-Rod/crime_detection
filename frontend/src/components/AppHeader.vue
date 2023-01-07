@@ -12,11 +12,13 @@
       </CHeaderNav>
       <CHeaderNav>
         <CNavItem>
-          <CNavLink href="#">
+          <CButton type="button">
             <CIcon class="mx-2" icon="cil-bell" size="lg" />
-          </CNavLink>
+          </CButton>
         </CNavItem>
-        <AppHeaderDropdownAccnt />
+        <CNavItem>
+          <AppHeaderDropdownAccnt />
+        </CNavItem>
       </CHeaderNav>
     </CContainer>
   </CHeader>
