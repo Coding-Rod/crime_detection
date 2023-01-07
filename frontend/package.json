@@ -34,6 +34,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.2",
     "@babel/eslint-parser": "^7.19.1",
+    "@faker-js/faker": "^7.6.0",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-e2e-cypress": "~5.0.8",
     "@vue/cli-plugin-router": "~5.0.8",
