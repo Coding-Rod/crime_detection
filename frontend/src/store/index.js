@@ -18,12 +18,11 @@ const generateNodes = () => {
 
 const generateVideos = () => {
   const videos = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 30; i++) {
     videos.push({
       id: faker.datatype.number(),
       name: "Video " + i,
       location: faker.address.city(),
-      status: 'online',
       video: faker.image.imageUrl(),
       date: faker.date.past(),
       weapons: faker.datatype.number(),
