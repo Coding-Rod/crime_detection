@@ -17,7 +17,15 @@
           </CButton>
         </CNavItem>
         <CNavItem>
-          <AppHeaderDropdownAccnt />
+          <CButton type="button">
+            <CIcon class="mx-2" icon="cil-settings" size="lg" />
+          </CButton>
+        </CNavItem>
+        <CNavItem>
+          <CButton type="button">
+            <CIcon class="mx-2" icon="cil-exit-to-app" size="lg" />
+            Log out
+          </CButton>
         </CNavItem>
       </CHeaderNav>
     </CContainer>
@@ -26,13 +34,11 @@
 
 <script>
 import AppBreadcrumb from './AppBreadcrumb'
-import AppHeaderDropdownAccnt from './AppHeaderDropdownAccnt'
 import { logo } from '@/assets/brand/logo'
 export default {
   name: 'AppHeader',
   components: {
     AppBreadcrumb,
-    AppHeaderDropdownAccnt,
   },
   setup() {
     return {
