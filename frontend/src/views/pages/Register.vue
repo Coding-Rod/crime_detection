@@ -8,6 +8,7 @@
               <CForm>
                 <h1>Register</h1>
                 <p class="text-medium-emphasis">Create your account</p>
+                <p class="text-medium-emphasis small">Already have an account? <router-link to="login">Login</router-link></p>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
@@ -39,7 +40,7 @@
                   />
                 </CInputGroup>
                 <div class="d-grid">
-                  <CButton color="success">Create Account</CButton>
+                  <CButton color="primary" class="text-white">Create Account</CButton>
                 </div>
               </CForm>
             </CCardBody>

@@ -1,14 +1,11 @@
 <template>
   <CFooter>
     <div>
-      <a href="https://coreui.io" target="_blank">CoreUI</a>
-      <span class="ms-1"
-        >&copy; {{ new Date().getFullYear() }} creativeLabs.</span
-      >
+      <span class="me-1" target="_blank">Sergio Rodrigo Fernandez Testa</span>
+      <span></span>
     </div>
     <div class="ms-auto">
-      <span class="me-1" target="_blank">Powered by</span>
-      <a href="https://coreui.io/vue">CoreUI for Vue</a>
+      <span class="ms-1"> Proyecto de Grado - Ingeniería Mecatrónica ({{ new Date().getFullYear() }})</span>
     </div>
   </CFooter>
 </template>
