@@ -40,20 +40,15 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import axios from "axios";
 
 export default {
   name: "ActiveNodes",
   data() {
     return {
       screenwidth: window.innerWidth,
+      nodes : [],
     };
-  },
-  computed: {
-    ...mapState(["nodes"]),
-  },
-  created() {
-    this.$store.dispatch("getNodes");
   },
   methods: {
     handleResize() {
@@ -62,6 +57,15 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize);
+    axios
+      .get("http://localhost:3000/api/v1/nodes")
+      .then((response) => {
+        console.log(response);
+        this.nodes = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>
