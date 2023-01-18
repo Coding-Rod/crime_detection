@@ -1,9 +1,9 @@
 import express from 'express';
 import { Router } from 'express-serve-static-core';
 
-import usersRouter from './users.router';
-import videosRouter from './videos.router';
-import nodesRouter from './nodes.router';
+import usersRouter from './user.router';
+import videosRouter from './video.router';
+import nodesRouter from './node.router';
 
 function routerApi(app: { use: (arg0: string, arg1: Router) => void; }) {
   const router = express.Router();
