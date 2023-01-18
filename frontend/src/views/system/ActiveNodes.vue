@@ -66,5 +66,5 @@ export default {
 };
 </script>
 
-<style>
+<style slot="sass">
 </style>
