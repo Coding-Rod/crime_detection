@@ -19,6 +19,8 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "@types/cors": "^2.8.13",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "joi": "^17.7.0"
   }
