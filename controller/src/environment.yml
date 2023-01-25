@@ -1,0 +1,7 @@
+name: EATD
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - opencv
+prefix: /home/rodri/anaconda3/envs/EATD
