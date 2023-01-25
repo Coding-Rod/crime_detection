@@ -40,6 +40,16 @@ export default [
     to: '/system/videos',
     icon: 'cil-media-play'
   },
+  {
+    component: 'CNavTitle',
+    name: 'Contacts',
+  },
+  {
+    component: 'CNavItem',
+    name: 'Emergency Contacts',
+    to: '/contacts',
+    icon: 'cil-people'
+  },
 
   // FIXME: Erase this when the feature is implemented
   {

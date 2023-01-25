@@ -81,6 +81,19 @@ const routes = [
     ]
   },
   {
+    path: '/contacts',
+    name: 'contacts',
+    component: DefaultLayout,
+    redirect: '/contacts/userContacts',
+    children: [
+      {
+        path: 'userContacts',
+        name: 'UserContacts',
+        component: () => import('@/views/Contacts'),
+      },
+    ]
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: DefaultLayout,
