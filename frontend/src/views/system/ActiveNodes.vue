@@ -58,7 +58,7 @@ export default {
   mounted() {
     window.addEventListener("resize", this.handleResize);
     axios
-      .get("http://localhost:3000/api/v1/nodes")
+      .get("http://127.0.0.1:3000/api/v1/nodes")
       .then((response) => {
         console.log(response);
         this.nodes = response.data;
