@@ -54,7 +54,22 @@ export default {
   data() {
     return {
       screenwidth: window.innerWidth,
-      nodes : [],
+      nodes : [
+        {
+          name: "Node 1",
+          location: "Location 1",
+          status: "Active",
+          video: "https://picsum.photos/300/200",
+          id: 1,
+        },
+        {
+          name: "Node 2",
+          location: "Location 2",
+          status: "Active",
+          video: "https://picsum.photos/300/200",
+          id: 2,
+        },
+      ],
       error: null,
     };
   },
