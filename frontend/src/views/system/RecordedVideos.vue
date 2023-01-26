@@ -15,7 +15,7 @@
           </CInputGroup>
         </CCol>
       </CRow>
-      <CRow>
+      <CRow v-if="videos.length > 0">
         <CCol
           v-for="video in videosOnPage"
           :key="video.id"
@@ -41,6 +41,12 @@
           </CListGroup>
         </CCol>
       </CRow>
+      <CRow v-else-if="error">
+        <CCol class="d-flex justify-content-center">
+          <h3>No videos found</h3>
+        </CCol>
+      </CRow>
+      <CSpinner color="primary" v-else variant="grow" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;" />
       <!-- Pagination -->
       <CRow>
         <CCol class="d-flex justify-content-center">
@@ -81,6 +87,7 @@ export default {
       search: "",
       screenwidth: window.innerWidth,
       page: 1,
+      error: null,
     };
   },
   computed: {
