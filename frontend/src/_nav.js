@@ -1,7 +1,7 @@
 export default [
   {
     component: 'CNavTitle',
-    name: 'Information',
+    name: 'Home',
   },
   {
     component: 'CNavItem',
@@ -9,13 +9,6 @@ export default [
     to: '/',
     icon: 'cil-info'
   },
-  {
-    component: 'CNavItem',
-    name: 'About',
-    to: '/about',
-    icon: 'cil-laptop'
-  },
-  
   {
     component: 'CNavItem',
     name: 'How To use this app',
