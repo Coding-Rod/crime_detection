@@ -61,6 +61,8 @@ export default {
   padding: 0;
   border: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 0 30px 30px 0;
 }
 .image_reverse {
@@ -68,6 +70,8 @@ export default {
   padding: 0;
   border: 0;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 30px 0 0 30px;
 }
 </style>
