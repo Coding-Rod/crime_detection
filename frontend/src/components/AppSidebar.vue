@@ -1,4 +1,4 @@
-<template>
+<template style="z-index:12">
   <CSidebar
     position="fixed"
     :unfoldable="sidebarUnfoldable"

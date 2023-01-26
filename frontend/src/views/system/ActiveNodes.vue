@@ -41,12 +41,13 @@
     <template v-else-if="error">
       <p class="text-center">No active nodes</p>
     </template>
-    <CSpinner color="primary" v-else variant="grow" style="position: relative; left: 50%; transform: translate(-50%, -50%); z-index: 9999; margin-top: 100px; margin-bottom: 100px;" />
+    <Loader v-else />
   </div>
 </template>
 0 auto
 <script>
 import axios from "axios";
+import Loader from "@/components/Loader.vue";
 
 export default {
   name: "ActiveNodes",
@@ -56,6 +57,9 @@ export default {
       nodes : [],
       error: null,
     };
+  },
+  components: {
+    Loader,
   },
   methods: {
     handleResize() {

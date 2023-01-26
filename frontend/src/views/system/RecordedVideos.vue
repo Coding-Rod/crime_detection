@@ -46,7 +46,7 @@
           <h3>No videos found</h3>
         </CCol>
       </CRow>
-      <CSpinner color="primary" v-else variant="grow" style="position: relative; left: 50%; transform: translate(-50%, -50%); z-index: 9999; margin-top: 100px; margin-bottom: 100px;" />
+      <Loader v-else />
       <!-- Pagination -->
       <CRow v-if="videos.length > 0">
         <CCol class="d-flex justify-content-center">
@@ -79,6 +79,7 @@
 
 <script>
 import { mapState } from "vuex";
+import Loader from "@/components/Loader";
 
 export default {
   name: "RecordedVideos",
@@ -89,6 +90,9 @@ export default {
       page: 1,
       error: null,
     };
+  },
+  components: {
+    Loader,
   },
   computed: {
     ...mapState(["videos"]),
