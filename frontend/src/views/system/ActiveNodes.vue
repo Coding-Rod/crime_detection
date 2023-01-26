@@ -41,10 +41,10 @@
     <template v-else-if="error">
       <p class="text-center">No active nodes</p>
     </template>
-    <CSpinner color="primary" v-else variant="grow" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;" />
+    <CSpinner color="primary" v-else variant="grow" style="position: relative; left: 50%; transform: translate(-50%, -50%); z-index: 9999; margin-top: 100px; margin-bottom: 100px;" />
   </div>
 </template>
-
+0 auto
 <script>
 import axios from "axios";
 

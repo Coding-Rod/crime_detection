@@ -46,9 +46,9 @@
           <h3>No videos found</h3>
         </CCol>
       </CRow>
-      <CSpinner color="primary" v-else variant="grow" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;" />
+      <CSpinner color="primary" v-else variant="grow" style="position: relative; left: 50%; transform: translate(-50%, -50%); z-index: 9999; margin-top: 100px; margin-bottom: 100px;" />
       <!-- Pagination -->
-      <CRow>
+      <CRow v-if="videos.length > 0">
         <CCol class="d-flex justify-content-center">
           <CPagination align="center" aria-label="Page navigation example">
             <CPaginationItem 
