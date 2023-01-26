@@ -2,6 +2,7 @@
   <div>
     <h1 class="h3 mb-3 text-center">Active Nodes</h1>
     <!-- for with accordions -->
+    <template v-if="nodes.length > 0">
     <CAccordion v-for="node in nodes" :key="node.id">
       <CAccordionItem :item-key="node.id">
         <CAccordionHeader> {{ node.name }} </CAccordionHeader>
@@ -36,6 +37,11 @@
         </CAccordionBody>
       </CAccordionItem>
     </CAccordion>
+    </template>
+    <template v-else-if="error">
+      <p class="text-center">No active nodes</p>
+    </template>
+    <CSpinner color="primary" v-else variant="grow" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;" />
   </div>
 </template>
 
@@ -48,6 +54,7 @@ export default {
     return {
       screenwidth: window.innerWidth,
       nodes : [],
+      error: null,
     };
   },
   methods: {
