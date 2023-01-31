@@ -14,7 +14,12 @@
   "devDependencies": {
     "@faker-js/faker": "^7.6.0",
     "@types/express": "^4.17.15",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.20",
+    "prettier": "^2.8.3",
+    "sequelize-cli": "^6.6.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4"
   },
@@ -23,6 +28,9 @@
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "joi": "^17.7.0"
+    "joi": "^17.7.0",
+    "pg": "^8.9.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.28.0"
   }
 }
