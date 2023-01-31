@@ -58,7 +58,7 @@ export default {
 }
 .image {
   margin: 0;
-  padding: 0;
+  padding: 0 11px;
   border: 0;
   width: 100%;
   height: 100%;
@@ -67,11 +67,21 @@ export default {
 }
 .image_reverse {
   margin: 0;
-  padding: 0;
+  padding: 0 11px;
   border: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 30px 0 0 30px;
+  flex-wrap: wrap-reverse;
+}
+
+@media screen {
+  @media (max-width: 768px) {
+    .image,
+    .image_reverse {
+      border-radius: 0 0 30px 30px;
+    }
+  }
 }
 </style>

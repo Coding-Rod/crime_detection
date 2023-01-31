@@ -39,16 +39,6 @@
       </CModalBody>
       <CModalFooter>
         <CButton
-          color="secondary"
-          @click="
-            () => {
-              visible = false;
-            }
-          "
-        >
-          Close
-        </CButton>
-        <CButton
           @click="copyToClipboard()"
           color="primary"
           class="text-white"
