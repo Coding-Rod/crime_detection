@@ -1,5 +1,6 @@
 export interface Contact {
-    id: string;
-    called: string;
-    caller: string;
+    id: number;
+    called: number;
+    caller: number;
+    createdAt: Date;
 }

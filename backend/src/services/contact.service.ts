@@ -1,50 +1,85 @@
 import { faker } from "@faker-js/faker";
 import { Contact } from "../models/contact.model";
-import { GetContactDTO, DeleteContactDTO, UpdateContactDTO } from "../dtos/contact.dto";
+import { GetContactDTO, CreateContactDTO, DeleteContactDTO } from "../dtos/contact.dto";
 
 export class ContactService {
-    private contacts: Contact[] = [];
+    private contacts: Contact[] = this.generateContacts(5);
 
-    constructor() {
-        this.contacts = [
-            {
-                id: faker.datatype.uuid(),
-                called: faker.name.firstName(),
-                caller: faker.name.firstName(),
-            },
-            {
-                id: faker.datatype.uuid(),
-                called: faker.name.firstName(),
-                caller: faker.name.firstName(),
-            },
-            {
-                id: faker.datatype.uuid(),
-                called: faker.name.firstName(),
-                caller: faker.name.firstName(),
-            },
-        ];
+    generateContacts(amount: number): Contact[] {
+        const contacts: Contact[] = [];
+        for (let i = 0; i < amount; i++) {
+            contacts.push({
+                id: faker.datatype.number(),
+                called: faker.datatype.number(),
+                caller: faker.datatype.number(),
+                createdAt: faker.date.past(),
+            });
+        }
+        return contacts;
     }
 
-    public getContacts(): GetContactDTO[] {
-        return this.contacts;
+    constructor() {}
+
+    async getContacts(): Promise<GetContactDTO[] | string> {
+        try {
+            const contacts = await Promise.resolve(this.contacts).then(
+                (contacts: Contact[] | []) => contacts
+            );
+            const data = contacts.map((contact) => {
+                const { id, called, caller } = contact;
+                return { id, called, caller };
+            });
+            return data;
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
     }
 
-    public getContact(id: string): GetContactDTO {
-        const contact : GetContactDTO | undefined = this.contacts.find((contact) => contact.id === id);
-        if (!contact) throw new Error("Contact not found");
-        else return contact;
+    async getContact(id: number): Promise<GetContactDTO | string> {
+        try {
+            const contact = await Promise.resolve(this.contacts.find((contact : Contact) => contact.id === id)).then(
+                (contact: Contact | undefined) => contact
+            );
+            if (!contact) throw new Error("Contact not found");
+            const { called, caller } = contact;
+            return { id, called, caller };
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
     }
 
-    public deleteContact(id: string): DeleteContactDTO {
-        const contact : DeleteContactDTO | undefined = this.contacts.find((contact) => contact.id === id);
-        this.contacts = this.contacts.filter((contact) => contact.id !== id);
-        if (!contact) throw new Error("Contact not found");
-        else return contact;
+    async createContact(contact: CreateContactDTO): Promise<GetContactDTO | string> {
+        try {
+            const { called, caller } = contact;
+            const newContact: Contact = {
+                id: faker.datatype.number(),
+                called,
+                caller,
+                createdAt: faker.date.past(),
+            };
+            this.contacts.push(newContact);
+            return { id: newContact.id, called, caller };
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
     }
 
-    public updateContact(id: string, contact: UpdateContactDTO): GetContactDTO {
-        const contactIndex = this.contacts.findIndex((contact) => contact.id === id);
-        this.contacts[contactIndex] = { ...this.contacts[contactIndex], ...contact };
-        return this.contacts[contactIndex];
+    async deleteContact(id: number): Promise<GetContactDTO | string> {
+        try {
+            const contact = await Promise.resolve(this.contacts.find((contact : Contact) => contact.id === id)).then(
+                (contact: Contact | undefined) => contact
+            );
+            if (!contact) throw new Error("Contact not found");
+            const { called, caller } = contact;
+            this.contacts = this.contacts.filter((contact) => contact.id !== id);
+            return { id, called, caller };
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
     }
+
 }
