@@ -31,11 +31,6 @@ export const deleteUserSchema = Joi.object({
     id: id.required(),
 });
 
-export const loginUserSchema = Joi.object({
-    email: email.required(),
-    password: password.required(),
-});
-
 export const userSchema = Joi.object({
     id: id,
     name: name,
@@ -45,4 +40,3 @@ export const userSchema = Joi.object({
     createdAt: createdAt,
     updatedAt: updatedAt,
 });
-
