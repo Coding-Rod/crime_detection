@@ -1,5 +1,5 @@
 export interface Node {
-    id: string;
+    id: number;
     name: string;
     location: string;
     status: boolean;

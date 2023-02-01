@@ -11,7 +11,7 @@ export class UserService {
         const users: User[] = [];
         for (let i = 0; i < amount; i++) {
             users.push({
-                id: faker.datatype.uuid(),
+                id: faker.datatype.number(),
                 name: faker.name.firstName(),
                 username: faker.name.firstName(),
                 email: faker.internet.email(),
@@ -39,7 +39,7 @@ export class UserService {
         }
     }
 
-    async getUser(id: string): Promise<GetUserDTO | string> {
+    async getUser(id: number): Promise<GetUserDTO | string> {
         try {
             const user = await Promise.resolve(this.users.find((user : User) => user.id === id)).then(
                 (user: User | undefined) => user
@@ -57,7 +57,7 @@ export class UserService {
         try {
             const { name, username, email, password } = user;
             const newUser = {
-                id: faker.datatype.uuid(),
+                id: faker.datatype.number(),
                 name,
                 username,
                 email,
@@ -66,14 +66,14 @@ export class UserService {
                 updatedAt: faker.date.past(),
             };
             this.users.push(newUser);
-            return newUser;
+            return { id: newUser.id, name, username, email };
         } catch (err) {
             console.error(err);
             return err as string;
         }
     }
     
-    async updateUser(id: string, user: UpdateUserDTO): Promise<GetUserDTO | string> {
+    async updateUser(id: number, user: UpdateUserDTO): Promise<GetUserDTO | string> {
         try {
             const userToUpdate = await Promise.resolve(this.users.find((user) => user.id === id)).then(
                 (user: User | undefined) => user
@@ -98,7 +98,7 @@ export class UserService {
         }
     }
     
-    async deleteUser(id: string): Promise<DeleteUserDTO | string> {
+    async deleteUser(id: number): Promise<DeleteUserDTO | string> {
         try {
             const userToDelete = await Promise.resolve(this.users.find((user) => user.id === id)).then(
                 (user: User | undefined) => user

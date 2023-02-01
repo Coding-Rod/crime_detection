@@ -8,7 +8,8 @@ const router = express.Router();
 router.get('/',
   validatorHandler(getUserSchema, 'body'),
   async (req, res) => {
-    const user = await new UserService().getUser(req.params.id);
+    const id = parseInt(req.params.id);
+    const user = await new UserService().getUser(id);
     res.status(200).send(user);
   }
 );
@@ -24,7 +25,8 @@ router.post('/',
 router.patch('/',
   validatorHandler(updateUserSchema, 'body'),
   async (req, res) => {
-    const user = await new UserService().updateUser(req.params.id, req.body);
+    const id = parseInt(req.params.id);
+    const user = await new UserService().updateUser(id, req.body);
     res.status(200).send(user);
   }
 );
@@ -32,7 +34,8 @@ router.patch('/',
 router.delete('/',
   validatorHandler(deleteUserSchema, 'body'),
   async (req, res) => {
-    const user = await new UserService().deleteUser(req.params.id);
+    const id = parseInt(req.params.id);
+    const user = await new UserService().deleteUser(id);
     res.status(200).send(user);
   }
 );

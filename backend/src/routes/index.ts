@@ -3,6 +3,7 @@ import { Router } from 'express-serve-static-core';
 
 import usersRouter from './user.routes';
 import nodesRouter from './node.routes';
+import contactRouter from './contact.routes';
 
 
 function routerApi(app: { use: (arg0: string, arg1: Router) => void; }) {
@@ -10,6 +11,7 @@ function routerApi(app: { use: (arg0: string, arg1: Router) => void; }) {
   app.use('/api/v1', router);
   router.use('/users', usersRouter);
   router.use('/nodes', nodesRouter);
+  router.use('/contact', contactRouter);
 }
 
 export default routerApi;
