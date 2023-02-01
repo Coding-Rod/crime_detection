@@ -8,35 +8,26 @@ const recording = Joi.boolean();
 const createdAt = Joi.date();
 const updatedAt = Joi.date();
 
+export const getNodeSchema = Joi.object({
+    id: id.required(),
+});
+
 export const createNodeSchema = Joi.object({
     name: name.required(),
     location: location.required(),
-    status: status.required(),
-    recording: recording.required(),
-});
-
-export const getNodeSchema = Joi.object({
-    id: id.required(),
 });
 
 export const updateNodeSchema = Joi.object({
     id: id.required(),
     name: name,
     location: location,
-    status: status,
-    recording: recording,
+});
+
+export const toggleRecordingSchema = Joi.object({
+    id: id.required(),
+    recording: recording.required(),
 });
 
 export const deleteNodeSchema = Joi.object({
     id: id.required(),
-});
-
-export const nodeSchema = Joi.object({
-    id: id,
-    name: name,
-    location: location,
-    status: status,
-    recording: recording,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
 });

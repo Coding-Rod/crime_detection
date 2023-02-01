@@ -4,7 +4,7 @@ import { GetOneNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../dtos/node.dt
 
 export default class NodeService {
   private nodes: Node[] = this.generateNodes(10);
-  constructor() {}
+  constructor() {}  
 
   generateNodes(amount: number) {
     const nodes = [];
@@ -52,6 +52,43 @@ export default class NodeService {
     }
   }
 
+  async createNode(nodeData: Node) : Promise<GetOneNodeDTO | string> {
+    try {
+      const { name, location } = nodeData;
+      const newNode = {
+        id: faker.datatype.uuid(),
+        name,
+        location,
+        status: faker.datatype.boolean(),
+        recording: faker.datatype.boolean(),
+        createdAt: faker.date.past(),
+        updatedAt: faker.date.recent(),
+      };
+      this.nodes.push(newNode);
+      const { id, status, recording } = newNode;
+      return { id, name, location, status, recording };
+    } catch (err) {
+      console.error(err);
+      return err as string;
+    }
+  }
+  
+
+  async updateNode(nodeId: string, nodeData: Node) : Promise<GetOneNodeDTO | string> {
+    try {
+      const node = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
+        (node: Node | undefined) => node
+      );
+      if (!node) throw new Error("Node not found");
+      const { name, location } = nodeData;
+      const updatedNode = { ...node, name, location };
+      return updatedNode;
+    } catch (err) {
+      console.error(err);
+      return err as string;
+    }
+  }
+
   async deleteNode(nodeId: Node['id']) : Promise<DeleteNodeDTO | string> {
     try {
       const deleteNode = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
@@ -65,19 +102,17 @@ export default class NodeService {
     }
   } 
 
-  async startRecording(nodeId: string) : Promise<StartRecordingDTO | string> {
+  async toggleRecording(nodeId: Node['id'], recording: Node['recording']) : Promise<StartRecordingDTO | string> {
     try {
-      const startRecording = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
+      const node = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
         (node: Node | undefined) => node
       );
-
-      if (!startRecording) throw new Error("Node not found");
-      if (startRecording.status === false) throw new Error("Node is not online");
-      if (startRecording.recording === true) throw new Error("Node is already recording");
-      
-      startRecording.recording = true;
-      return startRecording;
-    } catch (err) {
+      if (!node) throw new Error("Node not found");
+      const { recording } = node;
+      const updatedNode = { ...node, recording };
+      return updatedNode;
+    }
+    catch (err) {
       console.error(err);
       return err as string;
     }
