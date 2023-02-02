@@ -20,9 +20,9 @@ export class ContactService {
 
     constructor() {}
 
-    async getContacts(): Promise<GetContactDTO[] | string> {
+    async getContacts(caller: number): Promise<GetContactDTO[] | string> {
         try {
-            const contacts = await Promise.resolve(this.contacts).then(
+            const contacts = await Promise.resolve(this.contacts.filter((contact : Contact) => contact.caller === caller)).then(
                 (contacts: Contact[] | []) => contacts
             );
             const data = contacts.map((contact) => {
@@ -36,13 +36,13 @@ export class ContactService {
         }
     }
 
-    async getContact(id: number): Promise<GetContactDTO | string> {
+    async getContact(id: number, caller: number): Promise<GetContactDTO | string> {
         try {
-            const contact = await Promise.resolve(this.contacts.find((contact : Contact) => contact.id === id)).then(
+            const contact = await Promise.resolve(this.contacts.find((contact : Contact) => contact.id === id && contact.caller === caller)).then(
                 (contact: Contact | undefined) => contact
             );
             if (!contact) throw new Error("Contact not found");
-            const { called, caller } = contact;
+            const { called } = contact;
             return { id, called, caller };
         } catch (err) {
             console.error(err);

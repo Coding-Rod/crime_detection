@@ -8,12 +8,18 @@ import { ContactService } from '../services/contact.service';
 const router = express.Router();
 const contactService = new ContactService();
 
-router.get('/',
+router.get('/:caller',
     validatorHandler(getContactSchema, 'body'),
     async (req, res) => {
-        const id = parseInt(req.params.id);
-        const contact = await contactService.getContact(id);
+        const contact = await contactService.getContacts(parseInt(req.params.caller));
+        res.status(200).send(contact);
+    }
+);
 
+router.get('/:id/:caller',
+    validatorHandler(getContactSchema, 'body'),
+    async (req, res) => {
+        const contact = await contactService.getContact(parseInt(req.params.id), parseInt(req.params.caller));
         res.status(200).send(contact);
     }
 );
@@ -26,11 +32,10 @@ router.post('/',
     }
 );
 
-router.delete('/',
-    validatorHandler(deleteContactSchema, 'body'),
+router.delete('/:id',
+    validatorHandler(deleteContactSchema, 'params'),
     async (req, res) => {
-        const id = parseInt(req.params.id);
-        const contact = await contactService.deleteContact(id);
+        const contact = await contactService.deleteContact(parseInt(req.params.id));
         res.status(200).send(contact);
     }
 );

@@ -19,8 +19,7 @@ router.get('/',
 router.get('/:id',
   validatorHandler(getNodeSchema, 'params'),
   (req, res) => {
-    const id = parseInt(req.params.id);
-    const node = nodeService.getNode(id);
+    const node = nodeService.getNode(parseInt(req.params.id));
     node.then((node) => {
       res.status(200).send(node);
     });
@@ -40,8 +39,7 @@ router.post('/',
 router.patch('/:id',
   validatorHandler(updateNodeSchema, 'body'),
   (req, res) => {
-    const id = parseInt(req.params.id);
-    const node = nodeService.updateNode(id, req.body);
+    const node = nodeService.updateNode(parseInt(req.params.id), req.body);
     node.then((node) => {
       res.status(200).send(node);
     });
@@ -51,8 +49,7 @@ router.patch('/:id',
 router.patch('/:id/toggle-recording',
   validatorHandler(toggleRecordingSchema, 'body'),
   (req, res) => {
-    const id = parseInt(req.params.id);
-    const node = nodeService.toggleRecording(id, req.body.recording);
+    const node = nodeService.toggleRecording(parseInt(req.params.id), req.body);
     node.then((node) => {
       res.status(200).send(node);
     });
@@ -62,8 +59,7 @@ router.patch('/:id/toggle-recording',
 router.delete('/:id',
   validatorHandler(deleteNodeSchema, 'params'),
   (req, res) => {
-    const id = parseInt(req.params.id);
-    const node = nodeService.deleteNode(id);
+    const node = nodeService.deleteNode(parseInt(req.params.id));
     node.then((node) => {
       res.status(200).send(node);
     });
