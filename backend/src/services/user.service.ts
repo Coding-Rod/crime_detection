@@ -52,7 +52,7 @@ export class UserService {
             return err as string;
         }
     }
-    
+
     async createUser(user: CreateUserDTO): Promise<GetUserDTO | string> {
         try {
             const { name, username, email, password } = user;
@@ -73,6 +73,23 @@ export class UserService {
         }
     }
     
+    async loginUser(user: LoginUserDTO): Promise<GetUserDTO | string> {
+        try {
+            const { username, password } = user;
+            const userToLogin = await Promise.resolve(this.users.find((user) => user.username === username)).then(
+                (user: User | undefined) => user
+            );
+            if (!userToLogin) throw new Error("User not found");
+            if (userToLogin.password !== password) throw new Error("Incorrect password");
+
+            const { id, name, email } = userToLogin;
+            return { id, name, username, email };
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
+    }
+
     async updateUser(id: number, user: UpdateUserDTO): Promise<GetUserDTO | string> {
         try {
             const userToUpdate = await Promise.resolve(this.users.find((user) => user.id === id)).then(
