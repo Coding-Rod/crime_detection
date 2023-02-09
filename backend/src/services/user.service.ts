@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { User } from "../models/user.model";
 import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
-
+import { hashPassword } from "../utils/pass-hash";
 export class UserService {
     private users: User[] = this.generateUsers(10);
 
@@ -29,6 +29,8 @@ export class UserService {
                 (users: User[] | []) => users
             );
             const data = users.map((user) => {
+                console.log("username:", user.username);
+                console.log("password:", user.password);
                 const { id, name, username, email } = user;
                 return { id, name, username, email };
             });
@@ -56,12 +58,13 @@ export class UserService {
     async createUser(user: CreateUserDTO): Promise<GetUserDTO | string> {
         try {
             const { name, username, email, password } = user;
+            const hash = await hashPassword(password);
             const newUser = {
                 id: faker.datatype.number(),
                 name,
                 username,
                 email,
-                password,
+                password: hash,
                 createdAt: faker.date.past(),
                 updatedAt: faker.date.past(),
             };
