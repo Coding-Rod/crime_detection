@@ -19,6 +19,7 @@ router.post('/register', validatorHandler(createUserSchema, 'body'), async (req,
 
 router.post('/login', validatorHandler(loginUserSchema, 'body'), async (req, res, next) => {
     try {
+        console.log("req.body:", req.body);
         const user = await userService.loginUser(req.body);
         res.status(200).json(user);
         } catch (error) {

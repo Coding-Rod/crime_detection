@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { User } from "../models/user.model";
 import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
-import { hashPassword } from "../utils/pass-hash";
+import { hashPassword } from "../utils/auth/pass-hash";
 export class UserService {
     private users: User[] = this.generateUsers(10);
 
@@ -68,6 +68,7 @@ export class UserService {
                 createdAt: faker.date.past(),
                 updatedAt: faker.date.past(),
             };
+            console.log("newUser:", newUser)
             this.users.push(newUser);
             return { id: newUser.id, name, username, email };
         } catch (err) {
@@ -78,12 +79,15 @@ export class UserService {
     
     async loginUser(user: LoginUserDTO): Promise<GetUserDTO | string> {
         try {
+            console.log("user:", user);
             const { username, password } = user;
             const userToLogin = await Promise.resolve(this.users.find((user) => user.username === username)).then(
                 (user: User | undefined) => user
             );
             if (!userToLogin) throw new Error("User not found");
-            if (userToLogin.password !== password) throw new Error("Incorrect password");
+            const isValid = await hashPassword(password);
+
+            if (!isValid) throw new Error("Invalid password");
 
             const { id, name, email } = userToLogin;
             return { id, name, username, email };

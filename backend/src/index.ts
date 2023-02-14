@@ -8,6 +8,9 @@ const swaggerDocument = require('./assets/swagger.json');
 const app = express();
 const port = 3000;
 
+// Add Json support
+app.use(express.json());
+
 // Add the cors middleware
 app.use(cors());
 

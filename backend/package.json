@@ -12,7 +12,7 @@
     "migrations:undo": "sequelize-cli db:migrate:undo",
     "migrations:drop": "sequelize-cli db:migrate:undo:all",
     "sequelize:init": "sequelize-cli init",
-    "swagger": "node swagger.js"
+    "swagger": "npx ts-node ./src/utils/swagger.ts"
   },
   "keywords": [],
   "author": "Sergio Rodrigo Fernandez Testa",
@@ -40,6 +40,7 @@
   "dependencies": {
     "@hapi/boom": "^10.0.0",
     "@types/bcryptjs": "^2.4.2",
+    "@types/passport-jwt": "^3.0.8",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.14.0",
@@ -47,7 +48,10 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "joi": "^17.7.0",
+    "jsonwebtoken": "^9.0.0",
     "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "pg": "^8.9.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.28.0",

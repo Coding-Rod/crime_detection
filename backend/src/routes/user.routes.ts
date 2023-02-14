@@ -21,14 +21,6 @@ router.get('/:id',
   }
 );
 
-router.post('/',
-  validatorHandler(createUserSchema, 'body'),
-  async (req, res) => {
-    const user = await userService.createUser(req.body);
-    res.status(201).send(user);
-  }
-);
-
 router.patch('/:id',
   validatorHandler(getUserSchema, 'params'),
   async (req, res) => {
