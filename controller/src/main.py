@@ -59,6 +59,23 @@ class Ui_MainWindow(object):
         else:
             QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')
 
+    def changePassword(self) -> None:
+        """ Change the password with a QInputDialog."""
+        text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the new password:')
+        
+        if ok:
+            if len(text) == 4:
+                with open('./security/key.key', 'rb') as file:
+                    key = file.read()
+                    fernet = Fernet(key)
+                    encrypted_password = fernet.encrypt(text.encode())
+                    with open('./security/pass.txt', 'wb') as file:
+                        file.write(encrypted_password)
+                    self.__encrypted_password = encrypted_password
+            else:
+                QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')
+        
+
     def setupUi(self):
         self.centralwidget = QtWidgets.QWidget(self.MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -133,13 +150,16 @@ class Ui_MainWindow(object):
         self.pushSettingsButton.setGeometry(QtCore.QRect(370, 140, 120, 111))
         self.pushSettingsButton.setObjectName("pushSettingsButton")
         self.pushSettingsButton.setStyleSheet(self.buttonStyle)
+        self.pushSettingsButton.clicked.connect(self.changePassword)
+        
         self.pushAlertButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushAlertButton.setGeometry(QtCore.QRect(500, 140, 120, 111))
         self.pushAlertButton.setObjectName("pushAlertButton")
         self.pushAlertButton.setStyleSheet(self.buttonStyle)
+        # TODO: Add functionality to this button
         
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(370, 20, 250, 111))
+        self.lineEdit.setGeometry(QtCore.QRect(370, 20, 250, 110))
         self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setStyleSheet(self.lineEditStyle)
         self.lineEdit.setReadOnly(True)
