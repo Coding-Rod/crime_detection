@@ -1,7 +1,9 @@
-name: EATD
+name: crime
 channels:
-  - conda-forge
   - defaults
 dependencies:
+  - cryptography
+  - numpy
   - opencv
-prefix: /home/rodri/anaconda3/envs/EATD
+  - pyqt
+prefix: /home/rodri/miniconda3/envs/crime
