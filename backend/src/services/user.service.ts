@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { User } from "../models/user.model";
-import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../schemas/user.schema";
+import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
 
 export class UserService {
     private users: User[] = [];

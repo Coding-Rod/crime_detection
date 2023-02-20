@@ -15,7 +15,7 @@
           </CInputGroup>
         </CCol>
       </CRow>
-      <CRow>
+      <CRow v-if="videos.length > 0">
         <CCol
           v-for="video in videosOnPage"
           :key="video.id"
@@ -35,14 +35,22 @@
                   style="width: 100%; max-height: 300px;"
                 />
                 <div class="fw-bold ">{{ video.name }}</div>
-                <p class="mb-3 ms-auto">{{ video.location }} - {{ video.date.getHours() }}:{{ video.date.getMinutes() }} {{ video.date.getDate() }}/{{ video.date.getMonth() }}/{{ video.date.getFullYear() }}</p>
+                <!-- <p class="mb-3 ms-auto">{{ video.location }} - {{ video.date.getHours() }}:{{ video.date.getMinutes() }} {{ video.date.getDate() }}/{{ video.date.getMonth() }}/{{ video.date.getFullYear() }}</p> -->
+                <p class="mb-3 ms-auto">{{ video.location }} - {{ video.date }}</p>
+                <p> Amount of weapons: {{ video.weapons }}</p>
               </div>
             </CListGroupItem>
           </CListGroup>
         </CCol>
       </CRow>
+      <CRow v-else-if="error">
+        <CCol class="d-flex justify-content-center">
+          <h3>No videos found</h3>
+        </CCol>
+      </CRow>
+      <Loader v-else />
       <!-- Pagination -->
-      <CRow>
+      <CRow v-if="videos.length > 0">
         <CCol class="d-flex justify-content-center">
           <CPagination align="center" aria-label="Page navigation example">
             <CPaginationItem 
@@ -72,7 +80,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import Loader from "@/components/Loader";
 
 export default {
   name: "RecordedVideos",
@@ -81,10 +89,45 @@ export default {
       search: "",
       screenwidth: window.innerWidth,
       page: 1,
+      error: null,
+      videos: [
+        {
+          id: 1,
+          name: "Node 1",
+          location: "Location 1",
+          status: 'online',
+          video: "https://picsum.photos/300/200",
+          recording: false,
+          date: new Date(),
+          weapons: 2,
+        },
+        {
+          id: 2,
+          name: "Node 2",
+          location: "Location 2",
+          status: 'online',
+          video: "https://picsum.photos/300/200",
+          recording: false,
+          date: new Date(),
+          weapons: 1,
+        },
+        {
+          id: 3,
+          name: "Node 3",
+          location: "Location 3",
+          status: 'online',
+          video: "https://picsum.photos/300/200",
+          recording: false,
+          date: new Date(),
+          weapons: 3,
+        }
+      ],
     };
   },
+  components: {
+    Loader,
+  },
   computed: {
-    ...mapState(["videos"]),
     filteredVideos() {
       return this.videos.filter((video) => {
         return video.name.toLowerCase().includes(this.search.toLowerCase());

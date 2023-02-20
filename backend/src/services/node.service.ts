@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Node } from "../models/node.model";
-import { GetOneNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../schemas/node.schema";
+import { GetOneNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../dtos/node.dto";
 
 export default class NodeService {
   private nodes: Node[] = this.generateNodes(10);
@@ -63,7 +63,7 @@ export default class NodeService {
       console.error(err);
       return err as string;
     }
-  }
+  } 
 
   async startRecording(nodeId: string) : Promise<StartRecordingDTO | string> {
     try {

@@ -2,6 +2,7 @@
   <div>
     <h1 class="h3 mb-3 text-center">Active Nodes</h1>
     <!-- for with accordions -->
+    <template v-if="nodes.length > 0">
     <CAccordion v-for="node in nodes" :key="node.id">
       <CAccordionItem :item-key="node.id">
         <CAccordionHeader> {{ node.name }} </CAccordionHeader>
@@ -36,19 +37,44 @@
         </CAccordionBody>
       </CAccordionItem>
     </CAccordion>
+    </template>
+    <template v-else-if="error">
+      <p class="text-center">No active nodes</p>
+    </template>
+    <Loader v-else />
   </div>
 </template>
-
+0 auto
 <script>
 import axios from "axios";
+import Loader from "@/components/Loader.vue";
 
 export default {
   name: "ActiveNodes",
   data() {
     return {
       screenwidth: window.innerWidth,
-      nodes : [],
+      nodes : [
+        {
+          name: "Node 1",
+          location: "Location 1",
+          status: "Active",
+          video: "https://picsum.photos/300/200",
+          id: 1,
+        },
+        {
+          name: "Node 2",
+          location: "Location 2",
+          status: "Active",
+          video: "https://picsum.photos/300/200",
+          id: 2,
+        },
+      ],
+      error: null,
     };
+  },
+  components: {
+    Loader,
   },
   methods: {
     handleResize() {

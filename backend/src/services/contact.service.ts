@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Contact } from "../models/contact.model";
-import { GetContactDTO, DeleteContactDTO, UpdateContactDTO } from "../schemas/contact.schema";
+import { GetContactDTO, DeleteContactDTO, UpdateContactDTO } from "../dtos/contact.dto";
 
 export class ContactService {
     private contacts: Contact[] = [];
