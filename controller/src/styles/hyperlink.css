@@ -1,0 +1,16 @@
+QPushButton{
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: #000000;
+    text-decoration-style: solid;
+    border: none;
+    color: blue;
+}
+
+QPushButton:hover{
+    color: #000000;
+}
+
+QPushButton:pressed{
+    color: #000000;
+}

@@ -19,6 +19,9 @@ class Ui_MainWindow(object):
         file = open('./styles/line_edit.css', 'r')
         self.lineEditStyle = file.read()
         file.close()
+        file = open('./styles/hyperlink.css', 'r')
+        self.hyperlinkStyle = file.read()
+        file.close()
         
         # Setup the UI
         self.setupUi()
@@ -146,20 +149,15 @@ class Ui_MainWindow(object):
         self.pushEnterButton.clicked.connect(self.validatePassword)
         self.pushEnterButton.setStyleSheet(self.buttonStyle)
         
-        self.pushSettingsButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushSettingsButton.setGeometry(QtCore.QRect(370, 140, 120, 111))
-        self.pushSettingsButton.setObjectName("pushSettingsButton")
-        self.pushSettingsButton.setStyleSheet(self.buttonStyle)
-        self.pushSettingsButton.clicked.connect(self.changePassword)
-        
-        self.pushAlertButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushAlertButton.setGeometry(QtCore.QRect(500, 140, 120, 111))
-        self.pushAlertButton.setObjectName("pushAlertButton")
-        self.pushAlertButton.setStyleSheet(self.buttonStyle)
+        self.pushhangePasswordButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushhangePasswordButton.setGeometry(QtCore.QRect(370, 225, 110, 25))
+        self.pushhangePasswordButton.setObjectName("pushSettingsButton")
+        self.pushhangePasswordButton.clicked.connect(self.changePassword)
+        self.pushhangePasswordButton.setStyleSheet(self.hyperlinkStyle)
         # TODO: Add functionality to this button
         
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(370, 20, 250, 110))
+        self.lineEdit.setGeometry(QtCore.QRect(370, 20, 250, 50))
         self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setStyleSheet(self.lineEditStyle)
         self.lineEdit.setReadOnly(True)
@@ -198,8 +196,7 @@ class Ui_MainWindow(object):
         self.pushBackButton.setText(_translate("MainWindow", "Back"))
         self.pushButton0.setText(_translate("MainWindow", "0"))
         self.pushEnterButton.setText(_translate("MainWindow", "Enter"))
-        self.pushSettingsButton.setText(_translate("MainWindow", "Settings"))
-        self.pushAlertButton.setText(_translate("MainWindow", "Alert"))
+        self.pushhangePasswordButton.setText(_translate("MainWindow", "Change Password"))
         self.lineEdit.setText(_translate("MainWindow", self.asterisks))
 
 if __name__ == "__main__":
