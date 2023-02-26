@@ -47,9 +47,8 @@ router.patch('/:id',
 );
 
 router.patch('/:id/toggle-recording',
-  validatorHandler(toggleRecordingSchema, 'body'),
   (req, res) => {
-    const node = nodeService.toggleRecording(parseInt(req.params.id), req.body);
+    const node = nodeService.toggleRecording(parseInt(req.params.id));
     node.then((node) => {
       res.status(200).send(node);
     });

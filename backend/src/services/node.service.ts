@@ -101,14 +101,14 @@ export default class NodeService {
     }
   } 
 
-  async toggleRecording(nodeId: Node['id'], recording: Node['recording']) : Promise<StartRecordingDTO | string> {
+  async toggleRecording(nodeId: Node['id']) : Promise<StartRecordingDTO | string> {
     try {
       const node = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
         (node: Node | undefined) => node
       );
       if (!node) throw new Error("Node not found");
       const { recording } = node;
-      const updatedNode = { ...node, recording };
+      const updatedNode = { ...node, recording: !recording };
       return updatedNode;
     }
     catch (err) {

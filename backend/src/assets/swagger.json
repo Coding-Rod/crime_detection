@@ -6,12 +6,12 @@
     "description": ""
   },
   "host": "localhost:3000",
-  "basePath": "/",
+  "basePath": "/api/v1/",
   "schemes": [
     "http"
   ],
   "paths": {
-    "/api/v1/users/": {
+    "/users/": {
       "get": {
         "description": "",
         "parameters": [],
@@ -19,19 +19,11 @@
           "200": {
             "description": "OK"
           }
-        }
-      },
-      "post": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
+        },
+        "tags": ["Users"]
       }
     },
-    "/api/v1/users/{id}": {
+    "/users/{id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -46,7 +38,8 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Users"]
       },
       "patch": {
         "description": "",
@@ -56,13 +49,49 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User object that needs to be updated.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe",
+                  "description": "The name of the user.",
+                  "required": false
+                },
+                "username": {
+                  "type": "string",
+                  "example": "john123",
+                  "description": "The username of the user.",
+                  "required": false
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john123@fakermail.com",
+                  "description": "The email of the user.",
+                  "required": false
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password",
+                  "description": "The password of the user.",
+                  "required": false
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Users"]
       },
       "delete": {
         "description": "",
@@ -78,10 +107,11 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Users"]
       }
     },
-    "/api/v1/nodes/": {
+    "/nodes/": {
       "get": {
         "description": "",
         "parameters": [],
@@ -89,19 +119,45 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Nodes"]
       },
       "post": {
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "node",
+            "in": "body",
+            "description": "Node object that needs to be added.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Node 1",
+                  "description": "The name of the node.",
+                  "required": true
+                },
+                "location": {
+                  "type": "string",
+                  "example": "123.456, 789.012",
+                  "description": "The location of the node.",
+                  "required": false
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
           }
-        }
+        },
+        "tags": ["Nodes"]
       }
     },
-    "/api/v1/nodes/{id}": {
+    "/nodes/{id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -116,7 +172,8 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Nodes"]
       },
       "patch": {
         "description": "",
@@ -126,13 +183,37 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "node",
+            "in": "body",
+            "description": "Node object that needs to be updated.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Node 1",
+                  "description": "The name of the node.",
+                  "required": false
+                },
+                "location": {
+                  "type": "string",
+                  "example": "123.456, 789.012",
+                  "description": "The location of the node.",
+                  "required": false
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Nodes"]
       },
       "delete": {
         "description": "",
@@ -148,10 +229,11 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Nodes"]
       }
     },
-    "/api/v1/nodes/{id}/toggle-recording": {
+    "/nodes/{id}/toggle-recording": {
       "patch": {
         "description": "",
         "parameters": [
@@ -166,10 +248,11 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Nodes"]
       }
     },
-    "/api/v1/contact/{caller}": {
+    "/contact/{caller}": {
       "get": {
         "description": "",
         "parameters": [
@@ -184,10 +267,11 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Contact"]
       }
     },
-    "/api/v1/contact/{id}/{caller}": {
+    "/contact/{id}/{caller}": {
       "get": {
         "description": "",
         "parameters": [
@@ -208,21 +292,47 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Contact"]
       }
     },
-    "/api/v1/contact/": {
+    "/contact/": {
       "post": {
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "contact",
+            "in": "body",
+            "description": "Contact object that needs to be added.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "called": {
+                  "type": "string",
+                  "example": "1234567890",
+                  "description": "The caller of the contact.",
+                  "required": true
+                },
+                "caller": {
+                  "type": "string",
+                  "example": "1234567890",
+                  "description": "The called of the contact.",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
           }
-        }
+        },
+        "tags": ["Contact"]
       }
     },
-    "/api/v1/contact/{id}": {
+    "/contact/{id}": {
       "delete": {
         "description": "",
         "parameters": [
@@ -237,29 +347,104 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Contact"]
       }
     },
-    "/api/v1/auth/register": {
+    "/auth/register": {
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "This endpoint is used to register a new user.",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User object that needs to be added to the database.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe",
+                  "description": "The name of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "username": {
+                  "type": "string",
+                  "example": "johndoe",
+                  "description": "The username of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john123@fakermail.com",
+                  "description": "The email of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password",
+                  "description": "The password of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
           }
-        }
+        },
+        "tags": ["Auth"]
       }
     },
-    "/api/v1/auth/login": {
+    "/auth/login": {
       "post": {
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User object that needs to be added to the database.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "johndoe",
+                  "description": "The username of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password",
+                  "description": "The password of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "tags": ["Auth"]
       }
     }
   }
