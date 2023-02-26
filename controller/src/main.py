@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread
+
+from cryptography.fernet import Fernet
+
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QObject, QThread
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton
 from PyQt5 import QtCore, QtGui, QtWidgets
-from cryptography.fernet import Fernet
 
 
 class VideoStream(QObject):
@@ -40,9 +40,9 @@ class VideoPlayer(QMainWindow):
         self.setGeometry(100, 100, 640, 300)
 
         self.image_label = QLabel(self)
-        
         self.image_label.setGeometry(390, -5, 200, 200)
 
+        # Video stream
         self.video_stream = VideoStream()
         self.video_thread = QThread()
         self.video_stream.moveToThread(self.video_thread)
@@ -50,9 +50,11 @@ class VideoPlayer(QMainWindow):
         self.video_stream.frame_signal.connect(self.display_frame)
         self.video_thread.start()
         
-        
+        # Window
         self.MainWindow.setObjectName("MainWindow")
         self.MainWindow.resize(650, 280)
+        
+        # Password
         file = open('./security/pass.txt', 'rb')
         self.__encrypted_password = file.read()
         file.close()
@@ -89,40 +91,71 @@ class VideoPlayer(QMainWindow):
             self.asterisks = self.asterisks[:-1]
             self.retranslateUi()
     
+    def verifyPassword(self, password: str) -> bool:
+        """ Verify the password.
+
+        Args:
+            password (str): The password to verify.
+
+        Returns:
+            bool: True if the password is correct, False otherwise.
+        """
+        with open('./security/key.key', 'rb') as file:
+            key = file.read()
+            fernet = Fernet(key)
+            encrypted_password = fernet.decrypt(self.__encrypted_password)
+            return password == encrypted_password.decode()
+    
     def validatePassword(self) -> None:
         """ Validate the password shows a warning QMessageBox if the password is wrong."""
         if len(self.password) == 4:
-            with open('./security/key.key', 'rb') as file:
-                key = file.read()
-                fernet = Fernet(key)
-                password = fernet.decrypt(self.__encrypted_password)
-                if self.password == password.decode():
-                    # TODO: Implement stop for the alarm
-                    print('Password correct')
-                    self.password = ''
-                    self.asterisks = ''
-                    self.retranslateUi()
-                else:
-                    QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
+            if self.verifyPassword(self.password):
+                # TODO: Implement the rest of the code
+                print('Password correct')
+            else:
+                QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
         else:
             QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')
+        self.password = ''
+        self.asterisks = ''
+        self.retranslateUi()
 
     def changePassword(self) -> None:
-        """ Change the password with a QInputDialog."""
-        text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the new password:')
+        """ Verify the password with a QInputDialog and change the password if the password is correct.
+        Shows a warning QMessageBox if the password is wrong.
+        Shows a warning QMessageBox if the password is not 4 numbers.
+        Shows a warning QMessageBox if the password is not a number.
+        Shows a warning QMessageBox if the passwords do not match.
+        """
+        text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the previous password:')
         
         if ok:
-            if len(text) == 4:
-                with open('./security/key.key', 'rb') as file:
-                    key = file.read()
-                    fernet = Fernet(key)
-                    encrypted_password = fernet.encrypt(text.encode())
-                    with open('./security/pass.txt', 'wb') as file:
-                        file.write(encrypted_password)
-                    self.__encrypted_password = encrypted_password
+            if self.verifyPassword(text):
+                text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the new password:')
+                if ok:
+                    if text.isdigit():
+                        if len(text) == 4:
+                            text2, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Confirm the new password:')
+                            if ok:
+                                if text == text2:
+                                    with open('./security/key.key', 'rb') as file:
+                                        key = file.read()
+                                        fernet = Fernet(key)
+                                        encrypted_password = fernet.encrypt(text.encode())
+                                        with open('./security/pass.txt', 'wb') as file:
+                                            file.write(encrypted_password)
+                                            QtWidgets.QMessageBox.information(self.MainWindow, 'Success', 'Password changed successfully')
+                                        self.__encrypted_password = encrypted_password
+                                        self.password = ''
+                                else:
+                                    QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Passwords do not match')
+                        else:
+                            QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')
+                    else:
+                        QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be a number')     
             else:
-                QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')     
-     
+                QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
+                
     def setupUi(self):
         self.centralwidget = QtWidgets.QWidget(self.MainWindow)
         self.centralwidget.setObjectName("centralwidget")
