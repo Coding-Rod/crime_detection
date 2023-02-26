@@ -4,9 +4,9 @@ import {
     IsNotEmpty,
     IsString,
     IsEmail,
-    IsUUID,
     Length,
-    IsBoolean,
+    IsNumber,
+    Min,
 } from "class-validator";
 
 export interface GetUserDTO extends Pick<User, "id" | "name" | "username" | "email"> {}
@@ -17,8 +17,9 @@ export interface IUpdateUserDTO extends Pick<User, "id" | "name" | "username" | 
 
 export class UpdateUserDTO implements IUpdateUserDTO {
     @IsNotEmpty()
-    @IsUUID()
-    id: string;
+    @IsNumber()
+    @Min(1)
+    id: number;
 
     @IsNotEmpty()
     @IsString()
@@ -81,8 +82,9 @@ export interface IChangePasswordDTO extends Pick<User, "id" | "password"> {}
 
 export class ChangePasswordDTO implements IChangePasswordDTO {
     @IsNotEmpty()
-    @IsUUID()
-    id: string;
+    @IsNumber()
+    @Min(1)
+    id: number;
 
     @IsNotEmpty()
     @IsString()

@@ -2,31 +2,24 @@ import { Contact } from "../models/contact.model";
 
 import {
     IsNotEmpty,
-    IsString,
-    IsEmail,
-    IsUUID,
-    Length,
-    IsBoolean,
+    IsNumber,
+    Min,
 } from "class-validator";
 
 export interface GetContactDTO extends Pick<Contact, "id" | "called" | "caller"> {}
 
-export interface DeleteContactDTO extends Pick<Contact, "id" | "called"> {}
+export interface ICreateContactDTO extends Omit<Contact, "id" | "createdAt"> {}
 
-export interface IUpdateContactDTO extends Pick<Contact, "id" | "called" | "caller"> {}
-
-export class UpdateContactDTO implements IUpdateContactDTO {
+export class CreateContactDTO implements ICreateContactDTO {
     @IsNotEmpty()
-    @IsUUID()
-    id: string;
-
-    @IsNotEmpty()
-    @IsString()
-    @Length(3, 50)
-    called: string;
+    @IsNumber()
+    @Min(1)
+    called: number;
 
     @IsNotEmpty()
-    @IsString()
-    @Length(3, 50)
-    caller: string;
+    @IsNumber()
+    @Min(1)
+    caller: number;
 }
+
+export interface DeleteContactDTO extends Omit<Contact, "createdAt"> {}
