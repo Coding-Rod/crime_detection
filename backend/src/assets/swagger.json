@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "REST API",
-    "description": ""
+    "description": "REST API for the project."
   },
   "host": "localhost:3000",
   "basePath": "/api/v1/",
@@ -13,7 +13,7 @@
   "paths": {
     "/users/": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a list of users.",
         "parameters": [],
         "responses": {
           "200": {
@@ -25,7 +25,7 @@
     },
     "/users/{id}": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a user.",
         "parameters": [
           {
             "name": "id",
@@ -42,7 +42,7 @@
         "tags": ["Users"]
       },
       "patch": {
-        "description": "",
+        "description": "This endpoint updates a user.",
         "parameters": [
           {
             "name": "id",
@@ -94,7 +94,7 @@
         "tags": ["Users"]
       },
       "delete": {
-        "description": "",
+        "description": "This endpoint deletes a user.",
         "parameters": [
           {
             "name": "id",
@@ -113,7 +113,7 @@
     },
     "/nodes/": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a list of nodes.",
         "parameters": [],
         "responses": {
           "200": {
@@ -123,7 +123,7 @@
         "tags": ["Nodes"]
       },
       "post": {
-        "description": "",
+        "description": "This endpoint creates a node.",
         "parameters": [
           {
             "name": "node",
@@ -159,7 +159,7 @@
     },
     "/nodes/{id}": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a node.",
         "parameters": [
           {
             "name": "id",
@@ -176,7 +176,7 @@
         "tags": ["Nodes"]
       },
       "patch": {
-        "description": "",
+        "description": "This endpoint updates a node.",
         "parameters": [
           {
             "name": "id",
@@ -216,7 +216,7 @@
         "tags": ["Nodes"]
       },
       "delete": {
-        "description": "",
+        "description": "This endpoint deletes a node.",
         "parameters": [
           {
             "name": "id",
@@ -235,7 +235,7 @@
     },
     "/nodes/{id}/toggle-recording": {
       "patch": {
-        "description": "",
+        "description": "This endpoint toggles the recording state of a node.",
         "parameters": [
           {
             "name": "id",
@@ -254,7 +254,7 @@
     },
     "/contact/{caller}": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a list of contacts.",
         "parameters": [
           {
             "name": "caller",
@@ -273,7 +273,7 @@
     },
     "/contact/{id}/{caller}": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a contact.",
         "parameters": [
           {
             "name": "id",
@@ -298,7 +298,7 @@
     },
     "/contact/": {
       "post": {
-        "description": "",
+        "description": "This endpoint creates a contact.",
         "parameters": [
           {
             "name": "contact",
@@ -334,7 +334,7 @@
     },
     "/contact/{id}": {
       "delete": {
-        "description": "",
+        "description": "This endpoint deletes a contact.",
         "parameters": [
           {
             "name": "id",
@@ -409,7 +409,7 @@
     },
     "/auth/login": {
       "post": {
-        "description": "",
+        "description": "This endpoint is used to login a user.",
         "parameters": [
           {
             "name": "user",
