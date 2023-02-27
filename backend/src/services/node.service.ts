@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Node } from "../models/node.model";
-import { GetOneNodeDTO, CreateNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../dtos/node.dto";
-
+import { GetOneNodeDTO, CreateNodeDTO, UpdateNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../dtos/node.dto";
+import { client } from "../db/config";
 export default class NodeService {
   private nodes: Node[] = this.generateNodes(10);
   constructor() {}  
@@ -25,14 +25,8 @@ export default class NodeService {
 
   async getNodes(): Promise<GetOneNodeDTO[] | string > {
     try {
-      const nodes = await Promise.resolve(this.nodes).then(
-        (nodes: Node[] | []) => nodes
-      );
-      const data = nodes.map((node) => {
-        const { id, name, location, status, recording } = node;
-        return { id, name, location, status, recording };
-      });
-      return data;
+      const nodes = await client.query("SELECT * FROM nodes");
+      return nodes.rows;
     } catch (err) {
       console.error(err);
       return err as string;
@@ -41,79 +35,69 @@ export default class NodeService {
 
   async getNode(nodeId: number) : Promise<GetOneNodeDTO | string> {
     try {
-      const node = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
-        (node: Node | undefined) => node
-      );
-      if (!node) throw new Error("Node not found");
-      const { id, name, location, status, recording } = node;
-      return { id, name, location, status, recording };
+      const node = await client.query("SELECT * FROM nodes WHERE idnode = $1", [nodeId]);
+      return node.rows[0];
     } catch (err) {
       console.error(err);
       return err as string;
     }
   }
 
-  async createNode(nodeData: Node) : Promise<GetOneNodeDTO | string> {
+  async createNode(nodeData: CreateNodeDTO) : Promise<GetOneNodeDTO | string> {
     try {
-      const { name, location } = nodeData;
-      const newNode = {
-        id: faker.datatype.number(),
-        name,
-        location,
-        status: faker.datatype.boolean(),
-        recording: faker.datatype.boolean(),
-        createdAt: faker.date.past(),
-        updatedAt: faker.date.recent(),
-        userId: faker.datatype.number(),
-      };
-      this.nodes.push(newNode);
-      return { id: newNode.id, name, location, status: newNode.status, recording: newNode.recording };
+      const { name, location, userId } = nodeData;
+      const node = await client.query(
+        "INSERT INTO nodes (name, location, status, recording, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+        [name, location, false, false, new Date(), new Date(), userId]
+      );
+      return node.rows[0];
     } catch (err) {
       console.error(err);
       return err as string;
     }
   }
   
-
-  async updateNode(nodeId: number, nodeData: Node) : Promise<GetOneNodeDTO | string> {
+  async updateNode(nodeId: number, nodeData: UpdateNodeDTO) : Promise<GetOneNodeDTO | string> {
     try {
-      const node = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
-        (node: Node | undefined) => node
+      const nodeToUpdate = await client.query("SELECT * FROM nodes WHERE idnode = $1", [nodeId]);
+      if (!nodeToUpdate.rows[0]) throw new Error("Node not found");
+      const updatedNode = {
+        ...nodeToUpdate.rows[0],
+        ...nodeData,
+      };
+      const node = await client.query(
+        "UPDATE nodes SET name = $1, location = $2, updated_at = $3 WHERE idnode = $4 RETURNING *",
+        [updatedNode.name, updatedNode.location, new Date(), nodeId]
       );
-      if (!node) throw new Error("Node not found");
-      const { name, location } = nodeData;
-      const updatedNode = { ...node, name, location };
-      return updatedNode;
+      return node.rows[0];
     } catch (err) {
       console.error(err);
       return err as string;
     }
   }
 
-  async deleteNode(nodeId: Node['id']) : Promise<GetOneNodeDTO | string> {
+  async deleteNode(nodeId: Node['id']) : Promise<DeleteNodeDTO | string> {
     try {
-      const deleteNode = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
-        (node: Node | undefined) => node
-      );
-      if (!deleteNode) throw new Error("Node not found");
-      return { id: deleteNode.id, name: deleteNode.name, location: deleteNode.location, status: deleteNode.status, recording: deleteNode.recording };
+      const nodeToDelete = await client.query("SELECT * FROM nodes WHERE idnode = $1", [nodeId]);
+      if (!nodeToDelete.rows[0]) throw new Error("Node not found");
+      const node = await client.query("DELETE FROM nodes WHERE idnode = $1 RETURNING *", [nodeId]);
+      return node.rows[0];
     } catch (err) {
       console.error(err);
       return err as string;
     }
-  } 
+  }
 
   async toggleRecording(nodeId: Node['id']) : Promise<StartRecordingDTO | string> {
     try {
-      const node = await Promise.resolve(this.nodes.find((node) => node.id === nodeId)).then(
-        (node: Node | undefined) => node
+      const nodeToToggle = await client.query("SELECT * FROM nodes WHERE idnode = $1", [nodeId]);
+      if (!nodeToToggle.rows[0]) throw new Error("Node not found");
+      const node = await client.query(
+        "UPDATE nodes SET status = $1, recording = $2, updated_at = $3 WHERE idnode = $4 RETURNING *",
+        [!nodeToToggle.rows[0].status, !nodeToToggle.rows[0].recording, new Date(), nodeId]
       );
-      if (!node) throw new Error("Node not found");
-      const { recording } = node;
-      const updatedNode = { ...node, recording: !recording };
-      return updatedNode;
-    }
-    catch (err) {
+      return node.rows[0];
+    } catch (err) {
       console.error(err);
       return err as string;
     }
