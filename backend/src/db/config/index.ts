@@ -1,17 +1,14 @@
 import { config } from '../../config';
+import { Client } from 'pg';
 
+const client = new Client({
+    user: config.dbUser,
+    password: config.dbPassword,
+    host: config.dbHost,
+    database: config.dbName,
+    port: typeof config.dbPort === 'string' ? parseInt(config.dbPort) : config.dbPort,
+});
 
-const USER = encodeURIComponent(config.dbUser??'');
-const PASSWORD = encodeURIComponent(config.dbPassword??'');
-const URI = `postgres://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
+client.connect();
 
-export const dbConfig = {
-    development: {
-        url: URI,
-        dialect: 'postgres',
-    },
-    production: {
-        url: URI,
-        dialect: 'postgres',
-    },
-}
+export { client };
