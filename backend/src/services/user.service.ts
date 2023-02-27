@@ -1,28 +1,9 @@
-import { faker } from "@faker-js/faker";
 import { User } from "../models/user.model";
 import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
-import { hashPassword } from "../utils/auth/pass-hash";
+// import { hashPassword } from "../utils/auth/pass-hash";
 import { client } from "../db/config";
 export class UserService {
-    private users: User[] = this.generateUsers(10);
-
     constructor() {}
-    
-    generateUsers(amount: number): User[] {
-        const users: User[] = [];
-        for (let i = 0; i < amount; i++) {
-            users.push({
-                id: faker.datatype.number(),
-                name: faker.name.firstName(),
-                username: faker.name.firstName(),
-                email: faker.internet.email(),
-                password: faker.internet.password(),
-                createdAt: faker.date.past(),
-                updatedAt: faker.date.past(),
-            });
-        }
-        return users;
-    }
 
     async getUsers(): Promise<GetUserDTO[] | string> {
         try {
@@ -69,7 +50,7 @@ export class UserService {
         }
     }
     
-    async deleteUser(id: number): Promise<DeleteUserDTO | string> {
+    async deleteUser(id: User['id']): Promise<DeleteUserDTO | string> {
         try {
             const userToDelete = await client.query("SELECT * FROM users WHERE iduser = $1", [id]);
             if (!userToDelete.rows[0]) throw new Error("User not found");

@@ -1,27 +1,8 @@
-import { faker } from "@faker-js/faker";
 import { Node } from "../models/node.model";
 import { GetOneNodeDTO, CreateNodeDTO, UpdateNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../dtos/node.dto";
 import { client } from "../db/config";
 export default class NodeService {
-  private nodes: Node[] = this.generateNodes(10);
-  constructor() {}  
-
-  generateNodes(amount: number) {
-    const nodes = [];
-    for (let i = 0; i < amount; i++) {
-      nodes.push({
-        id: faker.datatype.number(),
-        name: faker.name.firstName(),
-        location: faker.address.city(),
-        status: faker.datatype.boolean(),
-        recording: faker.datatype.boolean(),
-        createdAt: faker.date.past(),
-        updatedAt: faker.date.recent(),
-        userId: faker.datatype.number(),
-      });
-    }
-    return nodes;
-  }    
+  constructor() {}      
 
   async getNodes(): Promise<GetOneNodeDTO[] | string > {
     try {

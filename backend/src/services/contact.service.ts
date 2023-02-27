@@ -1,28 +1,12 @@
-import { faker } from "@faker-js/faker";
 import { Contact } from "../models/contact.model";
 import { GetContactDTO, CreateContactDTO, DeleteContactDTO } from "../dtos/contact.dto";
 import { client } from "../db/config";
 export class ContactService {
-    private contacts: Contact[] = this.generateContacts(5);
-
-    generateContacts(amount: number): Contact[] {
-        const contacts: Contact[] = [];
-        for (let i = 0; i < amount; i++) {
-            contacts.push({
-                id: faker.datatype.number(),
-                called: faker.datatype.number(),
-                caller: faker.datatype.number(),
-                createdAt: faker.date.past(),
-            });
-        }
-        return contacts;
-    }
-
     constructor() {}
 
-    async getContacts(): Promise<GetContactDTO[] | string> {
+    async getContacts(caller: Contact['caller']): Promise<GetContactDTO[] | string> {
         try {
-            const contacts = await client.query("SELECT * FROM contacts");
+            const contacts = await client.query("SELECT * FROM contacts WHERE caller = $1", [caller]);
             return contacts.rows;
         } catch (err) {
             console.error(err);
@@ -30,9 +14,9 @@ export class ContactService {
         }
     }
 
-    async getContact(id: number): Promise<GetContactDTO | string> {
+    async getContact(id: Contact['id'], caller: Contact['caller']): Promise<GetContactDTO | string> {
         try {
-            const contact = await client.query("SELECT * FROM contacts WHERE idcontact = $1", [id]);
+            const contact = await client.query("SELECT * FROM contacts WHERE idcontact = $1 AND caller = $2", [id, caller]);
             return contact.rows[0];
         } catch (err) {
             console.error(err);
@@ -54,7 +38,7 @@ export class ContactService {
         }
     }
 
-    async deleteContact(id: number): Promise<DeleteContactDTO | string> {
+    async deleteContact(id: Contact['id']): Promise<DeleteContactDTO | string> {
         try {
             const deletedContact = await client.query("DELETE FROM contacts WHERE idcontact = $1 RETURNING *", [id]);
             return deletedContact.rows[0];
