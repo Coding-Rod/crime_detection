@@ -5,9 +5,9 @@ import { client } from "../db/config";
 export class UserService {
     constructor() {}
 
-    async getUsers(): Promise<GetUserDTO[] | string> {
+    async getUsers({ limit = 25, offset = 0 }): Promise<GetUserDTO[] | string> {
         try {
-            const users = await client.query("SELECT * FROM users");
+            const users = await client.query("SELECT * FROM users LIMIT $1 OFFSET $2", [limit, offset]);
             return users.rows;
         } catch (err) {
             console.error(err);

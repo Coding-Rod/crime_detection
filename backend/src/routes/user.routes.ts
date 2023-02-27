@@ -8,7 +8,7 @@ const userService = new UserService();
 
 router.get('/',
   async (req, res) => {
-    const user = await userService.getUsers();
+    const user = await userService.getUsers(req.query);
     res.status(200).send(user);
   }
 );
