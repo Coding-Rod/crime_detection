@@ -17,6 +17,7 @@ export default class NodeService {
         recording: faker.datatype.boolean(),
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
+        userId: faker.datatype.number(),
       });
     }
     return nodes;
@@ -63,6 +64,7 @@ export default class NodeService {
         recording: faker.datatype.boolean(),
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
+        userId: faker.datatype.number(),
       };
       this.nodes.push(newNode);
       return { id: newNode.id, name, location, status: newNode.status, recording: newNode.recording };

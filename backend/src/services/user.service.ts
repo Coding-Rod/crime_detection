@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { User } from "../models/user.model";
 import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
 import { hashPassword } from "../utils/auth/pass-hash";
+import { client } from "../db/config";
 export class UserService {
     private users: User[] = this.generateUsers(10);
 
@@ -25,16 +26,8 @@ export class UserService {
 
     async getUsers(): Promise<GetUserDTO[] | string> {
         try {
-            const users = await Promise.resolve(this.users).then(
-                (users: User[] | []) => users
-            );
-            const data = users.map((user) => {
-                console.log("username:", user.username);
-                console.log("password:", user.password);
-                const { id, name, username, email } = user;
-                return { id, name, username, email };
-            });
-            return data;
+            const users = await client.query("SELECT * FROM users");
+            return users.rows;
         } catch (err) {
             console.error(err);
             return err as string;
@@ -43,12 +36,49 @@ export class UserService {
 
     async getUser(id: number): Promise<GetUserDTO | string> {
         try {
-            const user = await Promise.resolve(this.users.find((user : User) => user.id === id)).then(
-                (user: User | undefined) => user
+            const user = await client.query("SELECT * FROM users WHERE iduser = $1", [id]);
+            return user.rows[0];
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
+    }
+
+    async updateUser(id: number, user: UpdateUserDTO): Promise<GetUserDTO | string> {
+        try {
+            const userToUpdate = await client.query("SELECT * FROM users WHERE iduser = $1", [id]);
+            if (!userToUpdate) throw new Error("User not found");
+            const updatedUser = {
+                ...userToUpdate.rows[0],
+                ...user,
+            };
+            const { name, username, email, password } = updatedUser;
+            await client.query(
+                "UPDATE users SET name = $1, username = $2, email = $3, password = $4, updated_at = $5 WHERE iduser = $6",
+                [name, username, email, password, new Date(), id]
             );
-            if (!user) throw new Error("User not found");
-            const { name, username, email } = user;
-            return { id, name, username, email };
+            return {
+                id,
+                name,
+                username,
+                email,
+            };
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
+    }
+    
+    async deleteUser(id: number): Promise<DeleteUserDTO | string> {
+        try {
+            const userToDelete = await client.query("SELECT * FROM users WHERE iduser = $1", [id]);
+            if (!userToDelete.rows[0]) throw new Error("User not found");
+            const { name } = userToDelete.rows[0];
+            await client.query("DELETE FROM users WHERE iduser = $1", [id]);
+            return {
+                id,
+                name,
+            };
         } catch (err) {
             console.error(err);
             return err as string;
@@ -58,19 +88,25 @@ export class UserService {
     async createUser(user: CreateUserDTO): Promise<GetUserDTO | string> {
         try {
             const { name, username, email, password } = user;
-            const hash = await hashPassword(password);
             const newUser = {
-                id: faker.datatype.number(),
                 name,
                 username,
                 email,
-                password: hash,
-                createdAt: faker.date.past(),
-                updatedAt: faker.date.past(),
+                password,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             };
-            console.log("newUser:", newUser)
-            this.users.push(newUser);
-            return { id: newUser.id, name, username, email };
+            await client.query(
+                "INSERT INTO users (name, username, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)",
+                [newUser.name, newUser.username, newUser.email, newUser.password, newUser.createdAt, newUser.updatedAt]
+            );
+            const id = await parseInt((await client.query("SELECT iduser FROM users ORDER BY iduser DESC LIMIT 1")).rows[0].iduser);
+            return {
+                id,
+                name,
+                username,
+                email
+            }
         } catch (err) {
             console.error(err);
             return err as string;
@@ -79,61 +115,22 @@ export class UserService {
     
     async loginUser(user: LoginUserDTO): Promise<GetUserDTO | string> {
         try {
-            console.log("user:", user);
             const { username, password } = user;
-            const userToLogin = await Promise.resolve(this.users.find((user) => user.username === username)).then(
-                (user: User | undefined) => user
-            );
-            if (!userToLogin) throw new Error("User not found");
-            const isValid = await hashPassword(password);
-
-            if (!isValid) throw new Error("Invalid password");
-
-            const { id, name, email } = userToLogin;
-            return { id, name, username, email };
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
-
-    async updateUser(id: number, user: UpdateUserDTO): Promise<GetUserDTO | string> {
-        try {
-            const userToUpdate = await Promise.resolve(this.users.find((user) => user.id === id)).then(
-                (user: User | undefined) => user
-            );
-            if (!userToUpdate) throw new Error("User not found");
-            const { name, username, email, password } = user;
-            const updatedUser = {
-                id: userToUpdate.id,
+            const userToLogin = await client.query("SELECT * FROM users WHERE username = $1", [username]);
+            if (!userToLogin.rows[0]) throw new Error("User not found");
+            const { idUser, name, email } = userToLogin.rows[0];
+            if (password !== userToLogin.rows[0].password) throw new Error("Password incorrect");
+            return {
+                id: idUser,
                 name,
                 username,
-                email,
-                password,
-                createdAt: userToUpdate.createdAt,
-                updatedAt: faker.date.past(),
-            };
-            const userIndex = this.users.findIndex((user) => user.id === id);
-            this.users[userIndex] = updatedUser;
-            return updatedUser;
+                email
+            }
         } catch (err) {
             console.error(err);
             return err as string;
         }
     }
-    
-    async deleteUser(id: number): Promise<DeleteUserDTO | string> {
-        try {
-            const userToDelete = await Promise.resolve(this.users.find((user) => user.id === id)).then(
-                (user: User | undefined) => user
-            );
-            if (!userToDelete) throw new Error("User not found");
-            this.users = this.users.filter((user) => user.id !== id);
-            return userToDelete;
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
+
     
 }
