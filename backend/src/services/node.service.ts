@@ -1,5 +1,3 @@
-import boom from "@hapi/boom";
-
 import { Node } from "../models/node.model";
 import {
   GetOneNodeDTO,
@@ -9,36 +7,30 @@ import {
   StartRecordingDTO,
 } from "../dtos/node.dto";
 import { client } from "../db/config";
+
+import boom from "@hapi/boom";
 export class NodeService {
   constructor() {}
 
   async getNodes(user_id: Node["userId"]): Promise<GetOneNodeDTO[] | string> {
-    try {
-      const nodes = await client.query(
-        "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser",
-        [user_id]
-      );
-      return nodes.rows;
-    } catch (err) {
-      console.error(err);
-      return err as string;
-    }
+    const nodes = await client.query(
+      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser",
+      [user_id]
+    );
+    if (!nodes.rows[0]) throw boom.notFound("No nodes found");
+    return nodes.rows;
   }
 
   async getNode(nodeId: number): Promise<GetOneNodeDTO | string> {
-    try {
-      const node = await client.query("SELECT * FROM nodes WHERE idnode = $1", [
-        nodeId,
-      ]);
-      return node.rows[0];
-    } catch (err) {
-      console.error(err);
-      return err as string;
-    }
+    const node = await client.query(
+      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.idnode=$1 AND no.user_id = us.iduser",
+      [nodeId]
+    );
+    if (!node.rows[0]) throw boom.notFound("Node not found");
+    return node.rows[0];
   }
 
   async createNode(nodeData: CreateNodeDTO): Promise<GetOneNodeDTO | string> {
-    // If nodes are less than 10, then the node is created else raise a boom error
     const nodes = await client.query("SELECT * FROM nodes WHERE user_id = $1", [
       nodeData.userId,
     ]);
@@ -54,70 +46,51 @@ export class NodeService {
   }
 
   async updateNode(
-    nodeId: number,
+    nodeId: Node["id"],
     nodeData: UpdateNodeDTO
   ): Promise<GetOneNodeDTO | string> {
-    try {
-      const nodeToUpdate = await client.query(
-        "SELECT * FROM nodes WHERE idnode = $1",
-        [nodeId]
-      );
-      if (!nodeToUpdate.rows[0]) throw new Error("Node not found");
-      const updatedNode = {
-        ...nodeToUpdate.rows[0],
-        ...nodeData,
-      };
-      const node = await client.query(
-        "UPDATE nodes SET name = $1, location = $2, updated_at = $3 WHERE idnode = $4 RETURNING *",
-        [updatedNode.name, updatedNode.location, new Date(), nodeId]
-      );
-      return node.rows[0];
-    } catch (err) {
-      console.error(err);
-      return err as string;
-    }
+    const nodeToUpdate = await client.query(
+      "SELECT * FROM nodes WHERE idnode = $1",
+      [nodeId]
+    );
+
+    if (!nodeToUpdate.rows[0]) throw boom.notFound("Node not found");
+    const updatedNode = {
+      ...nodeToUpdate.rows[0],
+      ...nodeData,
+    };
+    const node = await client.query(
+      "UPDATE nodes SET name = $1, location = $2, updated_at = $3 WHERE idnode = $4 RETURNING *",
+      [updatedNode.name, updatedNode.location, new Date(), nodeId]
+    );
+    return node.rows[0];
   }
 
   async deleteNode(nodeId: Node["id"]): Promise<DeleteNodeDTO | string> {
-    try {
-      const nodeToDelete = await client.query(
-        "SELECT * FROM nodes WHERE idnode = $1",
-        [nodeId]
-      );
-      if (!nodeToDelete.rows[0]) throw new Error("Node not found");
-      const node = await client.query(
-        "DELETE FROM nodes WHERE idnode = $1 RETURNING *",
-        [nodeId]
-      );
-      return node.rows[0];
-    } catch (err) {
-      console.error(err);
-      return err as string;
-    }
+    const nodeToDelete = await client.query(
+      "SELECT * FROM nodes WHERE idnode = $1",
+      [nodeId]
+    );
+    if (!nodeToDelete.rows[0]) throw boom.notFound("Node not found");
+    const node = await client.query(
+      "DELETE FROM nodes WHERE idnode = $1 RETURNING *",
+      [nodeId]
+    );
+    return node.rows[0];
   }
 
   async toggleRecording(
     nodeId: Node["id"]
   ): Promise<StartRecordingDTO | string> {
-    try {
-      const nodeToToggle = await client.query(
-        "SELECT * FROM nodes WHERE idnode = $1",
-        [nodeId]
-      );
-      if (!nodeToToggle.rows[0]) throw new Error("Node not found");
-      const node = await client.query(
-        "UPDATE nodes SET status = $1, recording = $2, updated_at = $3 WHERE idnode = $4 RETURNING *",
-        [
-          !nodeToToggle.rows[0].status,
-          !nodeToToggle.rows[0].recording,
-          new Date(),
-          nodeId,
-        ]
-      );
-      return node.rows[0];
-    } catch (err) {
-      console.error(err);
-      return err as string;
-    }
+    const nodeToToggle = await client.query(
+      "SELECT * FROM nodes WHERE idnode = $1",
+      [nodeId]
+    );
+    if (!nodeToToggle.rows[0]) throw boom.notFound("Node not found");
+    const node = await client.query(
+      "UPDATE nodes SET recording = $1, updated_at = $2 WHERE idnode = $3 RETURNING *",
+      [!nodeToToggle.rows[0].recording, new Date(), nodeId]
+    );
+    return node.rows[0];
   }
 }
