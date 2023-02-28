@@ -16,22 +16,9 @@ const contactService = new ContactService();
 router.get(
   "/:caller",
   passport.authenticate("jwt", { session: false }),
-  validatorHandler(getContactSchema, "body"),
+  validatorHandler(getContactSchema, "params"),
   async (req, res) => {
     const contact = await contactService.getContacts(
-      parseInt(req.params.caller)
-    );
-    res.status(200).send(contact);
-  }
-);
-
-router.get(
-  "/:id/:caller",
-  passport.authenticate("jwt", { session: false }),
-  validatorHandler(getContactSchema, "body"),
-  async (req, res) => {
-    const contact = await contactService.getContact(
-      parseInt(req.params.id),
       parseInt(req.params.caller)
     );
     res.status(200).send(contact);

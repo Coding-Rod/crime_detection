@@ -9,7 +9,7 @@ const createdAt = Joi.date();
 const updatedAt = Joi.date();
 
 export const getContactSchema = Joi.object({
-    id: id.required(),
+    caller: caller.required(),
 });
 
 export const createContactSchema = Joi.object({
