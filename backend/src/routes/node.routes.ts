@@ -31,11 +31,13 @@ router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(createNodeSchema, "body"),
-  (req, res) => {
-    const node = nodeService.createNode(req.body);
-    node.then((node) => {
+  async (req, res, next) => {
+    try {
+      const node = await nodeService.createNode(req.body);
       res.status(201).send(node);
-    });
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
