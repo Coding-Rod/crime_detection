@@ -16,24 +16,13 @@ const router = express.Router();
 const nodeService = new NodeService();
 
 router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    const nodes = nodeService.getNodes();
-    nodes.then((nodes) => {
-      res.status(200).send(nodes);
-    });
-  }
-);
-
-router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(getNodeSchema, "params"),
   (req, res) => {
-    const node = nodeService.getNode(parseInt(req.params.id));
-    node.then((node) => {
-      res.status(200).send(node);
+    const nodes = nodeService.getNodes(parseInt(req.params.id));
+    nodes.then((nodes) => {
+      res.status(200).send(nodes);
     });
   }
 );
@@ -65,6 +54,7 @@ router.patch(
 router.patch(
   "/:id/toggle-recording",
   passport.authenticate("jwt", { session: false }),
+  validatorHandler(toggleRecordingSchema, "params"),
   (req, res) => {
     const node = nodeService.toggleRecording(parseInt(req.params.id));
     node.then((node) => {

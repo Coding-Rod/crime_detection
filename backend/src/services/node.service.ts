@@ -4,9 +4,9 @@ import { client } from "../db/config";
 export class NodeService {
   constructor() {}      
 
-  async getNodes(): Promise<GetOneNodeDTO[] | string > {
+  async getNodes(user_id: Node['userId']): Promise<GetOneNodeDTO[] | string > {
     try {
-      const nodes = await client.query("SELECT * FROM nodes");
+      const nodes = await client.query("SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser", [user_id]);
       return nodes.rows;
     } catch (err) {
       console.error(err);
