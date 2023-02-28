@@ -6,6 +6,7 @@ import {
 } from "../dtos/contact.dto";
 import { GetUserDTO } from "../dtos/user.dto";
 import { client } from "../db/config";
+import unique from "../utils/db/unique";
 
 import boom from "@hapi/boom";
 export class ContactService {
@@ -24,11 +25,7 @@ export class ContactService {
     contact: CreateContactDTO
   ): Promise<GetContactDTO | string> {
     const { called, caller } = contact;
-    const contactExists = await client.query(
-      "SELECT * FROM contacts WHERE called = $1 AND caller = $2",
-      [called, caller]
-    );
-    if (contactExists.rows[0]) throw boom.conflict("Contact already exists");
+    unique("contacts", "called", `${called}`);
 
     const newContact = await client.query(
       "INSERT INTO contacts (called, caller) VALUES ($1, $2) RETURNING *",

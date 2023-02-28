@@ -1,5 +1,18 @@
 {
   "swagger": "2.0",
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your JWT token in the format 'Bearer {token}'"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
   "info": {
     "version": "1.0.0",
     "title": "REST API",
@@ -14,13 +27,34 @@
     "/users/": {
       "get": {
         "description": "This endpoint returns a list of users.",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Users"]
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/users/{id}": {
@@ -37,9 +71,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Users"]
+        "tags": [
+          "Users"
+        ]
       },
       "patch": {
         "description": "This endpoint updates a user.",
@@ -89,9 +131,20 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict, some field must be unique"
           }
         },
-        "tags": ["Users"]
+        "tags": [
+          "Users"
+        ]
       },
       "delete": {
         "description": "This endpoint deletes a user.",
@@ -106,9 +159,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Users"]
+        "tags": [
+          "Users"
+        ]
       }
     },
     "/nodes/": {
@@ -118,9 +179,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Nodes"]
+        "tags": [
+          "Nodes"
+        ]
       },
       "post": {
         "description": "This endpoint creates a node.",
@@ -144,6 +213,12 @@
                   "example": "123.456, 789.012",
                   "description": "The location of the node.",
                   "required": false
+                },
+                "userId": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "The id of the user that owns the node.",
+                  "required": true
                 }
               }
             }
@@ -152,9 +227,17 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Nodes"]
+        "tags": [
+          "Nodes"
+        ]
       }
     },
     "/nodes/{id}": {
@@ -171,9 +254,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Nodes"]
+        "tags": [
+          "Nodes"
+        ]
       },
       "patch": {
         "description": "This endpoint updates a node.",
@@ -211,9 +302,20 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
+          },
+          "409":{
+            "description": "Conflict, some field must be unique"
           }
         },
-        "tags": ["Nodes"]
+        "tags": [
+          "Nodes"
+        ]
       },
       "delete": {
         "description": "This endpoint deletes a node.",
@@ -228,9 +330,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Nodes"]
+        "tags": [
+          "Nodes"
+        ]
       }
     },
     "/nodes/{id}/toggle-recording": {
@@ -247,9 +357,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Nodes"]
+        "tags": [
+          "Nodes"
+        ]
       }
     },
     "/contact/{caller}": {
@@ -266,9 +384,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Contact"]
+        "tags": [
+          "Contact"
+        ]
       }
     },
     "/contact/{id}/{caller}": {
@@ -291,9 +417,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Contact"]
+        "tags": [
+          "Contact"
+        ]
       }
     },
     "/contact/": {
@@ -327,9 +461,17 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409":{
+            "description": "Conflict, contact already exists"
           }
         },
-        "tags": ["Contact"]
+        "tags": [
+          "Contact"
+        ]
       }
     },
     "/contact/{id}": {
@@ -346,9 +488,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Contact"]
+        "tags": [
+          "Contact"
+        ]
       }
     },
     "/auth/register": {
@@ -402,9 +552,14 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "409":{
+            "description": "Conflict, user already exists"
           }
         },
-        "tags": ["Auth"]
+        "tags": [
+          "Auth"
+        ]
       }
     },
     "/auth/login": {
@@ -442,9 +597,17 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized, invalid password"
+          },
+          "404":{
+            "description": "Not Found"
           }
         },
-        "tags": ["Auth"]
+        "tags": [
+          "Auth"
+        ]
       }
     }
   }

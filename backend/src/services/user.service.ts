@@ -1,36 +1,31 @@
 import { User } from "../models/user.model";
-import {
-  GetUserDTO,
-  DeleteUserDTO,
-  UpdateUserDTO,
-  CreateUserDTO,
-  LoginUserDTO,
-  ChangePasswordDTO,
-} from "../dtos/user.dto";
+import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
 
 import { hashPassword } from "../utils/auth/pass-hash";
 import { client } from "../db/config";
 import { comparePassword } from "../utils/auth/pass-hash";
 import { config } from "../config";
-import jwt from "jsonwebtoken";
+import unique from "../utils/db/unique";
 
+import jwt from "jsonwebtoken";
 import boom from "@hapi/boom";
 export class UserService {
   constructor() {}
 
   async getUsers({ limit = 25, offset = 0 }): Promise<GetUserDTO[] | string> {
-    const users = await client.query("SELECT * FROM users LIMIT $1 OFFSET $2", [
-      limit,
-      offset,
-    ]);
+    const users = await client.query(
+      "SELECT iduser id, name, username, email FROM users LIMIT $1 OFFSET $2",
+      [limit, offset]
+    );
     if (!users.rows[0]) throw boom.notFound("No users found");
     return users.rows;
   }
 
-  async getUser(id: number): Promise<GetUserDTO | string> {
-    const user = await client.query("SELECT * FROM users WHERE iduser = $1", [
-      id,
-    ]);
+  async getUser(id: User["id"]): Promise<GetUserDTO | string> {
+    const user = await client.query(
+      "SELECT iduser id, name, username, email FROM users WHERE iduser = $1",
+      [id]
+    );
     if (!user.rows[0]) throw boom.notFound("User not found");
     return user.rows[0];
   }
@@ -49,6 +44,10 @@ export class UserService {
       ...user,
     };
     const { name, username, email, password } = updatedUser;
+
+    unique("users", "username", username);
+    unique("users", "email", email);
+    
     await client.query(
       "UPDATE users SET name = $1, username = $2, email = $3, password = $4, updated_at = $5 WHERE iduser = $6",
       [name, username, email, password, new Date(), id]
@@ -77,6 +76,9 @@ export class UserService {
 
   async createUser(user: CreateUserDTO): Promise<GetUserDTO | string> {
     const { name, username, email, password } = user;
+    unique("users", "username", username);
+    unique("users", "email", email);
+    
     const hashedPassword = await hashPassword(password);
     const newUser = {
       name,
@@ -97,6 +99,7 @@ export class UserService {
         newUser.updatedAt,
       ]
     );
+    
     const id = await parseInt(
       (
         await client.query(
@@ -104,6 +107,7 @@ export class UserService {
         )
       ).rows[0].iduser
     );
+    
     return {
       id,
       name,
@@ -128,6 +132,6 @@ export class UserService {
       { id: userToLogin.rows[0].iduser },
       config.jwtSecret as string
     );
-    return token;
+    return "Bearer " + token;
   }
 }
