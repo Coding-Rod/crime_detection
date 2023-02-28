@@ -1,6 +1,6 @@
 import { User } from "../models/user.model";
 import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
-// import { hashPassword } from "../utils/auth/pass-hash";
+import { hashPassword } from "../utils/auth/pass-hash";
 import { client } from "../db/config";
 export class UserService {
     constructor() {}
@@ -69,11 +69,12 @@ export class UserService {
     async createUser(user: CreateUserDTO): Promise<GetUserDTO | string> {
         try {
             const { name, username, email, password } = user;
+            const hashedPassword = await hashPassword(password);
             const newUser = {
                 name,
                 username,
                 email,
-                password,
+                password: hashedPassword,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             };
@@ -93,25 +94,5 @@ export class UserService {
             return err as string;
         }
     }
-    
-    async loginUser(user: LoginUserDTO): Promise<GetUserDTO | string> {
-        try {
-            const { username, password } = user;
-            const userToLogin = await client.query("SELECT * FROM users WHERE username = $1", [username]);
-            if (!userToLogin.rows[0]) throw new Error("User not found");
-            const { idUser, name, email } = userToLogin.rows[0];
-            if (password !== userToLogin.rows[0].password) throw new Error("Password incorrect");
-            return {
-                id: idUser,
-                name,
-                username,
-                email
-            }
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
-
     
 }

@@ -1,7 +1,7 @@
 import { Node } from "../models/node.model";
 import { GetOneNodeDTO, CreateNodeDTO, UpdateNodeDTO, DeleteNodeDTO, StartRecordingDTO } from "../dtos/node.dto";
 import { client } from "../db/config";
-export default class NodeService {
+export class NodeService {
   constructor() {}      
 
   async getNodes(): Promise<GetOneNodeDTO[] | string > {

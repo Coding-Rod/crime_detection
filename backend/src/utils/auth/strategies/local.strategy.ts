@@ -1,24 +1,22 @@
-const { Strategy } = require('passport-local');
-const { comparePassword } = require('../../auth/pass-hash');
-const boom = require('@hapi/boom');
+import { Strategy } from 'passport-local';
+import { comparePassword } from '../../auth/pass-hash';
+import boom from '@hapi/boom';
 
-const UserServices = require('../../../services/user.service');
-const Service = new UserServices();
+import { client } from '../../../db/config';
 
 const LocalStrategy = new Strategy(
   {
     usernameField: 'email',
     passwordField: 'password',
   },
-  async (username, password, done) => {
+  async (username: string, password: string, done: any) => {
     try {
-      const user = await Service.findByEmail(username);
-      if (!user) done(boom.unauthorized(), false);
+      const user = await client.query("SELECT * FROM users WHERE email = $1", [username]);
+      if (!user.rows[0]) done(boom.unauthorized(), false);
 
-      const isValid = await comparePassword(password, user.password);
+      const isValid = await comparePassword(password, user.rows[0].password);
       if (!isValid) done(boom.unauthorized(), false);
 
-      delete user.dataValues.password;
       done(null, user);
     } catch (error) {
       done(error);
@@ -26,4 +24,4 @@ const LocalStrategy = new Strategy(
   }
 );
 
-module.exports = { LocalStrategy };
+export { LocalStrategy };

@@ -14,6 +14,9 @@ app.use(express.json());
 // Add the cors middleware
 app.use(cors());
 
+// add passport middleware
+require('./utils/auth');
+
 app.get('/', (_req, res) => {
     res.send('Hello World!');
 });
