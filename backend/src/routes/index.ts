@@ -12,7 +12,7 @@ function routerApi(app: { use: (arg0: string, arg1: Router) => void; }) {
   app.use('/api/v1', router);
   router.use('/users', usersRouter);
   router.use('/nodes', nodesRouter);
-  router.use('/contact', contactRouter);
+  router.use('/contacts', contactRouter);
   router.use('/auth', authRouter);
 }
 
