@@ -19,11 +19,13 @@ router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(getNodeSchema, "params"),
-  (req, res) => {
-    const nodes = nodeService.getNodes(parseInt(req.params.id));
-    nodes.then((nodes) => {
-      res.status(200).send(nodes);
-    });
+  async (req, res, next) => {
+    try {
+      const node = await nodeService.getNode(parseInt(req.params.id));
+      res.status(200).send(node);
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -45,11 +47,15 @@ router.patch(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(updateNodeSchema, "body"),
-  (req, res) => {
-    const node = nodeService.updateNode(parseInt(req.params.id), req.body);
-    node.then((node) => {
-      res.status(200).send(node);
-    });
+  async (req, res, next) => {
+    try {
+      const node = nodeService.updateNode(parseInt(req.params.id), req.body);
+      node.then((node) => {
+        res.status(200).send(node);
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -57,11 +63,15 @@ router.patch(
   "/:id/toggle-recording",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(toggleRecordingSchema, "params"),
-  (req, res) => {
-    const node = nodeService.toggleRecording(parseInt(req.params.id));
-    node.then((node) => {
-      res.status(200).send(node);
-    });
+  async (req, res, next) => {
+    try {
+      const node = nodeService.toggleRecording(parseInt(req.params.id));
+      node.then((node) => {
+        res.status(200).send(node);
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 );
 
@@ -69,11 +79,15 @@ router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(deleteNodeSchema, "params"),
-  (req, res) => {
-    const node = nodeService.deleteNode(parseInt(req.params.id));
-    node.then((node) => {
-      res.status(200).send(node);
-    });
+  async (req, res, next) => {
+    try {
+      const node = nodeService.deleteNode(parseInt(req.params.id));
+      node.then((node) => {
+        res.status(200).send(node);
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 );
 

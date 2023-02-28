@@ -1,7 +1,11 @@
 import { User } from "../models/user.model";
 import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, ChangePasswordDTO } from "../dtos/user.dto";
+
 import { hashPassword } from "../utils/auth/pass-hash";
 import { client } from "../db/config";
+import { comparePassword } from "../utils/auth/pass-hash";
+import { config } from "../config";
+import jwt from "jsonwebtoken";
 export class UserService {
     constructor() {}
 
@@ -94,5 +98,19 @@ export class UserService {
             return err as string;
         }
     }
-    
+ 
+    async loginUser(user: LoginUserDTO): Promise<string> {
+        try {
+            const { username, password } = user;
+            const userToLogin = await client.query("SELECT * FROM users WHERE username = $1", [username]);
+            if (!userToLogin.rows[0]) return "Invalid credentials";
+            const isValidPassword = await comparePassword(password, userToLogin.rows[0].password);
+            if (!isValidPassword) return "Invalid password";
+            const token = jwt.sign({ id: userToLogin.rows[0].iduser }, config.jwtSecret as string);
+            return token;
+        } catch (err) {
+            console.error(err);
+            return err as string;
+        }
+    }
 }
