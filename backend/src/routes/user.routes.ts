@@ -2,6 +2,8 @@ import express from "express";
 import passport from "passport";
 
 import { validatorHandler } from "../middlewares/validator.handler";
+import { validateTokenAndId } from "../middlewares/auth.handler";
+
 import {
   getUserSchema,
   updateUserSchema,
@@ -28,6 +30,7 @@ router.get(
 router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(getUserSchema, "params"),
   async (req, res, next) => {
     try {
@@ -42,6 +45,7 @@ router.get(
 router.patch(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(updateUserSchema, "params"),
   async (req, res, next) => {
     try {
@@ -59,6 +63,7 @@ router.patch(
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(deleteUserSchema, "params"),
   async (req, res, next) => {
     try {

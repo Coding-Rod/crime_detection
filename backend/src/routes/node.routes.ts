@@ -2,6 +2,8 @@ import express from "express";
 import passport from "passport";
 
 import validatorHandler from "../middlewares/validator.handler";
+import { validateTokenAndId } from "../middlewares/auth.handler";
+
 import {
   getNodeSchema,
   createNodeSchema,
@@ -18,10 +20,11 @@ const nodeService = new NodeService();
 router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(getNodeSchema, "params"),
   async (req, res, next) => {
     try {
-      const node = await nodeService.getNode(parseInt(req.params.id));
+      const node = await nodeService.getNodes(parseInt(req.params.id));
       res.status(200).send(node);
     } catch (err) {
       next(err);
@@ -32,6 +35,7 @@ router.get(
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(createNodeSchema, "body"),
   async (req, res, next) => {
     try {
@@ -46,6 +50,7 @@ router.post(
 router.patch(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(updateNodeSchema, "body"),
   async (req, res, next) => {
     try {
@@ -62,6 +67,7 @@ router.patch(
 router.patch(
   "/:id/toggle-recording",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(toggleRecordingSchema, "params"),
   async (req, res, next) => {
     try {
@@ -78,6 +84,7 @@ router.patch(
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(deleteNodeSchema, "params"),
   async (req, res, next) => {
     try {

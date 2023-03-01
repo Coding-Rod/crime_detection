@@ -48,7 +48,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -75,7 +75,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -135,7 +135,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           },
           "409": {
@@ -163,7 +163,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -183,7 +183,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -231,7 +231,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -258,7 +258,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -306,10 +306,10 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           },
-          "409":{
+          "409": {
             "description": "Conflict, some field must be unique"
           }
         },
@@ -334,7 +334,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -361,72 +361,12 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
         "tags": [
           "Nodes"
-        ]
-      }
-    },
-    "/contact/{caller}": {
-      "get": {
-        "description": "This endpoint returns a list of contacts.",
-        "parameters": [
-          {
-            "name": "caller",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404":{
-            "description": "Not Found"
-          }
-        },
-        "tags": [
-          "Contact"
-        ]
-      }
-    },
-    "/contact/{id}/{caller}": {
-      "get": {
-        "description": "This endpoint returns a contact.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "caller",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404":{
-            "description": "Not Found"
-          }
-        },
-        "tags": [
-          "Contact"
         ]
       }
     },
@@ -465,7 +405,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "409":{
+          "409": {
             "description": "Conflict, contact already exists"
           }
         },
@@ -475,6 +415,31 @@
       }
     },
     "/contact/{id}": {
+      "get": {
+        "description": "This endpoint returns a list of contacts.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      },
       "delete": {
         "description": "This endpoint deletes a contact.",
         "parameters": [
@@ -492,7 +457,7 @@
           "401": {
             "description": "Unauthorized"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },
@@ -553,7 +518,7 @@
           "201": {
             "description": "Created"
           },
-          "409":{
+          "409": {
             "description": "Conflict, user already exists"
           }
         },
@@ -601,7 +566,7 @@
           "401": {
             "description": "Unauthorized, invalid password"
           },
-          "404":{
+          "404": {
             "description": "Not Found"
           }
         },

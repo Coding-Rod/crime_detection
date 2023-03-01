@@ -2,6 +2,7 @@ import express from "express";
 import passport from "passport";
 
 import { validatorHandler } from "../middlewares/validator.handler";
+import { validateTokenAndId } from "../middlewares/auth.handler";
 import {
   getContactSchema,
   createContactSchema,
@@ -14,13 +15,16 @@ const router = express.Router();
 const contactService = new ContactService();
 
 router.get(
-  "/:caller",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(getContactSchema, "params"),
   async (req, res, next) => {
     try {
       const contact = await contactService.getContacts(
-        parseInt(req.params.caller)
+        parseInt(req.params.id),
+        parseInt(req.query.limit as string),
+        parseInt(req.query.offset as string)
       );
       res.status(200).send(contact);
     } catch (err) {
@@ -32,6 +36,7 @@ router.get(
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(createContactSchema, "body"),
   async (req, res, next) => {
     try {
@@ -46,6 +51,7 @@ router.post(
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
+  validateTokenAndId,
   validatorHandler(deleteContactSchema, "params"),
   async (req, res, next) => {
     try {

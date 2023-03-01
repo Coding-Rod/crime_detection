@@ -12,10 +12,10 @@ import boom from "@hapi/boom";
 export class ContactService {
   constructor() {}
 
-  async getContacts(caller: Contact["caller"]): Promise<GetUserDTO[] | string> {
+  async getContacts(caller: Contact["caller"], limit: number, offset: number): Promise<GetUserDTO[] | string> {
     const contacts = await client.query(
-      "SELECT * FROM contacts WHERE caller = $1",
-      [caller]
+      "SELECT * FROM contacts WHERE caller = $1 LIMIT $2 OFFSET $3",
+      [caller, limit, offset]
     );
     if (!contacts.rows[0]) throw boom.notFound("No contacts found");
     return contacts.rows;
