@@ -2,7 +2,6 @@ import express from "express";
 import passport from "passport";
 
 import { validatorHandler } from "../middlewares/validator.handler";
-import { validateTokenAndId } from "../middlewares/auth.handler";
 
 import {
   getUserSchema,
@@ -10,6 +9,7 @@ import {
   deleteUserSchema,
 } from "../schemas/user.schema";
 import { UserService } from "../services/user.service";
+import { getId } from "../utils/db/getId";
 
 const router = express.Router();
 const userService = new UserService();
@@ -28,13 +28,12 @@ router.get(
 );
 
 router.get(
-  "/:id",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
-  validatorHandler(getUserSchema, "params"),
   async (req, res, next) => {
     try {
-      const user = await userService.getUser(parseInt(req.params.id));
+      const id = await getId(req.headers.authorization as string);
+      const user = await userService.getUser(parseInt(id));
       res.status(200).send(user);
     } catch (err) {
       next(err);
@@ -43,14 +42,13 @@ router.get(
 );
 
 router.patch(
-  "/:id",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
-  validatorHandler(updateUserSchema, "params"),
   async (req, res, next) => {
     try {
+      const id = await getId(req.headers.authorization as string);
       const user = await userService.updateUser(
-        parseInt(req.params.id),
+        parseInt(id),
         req.body
       );
       res.status(200).send(user);
@@ -61,13 +59,12 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
-  validatorHandler(deleteUserSchema, "params"),
   async (req, res, next) => {
     try {
-      const user = await userService.deleteUser(parseInt(req.params.id));
+      const id = await getId(req.headers.authorization as string);
+      const user = await userService.deleteUser(parseInt(id));
       res.status(200).send(user);
     } catch (err) {
       next(err);

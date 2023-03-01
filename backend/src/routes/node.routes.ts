@@ -2,7 +2,6 @@ import express from "express";
 import passport from "passport";
 
 import validatorHandler from "../middlewares/validator.handler";
-import { validateTokenAndId } from "../middlewares/auth.handler";
 
 import {
   getNodeSchema,
@@ -13,18 +12,19 @@ import {
 } from "../schemas/node.schema";
 
 import { NodeService } from "../services/node.service";
+import { getId } from "../utils/db/getId";
 
 const router = express.Router();
 const nodeService = new NodeService();
 
 router.get(
-  "/:id",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
-  validatorHandler(getNodeSchema, "params"),
   async (req, res, next) => {
     try {
-      const node = await nodeService.getNodes(parseInt(req.params.id));
+      const id = await getId(req.headers.authorization as string);
+      console.log(id);
+      const node = await nodeService.getNodes(parseInt(id));
       res.status(200).send(node);
     } catch (err) {
       next(err);
@@ -35,7 +35,6 @@ router.get(
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
   validatorHandler(createNodeSchema, "body"),
   async (req, res, next) => {
     try {
@@ -48,12 +47,12 @@ router.post(
 );
 
 router.patch(
-  "/:id",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
   validatorHandler(updateNodeSchema, "body"),
   async (req, res, next) => {
     try {
+      const id = await getId(req.headers.authorization as string);
       const node = nodeService.updateNode(parseInt(req.params.id), req.body);
       node.then((node) => {
         res.status(200).send(node);
@@ -65,13 +64,12 @@ router.patch(
 );
 
 router.patch(
-  "/:id/toggle-recording",
+  "/toggle-recording",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
-  validatorHandler(toggleRecordingSchema, "params"),
   async (req, res, next) => {
     try {
-      const node = nodeService.toggleRecording(parseInt(req.params.id));
+      const id = await getId(req.headers.authorization as string);
+      const node = nodeService.toggleRecording(parseInt(id));
       node.then((node) => {
         res.status(200).send(node);
       });
@@ -82,13 +80,12 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
+  "/",
   passport.authenticate("jwt", { session: false }),
-  validateTokenAndId,
-  validatorHandler(deleteNodeSchema, "params"),
   async (req, res, next) => {
     try {
-      const node = nodeService.deleteNode(parseInt(req.params.id));
+      const id = await getId(req.headers.authorization as string);
+      const node = nodeService.deleteNode(parseInt(id));
       node.then((node) => {
         res.status(200).send(node);
       });

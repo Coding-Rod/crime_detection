@@ -4,8 +4,8 @@ import { LoginUserDTO } from "../dtos/user.dto";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
 
-const { config } = require("../config");
-const { client } = require("../db/config");
+import { config } from "../config";
+import { client } from "../db/config";
 interface RequestWithUser extends Request {
     user: LoginUserDTO;
 }
