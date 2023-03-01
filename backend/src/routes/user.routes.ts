@@ -1,13 +1,7 @@
 import express from "express";
 import passport from "passport";
 
-import { validatorHandler } from "../middlewares/validator.handler";
 
-import {
-  getUserSchema,
-  updateUserSchema,
-  deleteUserSchema,
-} from "../schemas/user.schema";
 import { UserService } from "../services/user.service";
 import { getId } from "../utils/db/getId";
 
@@ -19,21 +13,9 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
-      const user = await userService.getUsers(req.query);
-      res.status(200).send(user);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-router.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res, next) => {
-    try {
-      const id = await getId(req.headers.authorization as string);
-      const user = await userService.getUser(parseInt(id));
+      const id = await getId(req.headers.authorization as string);        
+      const user = await userService.getUser(parseInt(req.query.id ?? id));
+      
       res.status(200).send(user);
     } catch (err) {
       next(err);

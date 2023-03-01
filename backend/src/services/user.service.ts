@@ -12,15 +12,6 @@ import boom from "@hapi/boom";
 export class UserService {
   constructor() {}
 
-  async getUsers({ limit = 25, offset = 0 }): Promise<GetUserDTO[] | string> {
-    const users = await client.query(
-      "SELECT iduser id, name, username, email FROM users LIMIT $1 OFFSET $2",
-      [limit, offset]
-    );
-    if (!users.rows[0]) throw boom.notFound("No users found");
-    return users.rows;
-  }
-
   async getUser(id: User["id"]): Promise<GetUserDTO | string> {
     const user = await client.query(
       "SELECT iduser id, name, username, email FROM users WHERE iduser = $1",

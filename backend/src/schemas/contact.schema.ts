@@ -1,7 +1,5 @@
 import Joi from "joi";
 
-import { getUserSchema } from "./user.schema";
-
 const id = Joi.number().integer().min(1);
 const called = Joi.number().integer().min(1);
 const caller = Joi.number().integer().min(1);

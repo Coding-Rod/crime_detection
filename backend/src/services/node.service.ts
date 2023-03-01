@@ -47,7 +47,8 @@ export class NodeService {
 
   async updateNode(
     nodeId: Node["id"],
-    nodeData: UpdateNodeDTO
+    nodeData: UpdateNodeDTO,
+    userId: Node["userId"]
   ): Promise<GetOneNodeDTO | string> {
     const nodeToUpdate = await client.query(
       "SELECT * FROM nodes WHERE idnode = $1",
@@ -55,6 +56,7 @@ export class NodeService {
     );
 
     if (!nodeToUpdate.rows[0]) throw boom.notFound("Node not found");
+    if (nodeToUpdate.rows[0].user_id !== userId) throw boom.forbidden("You can't edit this node");
     const updatedNode = {
       ...nodeToUpdate.rows[0],
       ...nodeData,
@@ -66,12 +68,13 @@ export class NodeService {
     return node.rows[0];
   }
 
-  async deleteNode(nodeId: Node["id"]): Promise<DeleteNodeDTO | string> {
+  async deleteNode(nodeId: Node["id"], userId: Node['userId']): Promise<DeleteNodeDTO | string> {
     const nodeToDelete = await client.query(
       "SELECT * FROM nodes WHERE idnode = $1",
       [nodeId]
     );
     if (!nodeToDelete.rows[0]) throw boom.notFound("Node not found");
+    if (nodeToDelete.rows[0].user_id !== userId) throw boom.forbidden("You can't edit this node");
     const node = await client.query(
       "DELETE FROM nodes WHERE idnode = $1 RETURNING *",
       [nodeId]
@@ -80,13 +83,15 @@ export class NodeService {
   }
 
   async toggleRecording(
-    nodeId: Node["id"]
+    nodeId: Node["id"],
+    userId: Node["userId"]
   ): Promise<StartRecordingDTO | string> {
     const nodeToToggle = await client.query(
       "SELECT * FROM nodes WHERE idnode = $1",
       [nodeId]
     );
     if (!nodeToToggle.rows[0]) throw boom.notFound("Node not found");
+    if (nodeToToggle.rows[0].user_id !== userId) throw boom.forbidden("You can't edit this node");
     const node = await client.query(
       "UPDATE nodes SET recording = $1, updated_at = $2 WHERE idnode = $3 RETURNING *",
       [!nodeToToggle.rows[0].recording, new Date(), nodeId]
