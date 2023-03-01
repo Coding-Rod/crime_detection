@@ -1,43 +1,67 @@
-import express from 'express';
+import express from "express";
+import passport from "passport";
 
-import { validatorHandler } from '../middlewares/validator.handler';
-import { getContactSchema, createContactSchema, deleteContactSchema } from '../schemas/contact.schema';
+import { validatorHandler } from "../middlewares/validator.handler";
+import {
+  getContactSchema,
+  createContactSchema,
+  deleteContactSchema,
+} from "../schemas/contact.schema";
 
-import { ContactService } from '../services/contact.service';
+import { ContactService } from "../services/contact.service";
+import { getId } from "../utils/db/getId";
 
 const router = express.Router();
 const contactService = new ContactService();
 
-router.get('/:caller',
-    validatorHandler(getContactSchema, 'body'),
-    async (req, res) => {
-        const contact = await contactService.getContacts(parseInt(req.params.caller));
-        res.status(200).send(contact);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  validatorHandler(getContactSchema, "params"),
+  async (req, res, next) => {
+    try {
+      const id = await getId(req.headers.authorization as string);
+      const contact = await contactService.getContacts(
+        parseInt(id),
+        parseInt(req.query.limit as string),
+        parseInt(req.query.offset as string)
+      );
+      res.status(200).send(contact);
+    } catch (err) {
+      next(err);
     }
+  }
 );
 
-router.get('/:id/:caller',
-    validatorHandler(getContactSchema, 'body'),
-    async (req, res) => {
-        const contact = await contactService.getContact(parseInt(req.params.id), parseInt(req.params.caller));
-        res.status(200).send(contact);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  validatorHandler(createContactSchema, "body"),
+  async (req, res, next) => {
+    try {
+      const contact = await contactService.createContact(req.body);
+      res.status(201).send(contact);
+    } catch (err) {
+      next(err);
     }
+  }
 );
 
-router.post('/',
-    validatorHandler(createContactSchema, 'body'),
-    async (req, res) => {
-        const contact = await contactService.createContact(req.body);
-        res.status(201).send(contact);
+router.delete(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  validatorHandler(deleteContactSchema, "params"),
+  async (req, res, next) => {
+    try {
+      const id = await getId(req.headers.authorization as string);
+      const contact = await contactService.deleteContact(
+        parseInt(id),
+      );
+      res.status(200).send(contact);
+    } catch (err) {
+      next(err);
     }
-);
-
-router.delete('/:id',
-    validatorHandler(deleteContactSchema, 'params'),
-    async (req, res) => {
-        const contact = await contactService.deleteContact(parseInt(req.params.id));
-        res.status(200).send(contact);
-    }
+  }
 );
 
 export default router;

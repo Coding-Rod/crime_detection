@@ -6,4 +6,5 @@ export interface Node {
     recording: boolean;
     createdAt: Date;
     updatedAt: Date;
+    userId: number;
 }

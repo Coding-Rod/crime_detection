@@ -1,85 +1,47 @@
-import { faker } from "@faker-js/faker";
 import { Contact } from "../models/contact.model";
-import { GetContactDTO, CreateContactDTO, DeleteContactDTO } from "../dtos/contact.dto";
+import {
+  GetContactDTO,
+  CreateContactDTO,
+  DeleteContactDTO,
+} from "../dtos/contact.dto";
+import { GetUserDTO } from "../dtos/user.dto";
+import { client } from "../db/config";
+import unique from "../utils/db/unique";
 
+import boom from "@hapi/boom";
 export class ContactService {
-    private contacts: Contact[] = this.generateContacts(5);
+  constructor() {}
 
-    generateContacts(amount: number): Contact[] {
-        const contacts: Contact[] = [];
-        for (let i = 0; i < amount; i++) {
-            contacts.push({
-                id: faker.datatype.number(),
-                called: faker.datatype.number(),
-                caller: faker.datatype.number(),
-                createdAt: faker.date.past(),
-            });
-        }
-        return contacts;
-    }
+  async getContacts(caller: Contact["caller"], limit: number, offset: number): Promise<GetUserDTO[] | string> {
+    const contacts = await client.query(
+      "SELECT * FROM contacts WHERE caller = $1 LIMIT $2 OFFSET $3",
+      [caller, limit, offset]
+    );
+    if (!contacts.rows[0]) throw boom.notFound("No contacts found");
+    return contacts.rows;
+  }
 
-    constructor() {}
+  async createContact(
+    contact: CreateContactDTO
+  ): Promise<GetContactDTO | string> {
+    const { called, caller } = contact;
+    unique("contacts", "called", `${called}`);
 
-    async getContacts(caller: number): Promise<GetContactDTO[] | string> {
-        try {
-            const contacts = await Promise.resolve(this.contacts.filter((contact : Contact) => contact.caller === caller)).then(
-                (contacts: Contact[] | []) => contacts
-            );
-            const data = contacts.map((contact) => {
-                const { id, called, caller } = contact;
-                return { id, called, caller };
-            });
-            return data;
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
+    const newContact = await client.query(
+      "INSERT INTO contacts (called, caller) VALUES ($1, $2) RETURNING *",
+      [called, caller]
+    );
+    return newContact.rows[0];
+  }
 
-    async getContact(id: number, caller: number): Promise<GetContactDTO | string> {
-        try {
-            const contact = await Promise.resolve(this.contacts.find((contact : Contact) => contact.id === id && contact.caller === caller)).then(
-                (contact: Contact | undefined) => contact
-            );
-            if (!contact) throw new Error("Contact not found");
-            const { called } = contact;
-            return { id, called, caller };
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
+  async deleteContact(id: Contact["id"]): Promise<DeleteContactDTO | string> {
+    const contactToDelete = await client.query(
+      "SELECT * FROM contacts WHERE idcontact = $1",
+      [id]
+    );
+    if (!contactToDelete.rows[0]) throw boom.notFound("Contact not found");
 
-    async createContact(contact: CreateContactDTO): Promise<GetContactDTO | string> {
-        try {
-            const { called, caller } = contact;
-            const newContact: Contact = {
-                id: faker.datatype.number(),
-                called,
-                caller,
-                createdAt: faker.date.past(),
-            };
-            this.contacts.push(newContact);
-            return { id: newContact.id, called, caller };
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
-
-    async deleteContact(id: number): Promise<GetContactDTO | string> {
-        try {
-            const contact = await Promise.resolve(this.contacts.find((contact : Contact) => contact.id === id)).then(
-                (contact: Contact | undefined) => contact
-            );
-            if (!contact) throw new Error("Contact not found");
-            const { called, caller } = contact;
-            this.contacts = this.contacts.filter((contact) => contact.id !== id);
-            return { id, called, caller };
-        } catch (err) {
-            console.error(err);
-            return err as string;
-        }
-    }
-
+    await client.query("DELETE FROM contacts WHERE idcontact = $1", [id]);
+    return contactToDelete.rows[0];
+  }
 }

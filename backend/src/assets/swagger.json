@@ -1,195 +1,202 @@
 {
   "swagger": "2.0",
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter your JWT token in the format 'Bearer {token}'"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
   "info": {
     "version": "1.0.0",
     "title": "REST API",
-    "description": ""
+    "description": "REST API for the project."
   },
   "host": "localhost:3000",
-  "basePath": "/",
+  "basePath": "/api/v1/",
   "schemes": [
     "http"
   ],
   "paths": {
-    "/api/v1/users/": {
+    "/users/": {
       "get": {
-        "description": "",
+        "description": "This endpoint returns a user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "description": "This endpoint updates a user.",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User object that needs to be updated.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe",
+                  "description": "The name of the user.",
+                  "required": false
+                },
+                "username": {
+                  "type": "string",
+                  "example": "john123",
+                  "description": "The username of the user.",
+                  "required": false
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john123@fakermail.com",
+                  "description": "The email of the user.",
+                  "required": false
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password",
+                  "description": "The password of the user.",
+                  "required": false
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict, some field must be unique"
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "description": "This endpoint deletes a user.",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/nodes/": {
+      "get": {
+        "description": "This endpoint returns a list of nodes.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Nodes"
+        ]
       },
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "This endpoint creates a node.",
+        "parameters": [
+          {
+            "name": "node",
+            "in": "body",
+            "description": "Node object that needs to be added.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Node 1",
+                  "description": "The name of the node.",
+                  "required": true
+                },
+                "location": {
+                  "type": "string",
+                  "example": "123.456, 789.012",
+                  "description": "The location of the node.",
+                  "required": false
+                },
+                "userId": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "The id of the user that owns the node.",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Nodes"
+        ]
       }
     },
-    "/api/v1/users/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/nodes/{id}": {
       "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/nodes/": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "post": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/api/v1/nodes/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/nodes/{id}/toggle-recording": {
-      "patch": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/contact/{caller}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "caller",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/contact/{id}/{caller}": {
-      "get": {
-        "description": "",
+        "description": "This endpoint updates a node.",
         "parameters": [
           {
             "name": "id",
@@ -198,33 +205,52 @@
             "type": "string"
           },
           {
-            "name": "caller",
-            "in": "path",
+            "name": "node",
+            "in": "body",
+            "description": "Node object that needs to be updated.",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Node 1",
+                  "description": "The name of the node.",
+                  "required": false
+                },
+                "location": {
+                  "type": "string",
+                  "example": "123.456, 789.012",
+                  "description": "The location of the node.",
+                  "required": false
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict, some field must be unique"
+          },
+          "403": {
+            "description": "Forbidden, you are not the owner of the node"
           }
-        }
-      }
-    },
-    "/api/v1/contact/": {
-      "post": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/api/v1/contact/{id}": {
+        },
+        "tags": [
+          "Nodes"
+        ]
+      },
       "delete": {
-        "description": "",
+        "description": "This endpoint deletes a node.",
         "parameters": [
           {
             "name": "id",
@@ -236,30 +262,239 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "403": {
+            "description": "Forbidden, you are not the owner of the node"
           }
-        }
+        },
+        "tags": [
+          "Nodes"
+        ]
       }
     },
-    "/api/v1/auth/register": {
+    "/nodes/{id}/toggle-recording": {
+      "patch": {
+        "description": "This endpoint toggles the recording state of a node.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "403": {
+            "description": "Forbidden, you are not the owner of the node"
+          }
+        },
+        "tags": [
+          "Nodes"
+        ]
+      }
+    },
+    "/contact/": {
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "This endpoint creates a contact.",
+        "parameters": [
+          {
+            "name": "contact",
+            "in": "body",
+            "description": "Contact object that needs to be added.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "called": {
+                  "type": "string",
+                  "example": "1234567890",
+                  "description": "The caller of the contact.",
+                  "required": true
+                },
+                "caller": {
+                  "type": "string",
+                  "example": "1234567890",
+                  "description": "The called of the contact.",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict, contact already exists"
           }
-        }
-      }
-    },
-    "/api/v1/auth/login": {
-      "post": {
-        "description": "",
+        },
+        "tags": [
+          "Contact"
+        ]
+      },
+      "get": {
+        "description": "This endpoint returns a list of contacts.",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           }
-        }
+        },
+        "tags": [
+          "Contact"
+        ]
+      },
+      "delete": {
+        "description": "This endpoint deletes a contact.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "description": "This endpoint is used to register a new user.",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User object that needs to be added to the database.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "John Doe",
+                  "description": "The name of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "username": {
+                  "type": "string",
+                  "example": "johndoe",
+                  "description": "The username of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "email": {
+                  "type": "string",
+                  "example": "john123@fakermail.com",
+                  "description": "The email of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password",
+                  "description": "The password of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "409": {
+            "description": "Conflict, user already exists"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "This endpoint is used to login a user.",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User object that needs to be added to the database.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "ivan5919",
+                  "description": "The username of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password123",
+                  "description": "The password of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized, invalid password"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
       }
     }
   }
