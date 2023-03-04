@@ -37,6 +37,7 @@ export default createStore({
     sidebarUnfoldable: false,
     nodes: [],
     videos: [],
+    API_URL: 'http://192.168.0.13:3000/api/v1',
   },
   mutations: {
     toggleSidebar(state) {

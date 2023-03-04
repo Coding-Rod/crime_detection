@@ -22,7 +22,7 @@
           </CButton>
         </CNavItem>
         <CNavItem>
-          <CButton type="button">
+          <CButton type="button" @click="logout">
             <CIcon class="mx-2" icon="cil-exit-to-app" size="lg" />
             Log out
           </CButton>
@@ -38,6 +38,12 @@ export default {
   name: 'AppHeader',
   components: {
     AppBreadcrumb,
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem('token')
+      location.reload();
+    },
   },
 }
 </script>

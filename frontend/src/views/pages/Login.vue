@@ -16,6 +16,7 @@
                     <CFormInput
                       placeholder="Username"
                       autocomplete="username"
+                      v-model="username"
                     />
                   </CInputGroup>
                   <CInputGroup class="mb-4">
@@ -26,11 +27,21 @@
                       type="password"
                       placeholder="Password"
                       autocomplete="current-password"
+                      v-model="password"
                     />
                   </CInputGroup>
+                  <CAlert color="danger" v-if="error">
+                    {{ error }}
+                  </CAlert>
                   <CRow>
                     <CCol :xs="6">
-                      <CButton color="primary" class="px-4 text-white"> Login </CButton>
+                      <CButton
+                        color="primary"
+                        class="px-4 text-white"
+                        @click="login"
+                      >
+                        Login
+                      </CButton>
                     </CCol>
                     <!-- <CCol :xs="6" class="text-right">
                       <CButton color="link" class="px-0">
@@ -50,9 +61,16 @@
                     sed do eiusmod tempor incididunt ut labore et dolore magna
                     aliqua.
                   </p>
-                  <CButton color="light" variant="outline" class="mt-3" @click="() => {
-                    this.$router.push('register')
-                    }">
+                  <CButton
+                    color="light"
+                    variant="outline"
+                    class="mt-3"
+                    @click="
+                      () => {
+                        this.$router.push('register');
+                      }
+                    "
+                  >
                     Register Now!
                   </CButton>
                 </div>
@@ -66,9 +84,33 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
-  name: 'Login',
-}
+  name: "Login",
+  data() {
+    return {
+      username: "",
+      password: "",
+      error: '',
+    };
+  },
+  methods: {
+    async login() {
+      try {
+        const response = await axios.post(
+          `${this.$store.state.API_URL}/auth/login`,
+          {
+            username: this.username,
+            password: this.password,
+          }
+        );
+        localStorage.setItem("token", response.data.token);
+        this.$router.push("/");
+      } catch (error) {
+        this.error = error.response.data.message;
+      }
+    },
+  },
+};
 </script>
