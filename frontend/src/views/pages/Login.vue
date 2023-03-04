@@ -36,11 +36,20 @@
                   <CRow>
                     <CCol :xs="6">
                       <CButton
+                        v-if="!waiting"
                         color="primary"
                         class="px-4 text-white"
                         @click="login"
                       >
                         Login
+                      </CButton>
+                      <CButton
+                        v-else
+                        color="primary"
+                        class="px-4 text-white"
+                        disabled
+                      >
+                        <CSpinner size="sm" />
                       </CButton>
                     </CCol>
                     <!-- <CCol :xs="6" class="text-right">
@@ -93,11 +102,13 @@ export default {
       username: "",
       password: "",
       error: '',
+      waiting: false,
     };
   },
   methods: {
     async login() {
       try {
+        this.waiting = true;
         const response = await axios.post(
           `${this.$store.state.API_URL}/auth/login`,
           {
@@ -106,8 +117,10 @@ export default {
           }
         );
         localStorage.setItem("token", response.data.token);
+        this.waiting = false;
         this.$router.push("/");
       } catch (error) {
+        this.waiting = false;
         this.error = error.response.data.message;
       }
     },
