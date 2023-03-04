@@ -36,8 +36,9 @@ export class UserService {
     };
     const { name, username, email, password } = updatedUser;
 
-    await unique("users", "username", username);
-    await unique("users", "email", email);
+
+    if (user.username !== userToUpdate.rows[0].username && user.username) await unique("users", "username", username);
+    if (user.email !== userToUpdate.rows[0].email && user.email) await unique("users", "username", username);
     
     await client.query(
       "UPDATE users SET name = $1, username = $2, email = $3, password = $4, updated_at = $5 WHERE iduser = $6",
@@ -104,7 +105,7 @@ export class UserService {
     );
     return {
       id,
-      token: 'Bearer ' + token
+      token
     };
   }
 
@@ -126,7 +127,7 @@ export class UserService {
     );
     return {
       id: userToLogin.rows[0].iduser,
-      token: 'Bearer ' + token
+      token
     }
   }
 }

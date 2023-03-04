@@ -8,22 +8,37 @@
               <CForm>
                 <h1>Register</h1>
                 <p class="text-medium-emphasis">Create your account</p>
-                <p class="text-medium-emphasis small">Already have an account? <router-link to="login">Login</router-link></p>
+                <p class="text-medium-emphasis small">
+                  Already have an account?
+                  <router-link to="login">Login</router-link>
+                </p>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-user" />
                   </CInputGroupText>
-                  <CFormInput placeholder="Name" autocomplete="name" v-model="name" />
+                  <CFormInput
+                    placeholder="Name"
+                    autocomplete="name"
+                    v-model="name"
+                  />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
                     <CIcon icon="cil-address-book" />
                   </CInputGroupText>
-                  <CFormInput placeholder="Username" autocomplete="username" v-model="username" />
+                  <CFormInput
+                    placeholder="Username"
+                    autocomplete="username"
+                    v-model="username"
+                  />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>@</CInputGroupText>
-                  <CFormInput placeholder="Email" autocomplete="email" v-model="email" />
+                  <CFormInput
+                    placeholder="Email"
+                    autocomplete="email"
+                    v-model="email"
+                  />
                 </CInputGroup>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
@@ -51,7 +66,22 @@
                   {{ error }}
                 </CAlert>
                 <div class="d-grid">
-                  <CButton color="primary" class="text-white" @click="register">Create Account</CButton>
+                  <CButton
+                        v-if="!waiting"
+                        color="primary"
+                        class="px-4 text-white"
+                        @click="register"
+                      >
+                        Create Account
+                      </CButton>
+                      <CButton
+                        v-else
+                        color="primary"
+                        class="px-4 text-white"
+                        disabled
+                      >
+                        <CSpinner size="sm" />
+                      </CButton>
                 </div>
               </CForm>
             </CCardBody>
@@ -63,40 +93,48 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
-  name: 'Register',
+  name: "Register",
   data() {
     return {
-      name: '',
-      username: '',
-      email: '',
-      password: '',
-      password_confirmation: '',
-      error: '',
-    }
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+      error: "",
+      waiting: false,
+    };
   },
   methods: {
     async register() {
       try {
-        if (this.password !== this.password_confirmation) throw new Error('Passwords do not match')
-        const response = await axios.post(`${this.$store.state.API_URL}/auth/register`, {
-          name: this.name,
-          username: this.username,
-          email: this.email,
-          password: this.password,
-        })
+        this.waiting = true;
+        if (this.password !== this.password_confirmation)
+          throw new Error("Passwords do not match");
+        const response = await axios.post(
+          `${this.$store.state.API_URL}/auth/register`,
+          {
+            name: this.name,
+            username: this.username,
+            email: this.email,
+            password: this.password,
+          }
+        );
         if (response.status === 201) {
-          localStorage.setItem('token', response.data.token)
-          this.$router.push({ name: 'Home'})
+          localStorage.setItem("token", response.data.token);
+          this.waiting = false;
+          this.$router.push({ name: "Home" });
         } else {
-          throw new Error(response.data.message)
-        }        
+          throw new Error(response.data.message);
+        }
       } catch (error) {
-        this.error = error.response.data.message
+        this.waiting = false;
+        this.error = error.response.data.message;
       }
-    }
+    },
   },
-}
+};
 </script>

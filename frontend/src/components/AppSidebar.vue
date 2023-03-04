@@ -26,7 +26,9 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { AppSidebarNav } from './AppSidebarNav'
-import avatar from '@/assets/images/avatars/2.jpg'
+
+import axios from 'axios'
+
 export default {
   name: 'AppSidebar',
   components: {
@@ -37,8 +39,22 @@ export default {
     return {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
-      name: 'Rodrigo Fernandez',
+      name: '',
     }
+  },
+  beforeMount() {
+    axios
+      .get(`${this.$store.state.API_URL}/users`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then((response) => {
+        this.name = response.data.name
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   },
 }
 </script>
