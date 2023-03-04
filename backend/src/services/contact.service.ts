@@ -25,7 +25,7 @@ export class ContactService {
     contact: CreateContactDTO
   ): Promise<GetContactDTO | string> {
     const { called, caller } = contact;
-    unique("contacts", "called", `${called}`);
+    await unique("contacts", "called", `${called}`);
 
     const newContact = await client.query(
       "INSERT INTO contacts (called, caller) VALUES ($1, $2) RETURNING *",
