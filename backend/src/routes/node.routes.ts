@@ -20,7 +20,7 @@ router.get(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const node = await nodeService.getNodes(parseInt(id));
+      const node = await nodeService.getNodes(id);
       res.status(200).send(node);
     } catch (err) {
       next(err);
@@ -49,7 +49,7 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const node = nodeService.updateNode(parseInt(req.params.id), req.body, parseInt(id));
+      const node = nodeService.updateNode(parseInt(req.params.id), req.body, id);
       node.then((node) => {
         res.status(200).send(node);
       });
@@ -65,7 +65,7 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const node = nodeService.toggleRecording(parseInt(req.params.id), parseInt(id));
+      const node = nodeService.toggleRecording(parseInt(req.params.id), id);
       node.then((node) => {
         res.status(200).send(node);
       });
@@ -81,7 +81,7 @@ router.delete(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const node = nodeService.deleteNode(parseInt(id), parseInt(req.params.id));
+      const node = nodeService.deleteNode(id, parseInt(req.params.id));
       node.then((node) => {
         res.status(200).send(node);
       });

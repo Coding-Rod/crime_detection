@@ -17,14 +17,13 @@ const contactService = new ContactService();
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
-  validatorHandler(getContactSchema, "params"),
   async (req, res, next) => {
     try {
-      const id = await getId(req.headers.authorization as string);
+      const caller = await getId(req.headers.authorization as string);
       const contact = await contactService.getContacts(
-        parseInt(id),
-        parseInt(req.query.limit as string),
-        parseInt(req.query.offset as string)
+        caller,
+        req.query.limit ? parseInt(req.query.limit as string) : 10,
+        req.query.offset ? parseInt(req.query.offset as string) : 0
       );
       res.status(200).send(contact);
     } catch (err) {
@@ -34,12 +33,16 @@ router.get(
 );
 
 router.post(
-  "/",
+  "/:id",
+  validatorHandler(createContactSchema, "params"),
   passport.authenticate("jwt", { session: false }),
-  validatorHandler(createContactSchema, "body"),
   async (req, res, next) => {
     try {
-      const contact = await contactService.createContact(req.body);
+      const caller = await getId(req.headers.authorization as string);
+      const contact = await contactService.createContact(
+        caller,
+        parseInt(req.params.id)
+      );
       res.status(201).send(contact);
     } catch (err) {
       next(err);
@@ -48,14 +51,15 @@ router.post(
 );
 
 router.delete(
-  "/",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   validatorHandler(deleteContactSchema, "params"),
   async (req, res, next) => {
     try {
-      const id = await getId(req.headers.authorization as string);
+      const caller = await getId(req.headers.authorization as string);
       const contact = await contactService.deleteContact(
-        parseInt(id),
+        caller,
+        parseInt(req.params.id)
       );
       res.status(200).send(contact);
     } catch (err) {
