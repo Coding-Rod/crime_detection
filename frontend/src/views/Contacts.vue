@@ -8,9 +8,6 @@
                     <CListGroupItem v-for="contact in alphabetized_contacts" :key="contact.id">
                         <CContainerFluid>
                             <CRow>
-                                <CCol md="2" xs="4">
-                                    <CAvatar :src="contact.avatar" size="lg" class="me-2"/>
-                                </CCol>
                                 <CCol md="10" xs="8" class="d-flex align-items-center justify-content-start" height="100%">
                                     <CRow>
                                         <CCol>
@@ -81,6 +78,7 @@
 
 <script>
 import verifyToken from '@/utils/verifyToken'
+import axios from 'axios'
 
 export default {
     name: "Contacts",
@@ -89,100 +87,33 @@ export default {
             search_text: "",
             found_contact: null,
             contact_not_found: false,
-            world: [
-                {
-                    id: 1,
-                    avatar: "https://picsum.photos/200",
-                    name: "Cras justo odio",
-                    username: "@Cras",
-                    added: true,
-                },
-                {
-                    id: 2,
-                    avatar: "https://picsum.photos/200",
-                    name: "Dapibus ac facilisis",
-                    username: "@Dapibus",
-                    added: true,
-                },
-                {
-                    id: 3,
-                    avatar: "https://picsum.photos/200",
-                    name: "Morbi leo risus",
-                    username: "@Morbi",
-                    added: true,
-                },
-                {
-                    id: 4,
-                    avatar: "https://picsum.photos/200",
-                    name: "Porta ac consectetur",
-                    username: "@Porta",
-                    added: true,
-                },
-                {
-                    id: 5,
-                    avatar: "https://picsum.photos/200",
-                    name: "Vestibulum at eros",
-                    username: "@Vestibulum",
-                    added: true,
-                },
-                {
-                    id: 6,
-                    avatar: "https://picsum.photos/200",
-                    name: "Cras justo odio",
-                    username: "@Cras2",
-                    added: false
-                },
-                {
-                    id: 7,
-                    avatar: "https://picsum.photos/200",
-                    name: "Dapibus ac facilisis",
-                    username: "@Dapibus1",
-                    added: false
-                },
-                {
-                    id: 8,
-                    avatar: "https://picsum.photos/200",
-                    name: "Morbi leo risus",
-                    username: "@Morbi3",
-                    added: true
-                },
-                {
-                    id: 9,
-                    avatar: "https://picsum.photos/200",
-                    name: "Porta ac consectetur",
-                    username: "@Porta4",
-                    added: true
-                },
-                {
-                    id: 10,
-                    avatar: "https://picsum.photos/200",
-                    name: "Vestibulum at eros",
-                    username: "@Vestibulum5",
-                    added: false
-                },
-            ],
+            contacts: []
         };
     },
     methods: {
         search() {
-            this.found_contact = this.world.find(contact => contact.username === this.search_text);
+            this.found_contact = this.contacts.find(contact => contact.username === this.search_text);
             this.contact_not_found = !this.found_contact;
         },
         add_contact(id) {
-            this.world.find(contact => contact.id === id).added = true;
-            this.contacts.push(this.world.find(contact => contact.id === id));
+            this.contacts.find(contact => contact.id === id).added = true;
+            this.contacts.push(this.contacts.find(contact => contact.id === id));
         },
-        remove_contact(id) {
-            this.world.find(contact => contact.id === id).added = false;
-            this.contacts = this.contacts.filter(contact => contact.id !== id);
+        async remove_contact(id) {
+            await axios.delete(`${this.$store.state.API_URL}/contacts/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            this.contacts.filter(contact => contact.id !== id);
         }
     },
     computed: {
         contacts() {
-            return this.world.filter(contact => contact.added);
+            return this.contacts.filter(contact => contact.added);
         },
-        world_usernames() {
-            return this.world.map(contact => contact.username);
+        contacts_usernames() {
+            return this.contacts.map(contact => contact.username);
         },
         alphabetized_contacts() {
             return this.contacts.sort((a, b) => a.name.localeCompare(b.name));
@@ -196,6 +127,14 @@ export default {
     },
     beforeMount() {
         verifyToken();
+    },
+    async mounted() {
+        const response = await axios.get(`${this.$store.state.API_URL}/contacts/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        this.contacts = response.data;
     }
 }
 </script>
