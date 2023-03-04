@@ -18,10 +18,15 @@
 
 <script>
 import CardWModal from '@/components/CardWModal'
+import verifyToken from '@/utils/verifyToken'
+
 export default {
   name: 'HowTo',
   components: {
     CardWModal
+  },
+  beforeMount() {
+    verifyToken()
   }
 }
 </script>
