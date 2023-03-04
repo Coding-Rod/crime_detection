@@ -80,6 +80,8 @@
 </template>
 
 <script>
+import verifyToken from '@/utils/verifyToken'
+
 export default {
     name: "Contacts",
     data() {
@@ -191,6 +193,9 @@ export default {
             this.found_contact = null;
             this.contact_not_found = false;
         }
+    },
+    beforeMount() {
+        verifyToken();
     }
 }
 </script>

@@ -97,6 +97,8 @@
 </template>
 
 <script>
+import verifyToken from "@/utils/verifyToken";
+
 export default {
   data() {
     return {
@@ -113,6 +115,9 @@ export default {
     handleResize() {
       this.screenWidth = window.innerWidth;
     },
+  },
+  beforeMount() {
+    verifyToken();
   },
 };
 </script>

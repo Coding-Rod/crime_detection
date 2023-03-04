@@ -48,6 +48,7 @@
 <script>
 import axios from "axios";
 import Loader from "@/components/Loader.vue";
+import verifyToken from "@/utils/verifyToken.js";
 
 export default {
   name: "ActiveNodes",
@@ -92,6 +93,9 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+  },
+  beforeMount() {
+    verifyToken();
   },
 };
 </script>

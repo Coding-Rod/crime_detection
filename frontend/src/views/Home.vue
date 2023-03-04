@@ -15,11 +15,15 @@
 
 <script>
 import CardWImage from '@/components/CardWImage'
+import verifyToken from '@/utils/verifyToken'
 
 export default {
   name: 'Home',
   components: {
     CardWImage
+  },
+  beforeMount() {
+    verifyToken()
   }
 }
 
