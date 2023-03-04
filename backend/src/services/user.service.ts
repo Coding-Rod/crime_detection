@@ -1,5 +1,5 @@
 import { User } from "../models/user.model";
-import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
+import { GetUserDTO, DeleteUserDTO, UpdateUserDTO, CreateUserDTO, LoginUserDTO, AuthUserDTO } from "../dtos/user.dto";
 
 import { hashPassword } from "../utils/auth/pass-hash";
 import { client } from "../db/config";
@@ -36,8 +36,8 @@ export class UserService {
     };
     const { name, username, email, password } = updatedUser;
 
-    unique("users", "username", username);
-    unique("users", "email", email);
+    await unique("users", "username", username);
+    await unique("users", "email", email);
     
     await client.query(
       "UPDATE users SET name = $1, username = $2, email = $3, password = $4, updated_at = $5 WHERE iduser = $6",
@@ -65,10 +65,10 @@ export class UserService {
     };
   }
 
-  async createUser(user: CreateUserDTO): Promise<GetUserDTO | string> {
+  async createUser(user: CreateUserDTO): Promise< AuthUserDTO| string> {
     const { name, username, email, password } = user;
-    unique("users", "username", username);
-    unique("users", "email", email);
+    await unique("users", "username", username);
+    await unique("users", "email", email);
     
     const hashedPassword = await hashPassword(password);
     const newUser = {
@@ -98,16 +98,17 @@ export class UserService {
         )
       ).rows[0].iduser
     );
-    
+    const token = jwt.sign(
+      { id },
+      config.jwtSecret as string
+    );
     return {
       id,
-      name,
-      username,
-      email,
+      token: 'Bearer ' + token
     };
   }
 
-  async loginUser(user: LoginUserDTO): Promise<string> {
+  async loginUser(user: LoginUserDTO): Promise<AuthUserDTO | string> {
     const { username, password } = user;
     const userToLogin = await client.query(
       "SELECT * FROM users WHERE username = $1",
@@ -123,6 +124,9 @@ export class UserService {
       { id: userToLogin.rows[0].iduser },
       config.jwtSecret as string
     );
-    return "Bearer " + token;
+    return {
+      id: userToLogin.rows[0].iduser,
+      token: 'Bearer ' + token
+    }
   }
 }

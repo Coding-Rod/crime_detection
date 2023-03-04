@@ -20,7 +20,6 @@ router.get(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      console.log(id);
       const node = await nodeService.getNodes(parseInt(id));
       res.status(200).send(node);
     } catch (err) {

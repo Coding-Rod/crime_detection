@@ -92,3 +92,4 @@ export class ChangePasswordDTO implements IChangePasswordDTO {
     password: string;
 }
 
+export interface AuthUserDTO extends Pick<User, "id" | "token"> {}
