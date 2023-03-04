@@ -12,7 +12,6 @@
     "
   >
     <CSidebarBrand>
-      <CAvatar :src="avatar" size="md" class="me-2"/>
       {{ name }}
     </CSidebarBrand>
     <AppSidebarNav />
@@ -38,7 +37,6 @@ export default {
     return {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
-      avatar,
       name: 'Rodrigo Fernandez',
     }
   },
