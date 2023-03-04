@@ -14,9 +14,9 @@ router.get(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);        
-      const user = await userService.getUser(req.query.id ? parseInt(req.query.id as string) : id);
-      
-      res.status(200).send(user);
+      return res.status(200).send( req.query.search
+      ? await userService.getUser(id, req.query.search as string)
+      : await userService.getUser(req.query.id ? parseInt(req.query.id as string) : id));
     } catch (err) {
       next(err);
     }

@@ -32,6 +32,12 @@
             "name": "id",
             "in": "query",
             "required": false,
+            "type": "number"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
