@@ -202,7 +202,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "node",
@@ -256,7 +256,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -286,7 +286,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "number"
           }
         ],
         "responses": {
@@ -308,49 +308,7 @@
         ]
       }
     },
-    "/contact/": {
-      "post": {
-        "description": "This endpoint creates a contact.",
-        "parameters": [
-          {
-            "name": "contact",
-            "in": "body",
-            "description": "Contact object that needs to be added.",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "called": {
-                  "type": "string",
-                  "example": "1234567890",
-                  "description": "The caller of the contact.",
-                  "required": true
-                },
-                "caller": {
-                  "type": "string",
-                  "example": "1234567890",
-                  "description": "The called of the contact.",
-                  "required": true
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict, contact already exists"
-          }
-        },
-        "tags": [
-          "Contact"
-        ]
-      },
+    "/contacts/": {
       "get": {
         "description": "This endpoint returns a list of contacts.",
         "parameters": [],
@@ -368,10 +326,44 @@
         "tags": [
           "Contact"
         ]
+      }
+    },
+    "/contacts/{id}":{
+      "post": {
+        "description": "This endpoint creates a contact.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict, contact already exists"
+          }
+        },
+        "tags": [
+          "Contact"
+        ]
       },
       "delete": {
         "description": "This endpoint deletes a contact.",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"

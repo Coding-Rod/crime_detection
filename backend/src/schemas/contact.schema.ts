@@ -7,12 +7,11 @@ const createdAt = Joi.date();
 const updatedAt = Joi.date();
 
 export const getContactSchema = Joi.object({
-    caller: caller.required(),
+    id: id.required(),
 });
 
 export const createContactSchema = Joi.object({
-    called: called.required(),
-    caller: caller.required(),
+    id: id.required(),
 });
 
 export const deleteContactSchema = Joi.object({
