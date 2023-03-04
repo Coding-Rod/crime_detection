@@ -17,7 +17,7 @@
           </CButton>
         </CNavItem>
         <CNavItem>
-          <CButton type="button">
+          <CButton type="button" @click="$router.push('/settings')" >
             <CIcon class="mx-2" icon="cil-settings" size="lg" />
           </CButton>
         </CNavItem>
