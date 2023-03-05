@@ -1,66 +1,68 @@
 <template>
-  <div>
+  <CContainer>
     <h1 class="h3 mb-3 text-center">Active Nodes</h1>
     <!-- for with accordions -->
     <template v-if="nodes.length > 0">
-    <CAccordion v-for="node in nodes" :key="node.id">
-      <CAccordionItem :item-key="node.id">
-        <CAccordionHeader> {{ node.name }} </CAccordionHeader>
-        <CAccordionBody>
-          <CContainer>
-            <CRow>
-              <CCol>
-                <h1 class="h4 mb-3 text-center">Node ID: {{ node.id }}</h1>
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol md="3" xs="12">
-                <p class="text mb-3">Node Name: {{ node.name }}</p>
-                <p class="text mb-3">Node location: {{ node.location }}</p>
-                <p class="text mb-3">Node status: {{ node.status ? "Active 🟢" : "Inactive 🔴" }}</p>
-              </CCol>
-              <CCol md="9" xs="12">
-                <img :src="node.video" alt="node image" class="img-fluid" />
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol class="d-grid gap-2 mt-3">
-                <CButtonGroup
-                  :class="{ 'ms-auto': screenwidth > 768, 'text-white': true }"
+      <CAccordion v-for="node in nodes" :key="node.id">
+        <CAccordionItem :item-key="node.id">
+          <CAccordionHeader> {{ node.name }} </CAccordionHeader>
+          <CAccordionBody>
+            <CContainer>
+              <CRow>
+                <CCol>
+                  <h1 class="h4 mb-3 text-center">Node ID: {{ node.id }}</h1>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol md="3" xs="12">
+                  <p class="text mb-3">Node Name: {{ node.name }}</p>
+                  <p class="text mb-3">Node location: {{ node.location }}</p>
+                  <p class="text mb-3">
+                    Node status: {{ node.status ? "Active 🟢" : "Inactive 🔴" }}
+                  </p>
+                </CCol>
+                <CCol md="9" xs="12">
+                  <img :src="node.video" alt="node image" class="img-fluid" />
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol class="d-grid gap-2 mt-3">
+                  <CButtonGroup
+                    :class="{
+                      'ms-auto': screenwidth > 768,
+                      'text-white': true,
+                    }"
                   >
-                  <CButton
-                    color="primary"
-                    type="button"
-                    class="text-white"
-                    >Record
-                  </CButton>
-                  <CButton
-                    color="danger"
-                    type="button"
-                    class="text-white"
-                    @click="deleteNode(node.id)"
+                    <CButton color="primary" type="button" class="text-white"
+                      >Record
+                    </CButton>
+                    <CButton
+                      color="danger"
+                      type="button"
+                      class="text-white"
+                      @click="deleteNode(node.id)"
                     >
-                    <CIcon name="cil-trash" />
-                  </CButton>
-                </CButtonGroup>
-                <!-- <CButton
+                      <CIcon name="cil-trash" />
+                    </CButton>
+                  </CButtonGroup>
+                  <!-- <CButton
                   color="primary"
                   :class="{ 'ms-auto': screenwidth > 768, 'text-white': true }"
                   type="button"
                   >Record
                 </CButton> -->
-              </CCol>
-            </CRow>
-          </CContainer>
-        </CAccordionBody>
-      </CAccordionItem>
-    </CAccordion>
+                </CCol>
+              </CRow>
+            </CContainer>
+          </CAccordionBody>
+        </CAccordionItem>
+      </CAccordion>
     </template>
     <template v-else-if="error">
       <p class="text-center">No active nodes</p>
     </template>
     <Loader v-else />
-  </div>
+  </CContainer>
 </template>
 0 auto
 <script>
@@ -73,7 +75,7 @@ export default {
   data() {
     return {
       screenwidth: window.innerWidth,
-      nodes : [],
+      nodes: [],
       error: null,
     };
   },
@@ -104,14 +106,11 @@ export default {
     window.addEventListener("resize", this.handleResize);
     console.log(`${this.$store.state.API_URL}/nodes/`);
     try {
-      const response = await axios.get(
-        `${this.$store.state.API_URL}/nodes/`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.get(`${this.$store.state.API_URL}/nodes/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       console.log(response.data);
       this.nodes = response.data;
     } catch (error) {
