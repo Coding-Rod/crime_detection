@@ -386,6 +386,69 @@
         ]
       }
     },
+    "/notifications/": {
+      "get": {
+        "description": "This endpoint returns a list of notifications.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      },
+      "post": {
+        "description": "This endpoint creates a notification.",
+        "parameters": [
+          {
+            "name": "notification",
+            "in": "body",
+            "description": "Notification object that needs to be added to the database.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Notification message",
+                  "description": "The message of the notification.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "type": {
+                  "type": "string",
+                  "example": "info",
+                  "description": "The type of the notification.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
     "/auth/register": {
       "post": {
         "description": "This endpoint is used to register a new user.",
