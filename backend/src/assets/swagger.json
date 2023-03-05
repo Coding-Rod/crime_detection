@@ -389,7 +389,16 @@
     "/notifications/": {
       "get": {
         "description": "This endpoint returns a list of notifications.",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "types",
+            "in": "query",
+            "description": "The types of notifications to return.",
+            "required": false,
+            "type": "array",
+            "example": "types=1,2,3"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -425,8 +434,8 @@
                   "maxLength": 255
                 },
                 "type": {
-                  "type": "string",
-                  "example": "info",
+                  "type": "number",
+                  "example": "1",
                   "description": "The type of the notification.",
                   "required": true,
                   "minLength": 1,

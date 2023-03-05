@@ -17,7 +17,9 @@ router.get(
     async (req, res, next) => {
         try {
             const id = await getId(req.headers.authorization as string);
-            return res.status(200).send(await notificationService.getNotifications(id));
+            return res.status(200).send(req.query.types && typeof req.query.types === "string"
+            ? await notificationService.getNotifications(id, (req.query.types.split(',') as string[]).map(Number))
+            : await notificationService.getNotifications(id));
         } catch (err) {
             next(err);
         }
