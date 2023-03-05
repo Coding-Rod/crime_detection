@@ -6,7 +6,6 @@ import {
 } from "../dtos/contact.dto";
 import { GetUserDTO } from "../dtos/user.dto";
 import { client } from "../db/config";
-import unique from "../utils/db/unique";
 
 import boom from "@hapi/boom";
 export class ContactService {
@@ -26,7 +25,6 @@ export class ContactService {
     called: Contact["called"]
   ): Promise<GetContactDTO | string> {
 
-    console.log(called, caller);
     const contacts = await client.query(
       "SELECT us.iduser id, us.name, us.username FROM contacts co, users us WHERE co.called = us.iduser AND co.caller = $1",
       [caller]
