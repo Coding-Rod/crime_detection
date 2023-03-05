@@ -30,7 +30,7 @@
                 <CCard>
                     <CCardHeader>
                         <CInputGroup class="mb-3">
-                            <CFormInput placeholder="Username" aria-label="Recipient's username" aria-describedby="basic-addon2" type="search" v-model="search_text"/>
+                            <CFormInput placeholder="Enter a username or email of your emergency contact" aria-label="Recipient's username" aria-describedby="basic-addon2" type="search" v-model="search_text"/>
                             <CInputGroupText id="basic-addon2">
                                 <CButton @click="search">
                                     <CIcon name="cil-magnifying-glass"/>
@@ -67,7 +67,7 @@
                     </CCardBody>
                     <CCardBody v-else>
                         <CCardTitle>Search a new contact</CCardTitle>
-                        <CCardText>You can add them to your emergency contacts so they will be notified when any of your nodes detect a harmful situation</CCardText>
+                        <CCardText>You can add them to your emergency contacts so they will be notified when any of your nodes detect a harmful situation, you can add a total of 10 contacts</CCardText>
                     </CCardBody>
                 </CCard>
             </CCol>                    
