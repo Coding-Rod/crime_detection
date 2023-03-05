@@ -8,9 +8,6 @@
                     <CListGroupItem v-for="contact in alphabetized_contacts" :key="contact.id">
                         <CContainerFluid>
                             <CRow>
-                                <CCol md="2" xs="4">
-                                    <CAvatar :src="contact.avatar" size="lg" class="me-2"/>
-                                </CCol>
                                 <CCol md="10" xs="8" class="d-flex align-items-center justify-content-start" height="100%">
                                     <CRow>
                                         <CCol>
@@ -80,6 +77,8 @@
 </template>
 
 <script>
+import verifyToken from '@/utils/verifyToken'
+
 export default {
     name: "Contacts",
     data() {
@@ -191,6 +190,9 @@ export default {
             this.found_contact = null;
             this.contact_not_found = false;
         }
+    },
+    beforeMount() {
+        verifyToken();
     }
 }
 </script>

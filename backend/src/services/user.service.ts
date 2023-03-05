@@ -107,7 +107,7 @@ export class UserService {
     );
     return {
       id,
-      token: 'Bearer ' + token
+      token
     };
   }
 
@@ -129,7 +129,7 @@ export class UserService {
     );
     return {
       id: userToLogin.rows[0].iduser,
-      token: 'Bearer ' + token
+      token
     }
   }
 }

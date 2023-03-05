@@ -4,9 +4,6 @@
       <CHeaderToggler class="ps-1" @click="$store.commit('toggleSidebar')">
         <CIcon icon="cil-menu" size="lg" />
       </CHeaderToggler>
-      <CHeaderBrand class="mx-auto d-lg-none" to="/">
-        <CIcon :icon="logo" height="48" alt="Logo" />
-      </CHeaderBrand>
       <CHeaderNav class="d-none d-md-flex me-auto">
         <AppBreadcrumb />
       </CHeaderNav>
@@ -17,12 +14,12 @@
           </CButton>
         </CNavItem>
         <CNavItem>
-          <CButton type="button">
+          <CButton type="button" @click="$router.push('/settings')" >
             <CIcon class="mx-2" icon="cil-settings" size="lg" />
           </CButton>
         </CNavItem>
         <CNavItem>
-          <CButton type="button">
+          <CButton type="button" @click="logout">
             <CIcon class="mx-2" icon="cil-exit-to-app" size="lg" />
             Log out
           </CButton>
@@ -39,6 +36,11 @@ export default {
   components: {
     AppBreadcrumb,
   },
-
+  methods: {
+    logout() {
+      localStorage.removeItem('token')
+      location.reload();
+    },
+  },
 }
 </script>

@@ -17,7 +17,7 @@
               <CCol md="3" xs="12">
                 <p class="text mb-3">Node Name: {{ node.name }}</p>
                 <p class="text mb-3">Node location: {{ node.location }}</p>
-                <p class="text mb-3">Node status: {{ node.status }}</p>
+                <p class="text mb-3">Node status: {{ node.status ? "Active 🟢" : "Inactive 🔴" }}</p>
               </CCol>
               <CCol md="9" xs="12">
                 <img :src="node.video" alt="node image" class="img-fluid" />
@@ -48,28 +48,14 @@
 <script>
 import axios from "axios";
 import Loader from "@/components/Loader.vue";
+import verifyToken from "@/utils/verifyToken.js";
 
 export default {
   name: "ActiveNodes",
   data() {
     return {
       screenwidth: window.innerWidth,
-      nodes : [
-        {
-          name: "Node 1",
-          location: "Location 1",
-          status: "Active",
-          video: "https://picsum.photos/300/200",
-          id: 1,
-        },
-        {
-          name: "Node 2",
-          location: "Location 2",
-          status: "Active",
-          video: "https://picsum.photos/300/200",
-          id: 2,
-        },
-      ],
+      nodes : [],
       error: null,
     };
   },
@@ -81,17 +67,26 @@ export default {
       this.screenwidth = window.innerWidth;
     },
   },
-  mounted() {
+  async mounted() {
     window.addEventListener("resize", this.handleResize);
-    axios
-      .get("http://127.0.0.1:3000/api/v1/nodes")
-      .then((response) => {
-        console.log(response);
-        this.nodes = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    console.log(`${this.$store.state.API_URL}/nodes/`);
+    try {
+      const response = await axios.get(
+        `${this.$store.state.API_URL}/nodes/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data);
+      this.nodes = response.data;
+    } catch (error) {
+      this.error = error;
+    }
+  },
+  beforeMount() {
+    verifyToken();
   },
 };
 </script>

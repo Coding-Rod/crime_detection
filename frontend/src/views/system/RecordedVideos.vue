@@ -81,6 +81,7 @@
 
 <script>
 import Loader from "@/components/Loader";
+import verifyToken from '@/utils/verifyToken';
 
 export default {
   name: "RecordedVideos",
@@ -150,6 +151,9 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize);
+  },
+  beforeMount() {
+    verifyToken();
   },
 };
 </script>
