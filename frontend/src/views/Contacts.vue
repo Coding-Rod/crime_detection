@@ -45,7 +45,7 @@
                         <div class="user_info">
                             <CCardTitle>{{ found_contact.name }}</CCardTitle>
                             <CButton 
-                                v-if="!contacts_usernames.includes(found_contact.username)"
+                                v-if="!contacts_usernames.includes(found_contact.username) && found_contact.id !== user_id"
                                 color="primary" 
                                 class="text-white"
                                 @click="add_contact(found_contact.id)"
@@ -66,6 +66,17 @@
         </CRow>
     </CContainer>
   </div>
+    <CToaster style="position: absolute; bottom: 5px; right: 5px; z-index: 9999">
+        <CToast
+        :show="toast.show"
+        autohide="true"
+        fade="true"
+        :key="1"
+        @update:show="val => (toast.show = val)"
+        :title="toast.message"
+        :color="toast.color"
+        />
+    </CToaster>
 </template>
 
 <script>
@@ -77,9 +88,15 @@ export default {
     data() {
         return {
             search_text: "",
+            user_id: null,
             found_contact: null,
             contact_not_found: false,
-            contacts: []
+            contacts: [],
+            toast: {
+                show: false,
+                message: "",
+                color: ""
+            }
         };
     },
     methods: {
@@ -97,15 +114,28 @@ export default {
                 this.found_contact = response.data;
             } catch (error) {
                 this.contact_not_found = true;
+                this.toast = {
+                    show: true,
+                    message: "Contact not found",
+                    color: "danger"
+                }
             }
         },
         async remove_contact(id) {
-            await axios.delete(`${this.$store.state.API_URL}/contacts/${id}`,{
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            this.contacts = this.contacts.filter(contact => contact.id !== id);
+            try {
+                await axios.delete(`${this.$store.state.API_URL}/contacts/${id}`,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                this.contacts = this.contacts.filter(contact => contact.id !== id);
+            } catch (error) {
+                this.toast = {
+                    show: true,
+                    message: "Error removing contact",
+                    color: "danger"
+                }                
+            }
         },
         async add_contact(id){
             try {
@@ -125,7 +155,11 @@ export default {
                 });
                 this.contacts.push(response.data);
             } catch (error) {
-                console.log(error);
+                this.toast = {
+                    show: true,
+                    message: "Error adding contact",
+                    color: "danger"
+                }
             }
         }
     },
@@ -143,8 +177,17 @@ export default {
             this.contact_not_found = false;
         }
     },
-    beforeMount() {
+    async beforeMount() {
         verifyToken();
+
+        const response = await axios.get(`${this.$store.state.API_URL}/users/`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+        
+        this.user_id = response.data.id;
     },
     async mounted() {
         const response = await axios.get(`${this.$store.state.API_URL}/contacts/`, {
