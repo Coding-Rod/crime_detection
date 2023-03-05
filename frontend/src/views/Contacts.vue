@@ -5,14 +5,14 @@
         <CRow>
             <CCol xs="12" md="4">
                 <CListGroup>
-                    <CListGroupItem v-for="contact in alphabetized_contacts" :key="contact.id">
+                    <CListGroupItem v-for="contact in sorted_contacts" :key="contact.id">
                         <CContainerFluid>
                             <CRow>
                                 <CCol md="10" xs="8" class="d-flex align-items-center justify-content-start" height="100%">
                                     <CRow>
                                         <CCol>
                                             <h5 class="mb-0">{{ contact.name }}</h5>
-                                            <p class="mb-0">{{ contact.username }}</p>
+                                            <p class="mb-0">@{{ contact.username }}</p>
                                         </CCol>
                                     </CRow>
                                 </CCol>
@@ -40,24 +40,16 @@
                     </CCardHeader>
                     <CCardBody v-if="found_contact" class="user_card">
                         <div class="user_avatar">
-                            <CAvatar :src="found_contact.avatar" size="lg" class="me-2"/>
-                            <CCardText>{{ found_contact.username }}</CCardText>
+                            <CCardText>@{{ found_contact.username }}</CCardText>
                         </div>
                         <div class="user_info">
                             <CCardTitle>{{ found_contact.name }}</CCardTitle>
                             <CButton 
-                                v-if="!found_contact.added"
+                                v-if="!contacts_usernames.includes(found_contact.username)"
                                 color="primary" 
                                 class="text-white"
                                 @click="add_contact(found_contact.id)"
                             >Add to contacts
-                            </CButton>
-                            <CButton 
-                                v-else
-                                color="danger" 
-                                class="text-white"
-                                @click="remove_contact(found_contact.id)"
-                            >Remove from contacts
                             </CButton>
                         </div>
                     </CCardBody>
@@ -91,13 +83,21 @@ export default {
         };
     },
     methods: {
-        search() {
-            this.found_contact = this.contacts.find(contact => contact.username === this.search_text);
-            this.contact_not_found = !this.found_contact;
-        },
-        add_contact(id) {
-            this.contacts.find(contact => contact.id === id).added = true;
-            this.contacts.push(this.contacts.find(contact => contact.id === id));
+        async search() {
+            try {
+                const response = await axios.get(`${this.$store.state.API_URL}/users/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    params: {
+                        search: this.search_text
+                    }
+                });
+                this.found_contact = response.data;
+            } catch (error) {
+                this.contact_not_found = true;
+            }
         },
         async remove_contact(id) {
             await axios.delete(`${this.$store.state.API_URL}/contacts/${id}`,{
@@ -105,17 +105,35 @@ export default {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            this.contacts.filter(contact => contact.id !== id);
+            this.contacts = this.contacts.filter(contact => contact.id !== id);
+        },
+        async add_contact(id){
+            try {
+                await axios.post(`${this.$store.state.API_URL}/contacts/${id}`, null,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const response = await axios.get(`${this.$store.state.API_URL}/users/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    params: {
+                        id
+                    }
+                });
+                this.contacts.push(response.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
     computed: {
-        contacts() {
-            return this.contacts.filter(contact => contact.added);
-        },
         contacts_usernames() {
             return this.contacts.map(contact => contact.username);
         },
-        alphabetized_contacts() {
+        sorted_contacts() {
             return this.contacts.sort((a, b) => a.name.localeCompare(b.name));
         }
     },
