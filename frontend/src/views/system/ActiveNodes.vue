@@ -25,12 +25,30 @@
             </CRow>
             <CRow>
               <CCol class="d-grid gap-2 mt-3">
-                <CButton
-                  color="danger"
+                <CButtonGroup
+                  :class="{ 'ms-auto': screenwidth > 768, 'text-white': true }"
+                  >
+                  <CButton
+                    color="primary"
+                    type="button"
+                    class="text-white"
+                    >Record
+                  </CButton>
+                  <CButton
+                    color="danger"
+                    type="button"
+                    class="text-white"
+                    @click="deleteNode(node.id)"
+                    >
+                    <CIcon name="cil-trash" />
+                  </CButton>
+                </CButtonGroup>
+                <!-- <CButton
+                  color="primary"
                   :class="{ 'ms-auto': screenwidth > 768, 'text-white': true }"
                   type="button"
                   >Record
-                </CButton>
+                </CButton> -->
               </CCol>
             </CRow>
           </CContainer>
@@ -65,6 +83,21 @@ export default {
   methods: {
     handleResize() {
       this.screenwidth = window.innerWidth;
+    },
+    async deleteNode(id) {
+      try {
+        const response = await axios.delete(
+          `${this.$store.state.API_URL}/nodes/${id}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        this.nodes = this.nodes.filter((node) => node.id !== id);
+      } catch (error) {
+        this.error = error;
+      }
     },
   },
   async mounted() {
