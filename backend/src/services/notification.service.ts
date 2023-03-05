@@ -10,7 +10,7 @@ export class NotificationService {
 
     async getNotifications(userId: Notification["userId"]): Promise<GetNotificationDTO[] | string> {
         const notifications = await client.query(
-            "SELECT idnotification id, type, message FROM notifications WHERE user_id = $1 ORDER BY created_at DESC",
+            "SELECT idnotification id, type, message FROM notifications WHERE user_id = $1 ORDER BY idnotifications DESC",
             [userId]
         );
 
