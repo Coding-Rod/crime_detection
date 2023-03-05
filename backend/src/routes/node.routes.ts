@@ -65,7 +65,7 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const node = nodeService.toggleRecording(parseInt(req.params.id), id);
+      const node = nodeService.toggleRecording(id, parseInt(req.params.id));
       node.then((node) => {
         res.status(200).send(node);
       });

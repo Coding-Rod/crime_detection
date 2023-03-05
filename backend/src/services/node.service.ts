@@ -68,7 +68,7 @@ export class NodeService {
     return node.rows[0];
   }
 
-  async deleteNode(nodeId: Node["id"], userId: Node['userId']): Promise<DeleteNodeDTO | string> {
+  async deleteNode(userId: Node['userId'], nodeId: Node["id"]): Promise<DeleteNodeDTO | string> {
     const nodeToDelete = await client.query(
       "SELECT * FROM nodes WHERE idnode = $1",
       [nodeId]
@@ -79,19 +79,22 @@ export class NodeService {
       "DELETE FROM nodes WHERE idnode = $1 RETURNING *",
       [nodeId]
     );
-    return node.rows[0];
+    return {
+      id: node.rows[0].idnode,
+      name: node.rows[0].name,
+    }
   }
 
   async toggleRecording(
-    nodeId: Node["id"],
-    userId: Node["userId"]
-  ): Promise<StartRecordingDTO | string> {
+    userId: Node["userId"],
+    nodeId: Node["id"]
+    ): Promise<StartRecordingDTO | string> {
     const nodeToToggle = await client.query(
       "SELECT * FROM nodes WHERE idnode = $1",
       [nodeId]
     );
     if (!nodeToToggle.rows[0]) throw boom.notFound("Node not found");
-    if (nodeToToggle.rows[0].user_id !== userId) throw boom.forbidden("You can't edit this node");
+    if (nodeToToggle.rows[0].user_id !== userId) throw boom.forbidden("You are not the owner of this node");
     const node = await client.query(
       "UPDATE nodes SET recording = $1, updated_at = $2 WHERE idnode = $3 RETURNING *",
       [!nodeToToggle.rows[0].recording, new Date(), nodeId]

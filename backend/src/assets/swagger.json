@@ -461,7 +461,7 @@
               "properties": {
                 "username": {
                   "type": "string",
-                  "example": "ivan5919",
+                  "example": "ivan3299",
                   "description": "The username of the user.",
                   "required": true,
                   "minLength": 1,
