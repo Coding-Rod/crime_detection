@@ -13,15 +13,11 @@ export class UserService {
   constructor() {}
 
   async getUser(id: User["id"], search: User['email'] | User['username'] | undefined = undefined): Promise<GetUserDTO | string> {    
-    console.log(search);
-    console.log(`SELECT iduser id, name, username, email FROM users WHERE username = '${search}' OR email = '${search}'`);
     const user = await client.query(
       search
       ? `SELECT iduser id, name, username, email FROM users WHERE username = '${search}' OR email = '${search}'`
       : `SELECT iduser id, name, username, email FROM users WHERE iduser = '${id}'`
     );
-
-    console.log(user.rows[0]);
 
     if (!user.rows[0]) throw boom.notFound("User not found");
     return user.rows[0];
