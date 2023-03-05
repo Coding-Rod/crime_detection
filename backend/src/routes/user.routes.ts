@@ -1,7 +1,6 @@
 import express from "express";
 import passport from "passport";
 
-
 import { UserService } from "../services/user.service";
 import { getId } from "../utils/db/getId";
 
