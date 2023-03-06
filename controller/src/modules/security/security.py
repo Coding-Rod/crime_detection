@@ -1,13 +1,13 @@
 from cryptography.fernet import Fernet
-
+from pathlib import Path
 class Security:
     def __init__(self):
         self.key = Fernet.generate_key()
         self.cipher_suite = Fernet(self.key)
         
         # Password
-        # FIXME: The file path should be local to the module.
-        file = open('./assets/pass.txt', 'rb')
+        self.__actual_path = Path(__file__).parent.absolute()
+        file = open(f'{self.__actual_path}/assets/pass.txt', 'rb')
         self.__encrypted_password = file.read()
         file.close()
         
@@ -20,7 +20,7 @@ class Security:
         Returns:
             bool: True if the password is correct, False otherwise.
         """
-        with open('./assets/key.key', 'rb') as file:
+        with open(f'{self.__actual_path}/assets/key.key', 'rb') as file:
             key = file.read()
             fernet = Fernet(key)
             encrypted_password = fernet.decrypt(self.__encrypted_password)
@@ -32,14 +32,14 @@ class Security:
         Args:
             password (str): The new password.
         """
-        with open('./assets/key.key', 'rb') as file:
+        with open(f'{self.__actual_path}/assets/key.key', 'rb') as file:
             key = file.read()
             fernet = Fernet(key)
             self.__encrypted_password = fernet.encrypt(password.encode())
-            with open('./assets/pass.txt', 'wb') as file:
+            with open(f'{self.__actual_path}/assets/pass.txt', 'wb') as file:
                 file.write(self.__encrypted_password)
                 
-    def validatePassword(password: str) -> bool:
+    def validatePassword(self, password: str) -> bool:
         """ Validate the password.
 
         Args:

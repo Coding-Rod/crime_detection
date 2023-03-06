@@ -65,8 +65,7 @@ class VideoPlayer(QMainWindow, Security):
             self.asterisks = self.asterisks[:-1]
             self.retranslateUi()
     
-    
-    def validatePassword(self) -> None:
+    def validatePasswordUI(self) -> None:
         """ Validate the password shows a warning QMessageBox if the password is wrong."""
         if len(self.password) == 4:
             if self.verifyPassword(self.password):
@@ -80,7 +79,7 @@ class VideoPlayer(QMainWindow, Security):
         self.asterisks = ''
         self.retranslateUi()
 
-    def changePassword(self) -> None:
+    def changePasswordUI(self) -> None:
         """ Verify the password with a QInputDialog and change the password if the password is correct.
         Shows a warning QMessageBox if the password is wrong.
         Shows a warning QMessageBox if the password is not 4 numbers.
@@ -93,11 +92,12 @@ class VideoPlayer(QMainWindow, Security):
                 assert self.verifyPassword(text), 'Password incorrect'
                 text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the new password:')
                 if ok:
-                    Security.validatePassword(text)
+                    self.validatePassword(text)
                     text2, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Confirm the new password:')
                     if ok:
                         assert text == text2, 'Passwords do not match'
-                        Security.changePassword(self, text)
+                        self.changePassword(text)
+                        QtWidgets.QMessageBox.information(self.MainWindow, 'Success', 'Password changed')
                         self.password = ''
         except AssertionError as error:
             QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', str(error))
@@ -169,13 +169,13 @@ class VideoPlayer(QMainWindow, Security):
         self.pushEnterButton = QtWidgets.QPushButton(self)
         self.pushEnterButton.setGeometry(QtCore.QRect(250, 200, 100, 50))
         self.pushEnterButton.setObjectName("pushEnterButton")
-        self.pushEnterButton.clicked.connect(self.validatePassword)
+        self.pushEnterButton.clicked.connect(self.validatePasswordUI)
         self.pushEnterButton.setStyleSheet(self.buttonStyle)
         
         self.pushhangePasswordButton = QtWidgets.QPushButton(self)
         self.pushhangePasswordButton.setGeometry(QtCore.QRect(370, 225, 110, 25))
         self.pushhangePasswordButton.setObjectName("pushSettingsButton")
-        self.pushhangePasswordButton.clicked.connect(self.changePassword)
+        self.pushhangePasswordButton.clicked.connect(self.changePasswordUI)
         self.pushhangePasswordButton.setStyleSheet(self.hyperlinkStyle)
         
         self.lineEdit = QtWidgets.QLineEdit(self)
