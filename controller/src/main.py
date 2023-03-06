@@ -1,35 +1,13 @@
-import cv2
 import numpy as np
 
 from cryptography.fernet import Fernet
 
-from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QObject, QThread
+from PyQt5.QtCore import Qt, pyqtSlot, QThread
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
-class VideoStream(QObject):
-    frame_signal = pyqtSignal(np.ndarray)
-    
-    def __init__(self, camera=0):
-        super().__init__()
-        self.camera = camera
-        self.stopped = False
-        
-
-    @pyqtSlot()
-    def start(self):
-        cap = cv2.VideoCapture(self.camera)
-        while not self.stopped:
-            ret, frame = cap.read()
-            if ret:
-                self.frame_signal.emit(frame)
-
-    @pyqtSlot()
-    def stop(self):
-        self.stopped = True
-
+from modules.camera.camera import VideoStream
 class VideoPlayer(QMainWindow):
     password = ''
     asterisks = ''
@@ -55,7 +33,7 @@ class VideoPlayer(QMainWindow):
         self.MainWindow.resize(650, 280)
         
         # Password
-        file = open('./security/pass.txt', 'rb')
+        file = open('./assets/pass.txt', 'rb')
         self.__encrypted_password = file.read()
         file.close()
         
@@ -100,7 +78,7 @@ class VideoPlayer(QMainWindow):
         Returns:
             bool: True if the password is correct, False otherwise.
         """
-        with open('./security/key.key', 'rb') as file:
+        with open('./assets/key.key', 'rb') as file:
             key = file.read()
             fernet = Fernet(key)
             encrypted_password = fernet.decrypt(self.__encrypted_password)
@@ -138,11 +116,11 @@ class VideoPlayer(QMainWindow):
                             text2, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Confirm the new password:')
                             if ok:
                                 if text == text2:
-                                    with open('./security/key.key', 'rb') as file:
+                                    with open('./assets/key.key', 'rb') as file:
                                         key = file.read()
                                         fernet = Fernet(key)
                                         encrypted_password = fernet.encrypt(text.encode())
-                                        with open('./security/pass.txt', 'wb') as file:
+                                        with open('./assets/pass.txt', 'wb') as file:
                                             file.write(encrypted_password)
                                             QtWidgets.QMessageBox.information(self.MainWindow, 'Success', 'Password changed successfully')
                                         self.__encrypted_password = encrypted_password
@@ -279,9 +257,8 @@ class VideoPlayer(QMainWindow):
 
 
     @pyqtSlot(np.ndarray)
-    def display_frame(self, frame):
+    def display_frame(self, image):
         # Convert the frame to an RGB image and resize it to fit the label
-        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h, w, c = image.shape
         bytes_per_line = c * w
         q_image = QImage(image.data, w, h, bytes_per_line, QImage.Format_RGB888)

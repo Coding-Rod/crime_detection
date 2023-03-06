@@ -7,5 +7,5 @@ key = Fernet.generate_key()
 fernet = Fernet(key)
 
 # Save the key to a file
-with open('key.key', 'wb') as key_file:
+with open('../key.key', 'wb') as key_file:
     key_file.write(key)
