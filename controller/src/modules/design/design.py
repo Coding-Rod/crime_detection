@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from pathlib import Path
 
 from ..security.security import Security
 
@@ -62,14 +63,16 @@ class DesignMethods(Security):
 class Design_UI(DesignMethods):
     def __init__(self):
         super().__init__()
+        
+        self.__actual_path = Path(__file__).parent.absolute()
         # Styles
-        file = open('./styles/button.css', 'r')
+        file = open(f'{self.__actual_path}/styles/button.css', 'r')
         self.buttonStyle = file.read()
         file.close()
-        file = open('./styles/line_edit.css', 'r')
+        file = open(f'{self.__actual_path}/styles/line_edit.css', 'r')
         self.lineEditStyle = file.read()
         file.close()
-        file = open('./styles/hyperlink.css', 'r')
+        file = open(f'{self.__actual_path}/styles/hyperlink.css', 'r')
         self.hyperlinkStyle = file.read()
         file.close()
                             

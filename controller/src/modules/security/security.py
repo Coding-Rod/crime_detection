@@ -2,11 +2,12 @@ from cryptography.fernet import Fernet
 from pathlib import Path
 class Security:
     def __init__(self):
+        self.__actual_path = Path(__file__).parent.absolute()
+        
         self.key = Fernet.generate_key()
         self.cipher_suite = Fernet(self.key)
         
         # Password
-        self.__actual_path = Path(__file__).parent.absolute()
         file = open(f'{self.__actual_path}/assets/pass.txt', 'rb')
         self.__encrypted_password = file.read()
         file.close()
