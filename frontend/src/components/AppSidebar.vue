@@ -12,7 +12,11 @@
     "
   >
     <CSidebarBrand>
-      {{ name }}
+      <CText class="text-white" :size="sidebarUnfoldable ? 'h4' : 'h5'">
+        <CIcon name="cil-user" />
+        <span class="ms-2" style="font-size: 0.8rem"
+        >{{ name }}</span>
+      </CText>
     </CSidebarBrand>
     <AppSidebarNav />
     <CSidebarToggler
@@ -39,7 +43,6 @@ export default {
     return {
       sidebarUnfoldable: computed(() => store.state.sidebarUnfoldable),
       sidebarVisible: computed(() => store.state.sidebarVisible),
-      name: '',
     }
   },
   beforeMount() {
@@ -50,11 +53,19 @@ export default {
         },
       })
       .then((response) => {
-        this.name = response.data.name
+        this.$store.commit({
+          type: 'setName',
+          value: response.data.name,
+        })
       })
       .catch((error) => {
         console.log(error)
       })
+  },
+  computed: {
+    name() {
+      return this.$store.state.name
+    },
   },
 }
 </script>

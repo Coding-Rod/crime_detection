@@ -33,6 +33,7 @@ const generateVideos = () => {
 
 export default createStore({
   state: {
+    name: '',
     sidebarVisible: '',
     sidebarUnfoldable: false,
     nodes: [],
@@ -40,6 +41,9 @@ export default createStore({
     API_URL: 'http://192.168.0.13:3000/api/v1',
   },
   mutations: {
+    setName(state, payload) {
+      state.name = payload.value
+    },
     toggleSidebar(state) {
       state.sidebarVisible = !state.sidebarVisible
     },

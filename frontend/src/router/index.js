@@ -35,16 +35,6 @@ const routes = [
     },
     children: [
       {
-        path: '404',
-        name: 'Page404',
-        component: () => import('@/views/pages/Page404'),
-      },
-      {
-        path: '500',
-        name: 'Page500',
-        component: () => import('@/views/pages/Page500'),
-      },
-      {
         path: 'login',
         name: 'Login',
         component: () => import('@/views/pages/Login'),
@@ -99,6 +89,12 @@ const routes = [
         component: () => import('@/views/Settings'),
       },
     ]
+  },
+  // Configure 404 page
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: () => import('@/views/pages/Page404'),
   },
 ]
 

@@ -248,6 +248,12 @@ export default {
           throw new Error("Email is required");
         }
 
+        // Update Vuex store name
+        this.$store.commit({
+          type: "setName",
+          value: this.name,
+        });
+
         const previous_data = await axios.get(`${this.$store.state.API_URL}/users`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -255,10 +261,12 @@ export default {
         });
 
         const new_data = {
-          name: this.name,
+          name: this.$store.state.name,
           username: this.username,
           email: this.email,
         };
+
+        console.log(previous_data.data.name, this.name);
 
         if (previous_data.data.name === this.name) delete new_data.name;
         if (previous_data.data.username === this.username) delete new_data.username;
@@ -278,11 +286,6 @@ export default {
         this.error = "";
         this.password = "";
         this.toastVisible = true;
-
-        // FIXME: This is a temporary solution, then we will use websockets
-        setTimeout(() => {
-          location.reload();
-        }, 3000);
     } catch (error) {
         this.waiting = false;
         this.error = error.response
