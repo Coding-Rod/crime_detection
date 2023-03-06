@@ -1,17 +1,13 @@
 import numpy as np
 
-from cryptography.fernet import Fernet
-
 from PyQt5.QtCore import Qt, pyqtSlot, QThread
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from modules.camera.camera import VideoStream
-from modules.security.security import Security
-class VideoPlayer(QMainWindow, Security):
-    password = ''
-    asterisks = ''
+from modules.design.design import DesignMethods
+class VideoPlayer(QMainWindow, DesignMethods):
     def __init__(self):
         super().__init__()
         self.MainWindow = QMainWindow()
@@ -46,62 +42,7 @@ class VideoPlayer(QMainWindow, Security):
         
         # Setup the UI
         self.setupUi()
-        
-    def concatenatePassword(self, number: str) -> None:
-        """ Concatenate the number to the password.
-
-        Args:
-            number (str): The number to concatenate to the password.
-        """
-        if len(self.password) < 4:
-            self.password += number
-            self.asterisks += '*'
-            self.retranslateUi()
-            
-    def backspace(self) -> None:
-        """ Remove the last number from the password."""
-        if len(self.password) > 0:
-            self.password = self.password[:-1]
-            self.asterisks = self.asterisks[:-1]
-            self.retranslateUi()
-    
-    def validatePasswordUI(self) -> None:
-        """ Validate the password shows a warning QMessageBox if the password is wrong."""
-        if len(self.password) == 4:
-            if self.verifyPassword(self.password):
-                # TODO: Implement the rest of the code
-                print('Password correct')
-            else:
-                QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
-        else:
-            QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')
-        self.password = ''
-        self.asterisks = ''
-        self.retranslateUi()
-
-    def changePasswordUI(self) -> None:
-        """ Verify the password with a QInputDialog and change the password if the password is correct.
-        Shows a warning QMessageBox if the password is wrong.
-        Shows a warning QMessageBox if the password is not 4 numbers.
-        Shows a warning QMessageBox if the password is not a number.
-        Shows a warning QMessageBox if the passwords do not match.
-        """
-        try:
-            text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the previous password:')
-            if ok:
-                assert self.verifyPassword(text), 'Password incorrect'
-                text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the new password:')
-                if ok:
-                    self.validatePassword(text)
-                    text2, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Confirm the new password:')
-                    if ok:
-                        assert text == text2, 'Passwords do not match'
-                        self.changePassword(text)
-                        QtWidgets.QMessageBox.information(self.MainWindow, 'Success', 'Password changed')
-                        self.password = ''
-        except AssertionError as error:
-            QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', str(error))
-                
+                    
     def setupUi(self):
         self.centralwidget = QtWidgets.QWidget(self.MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -109,61 +50,61 @@ class VideoPlayer(QMainWindow, Security):
         self.pushButton1 = QtWidgets.QPushButton(self)
         self.pushButton1.setGeometry(QtCore.QRect(30, 20, 100, 50))
         self.pushButton1.setObjectName("pushButton1")        
-        self.pushButton1.clicked.connect(lambda: self.concatenatePassword('1'))
+        self.pushButton1.clicked.connect(lambda: self.concatenatePasswordUI('1'))
         self.pushButton1.setStyleSheet(self.buttonStyle)
         self.pushButton2 = QtWidgets.QPushButton(self)
         self.pushButton2.setGeometry(QtCore.QRect(140, 20, 100, 50))
         self.pushButton2.setObjectName("pushButton2")
-        self.pushButton2.clicked.connect(lambda: self.concatenatePassword('2'))
+        self.pushButton2.clicked.connect(lambda: self.concatenatePasswordUI('2'))
         self.pushButton2.setStyleSheet(self.buttonStyle)
         self.pushButton3 = QtWidgets.QPushButton(self)
         self.pushButton3.setGeometry(QtCore.QRect(250, 20, 100, 50))
         self.pushButton3.setObjectName("pushButton3")
-        self.pushButton3.clicked.connect(lambda: self.concatenatePassword('3'))
+        self.pushButton3.clicked.connect(lambda: self.concatenatePasswordUI('3'))
         self.pushButton3.setStyleSheet(self.buttonStyle)
         
         self.pushButton4 = QtWidgets.QPushButton(self)
         self.pushButton4.setGeometry(QtCore.QRect(30, 80, 100, 50))
         self.pushButton4.setObjectName("pushButton4")
-        self.pushButton4.clicked.connect(lambda: self.concatenatePassword('4'))
+        self.pushButton4.clicked.connect(lambda: self.concatenatePasswordUI('4'))
         self.pushButton4.setStyleSheet(self.buttonStyle)
         self.pushButton5 = QtWidgets.QPushButton(self)
         self.pushButton5.setGeometry(QtCore.QRect(140, 80, 100, 50))
         self.pushButton5.setObjectName("pushButton5")
-        self.pushButton5.clicked.connect(lambda: self.concatenatePassword('5'))
+        self.pushButton5.clicked.connect(lambda: self.concatenatePasswordUI('5'))
         self.pushButton5.setStyleSheet(self.buttonStyle)
         self.pushButton6 = QtWidgets.QPushButton(self)
         self.pushButton6.setGeometry(QtCore.QRect(250, 80, 100, 50))
         self.pushButton6.setObjectName("pushButton6")
-        self.pushButton6.clicked.connect(lambda: self.concatenatePassword('6'))
+        self.pushButton6.clicked.connect(lambda: self.concatenatePasswordUI('6'))
         self.pushButton6.setStyleSheet(self.buttonStyle)
         
         self.pushButton7 = QtWidgets.QPushButton(self)
         self.pushButton7.setGeometry(QtCore.QRect(30, 140, 100, 50))
         self.pushButton7.setObjectName("pushButton7")
-        self.pushButton7.clicked.connect(lambda: self.concatenatePassword('7'))
+        self.pushButton7.clicked.connect(lambda: self.concatenatePasswordUI('7'))
         self.pushButton7.setStyleSheet(self.buttonStyle)
         self.pushButton8 = QtWidgets.QPushButton(self)
         self.pushButton8.setGeometry(QtCore.QRect(140, 140, 100, 50))
         self.pushButton8.setObjectName("pushButton8")
-        self.pushButton8.clicked.connect(lambda: self.concatenatePassword('8'))
+        self.pushButton8.clicked.connect(lambda: self.concatenatePasswordUI('8'))
         self.pushButton8.setStyleSheet(self.buttonStyle)
         self.pushButton9 = QtWidgets.QPushButton(self)
         self.pushButton9.setGeometry(QtCore.QRect(250, 140, 100, 50))
         self.pushButton9.setObjectName("pushButton9")
-        self.pushButton9.clicked.connect(lambda: self.concatenatePassword('9'))
+        self.pushButton9.clicked.connect(lambda: self.concatenatePasswordUI('9'))
         self.pushButton9.setStyleSheet(self.buttonStyle)
         
         self.pushBackButton = QtWidgets.QPushButton(self)
         self.pushBackButton.setGeometry(QtCore.QRect(30, 200, 100, 50))
         self.pushBackButton.setObjectName("pushBackButton")
-        self.pushBackButton.clicked.connect(self.backspace)
+        self.pushBackButton.clicked.connect(self.backspaceUI)
         self.pushBackButton.setStyleSheet(self.buttonStyle)
         
         self.pushButton0 = QtWidgets.QPushButton(self)
         self.pushButton0.setGeometry(QtCore.QRect(140, 200, 100, 50))
         self.pushButton0.setObjectName("pushButton0")
-        self.pushButton0.clicked.connect(lambda: self.concatenatePassword('0'))
+        self.pushButton0.clicked.connect(lambda: self.concatenatePasswordUI('0'))
         self.pushButton0.setStyleSheet(self.buttonStyle)
         
         self.pushEnterButton = QtWidgets.QPushButton(self)
