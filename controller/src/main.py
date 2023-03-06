@@ -8,7 +8,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from modules.camera.camera import VideoStream
-class VideoPlayer(QMainWindow):
+from modules.security.security import Security
+class VideoPlayer(QMainWindow, Security):
     password = ''
     asterisks = ''
     def __init__(self):
@@ -31,11 +32,6 @@ class VideoPlayer(QMainWindow):
         # Window
         self.MainWindow.setObjectName("MainWindow")
         self.MainWindow.resize(650, 280)
-        
-        # Password
-        file = open('./assets/pass.txt', 'rb')
-        self.__encrypted_password = file.read()
-        file.close()
         
         # Styles
         file = open('./styles/button.css', 'r')
@@ -69,20 +65,6 @@ class VideoPlayer(QMainWindow):
             self.asterisks = self.asterisks[:-1]
             self.retranslateUi()
     
-    def verifyPassword(self, password: str) -> bool:
-        """ Verify the password.
-
-        Args:
-            password (str): The password to verify.
-
-        Returns:
-            bool: True if the password is correct, False otherwise.
-        """
-        with open('./assets/key.key', 'rb') as file:
-            key = file.read()
-            fernet = Fernet(key)
-            encrypted_password = fernet.decrypt(self.__encrypted_password)
-            return password == encrypted_password.decode()
     
     def validatePassword(self) -> None:
         """ Validate the password shows a warning QMessageBox if the password is wrong."""
@@ -105,34 +87,20 @@ class VideoPlayer(QMainWindow):
         Shows a warning QMessageBox if the password is not a number.
         Shows a warning QMessageBox if the passwords do not match.
         """
-        text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the previous password:')
-        
-        if ok:
-            if self.verifyPassword(text):
+        try:
+            text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the previous password:')
+            if ok:
+                assert self.verifyPassword(text), 'Password incorrect'
                 text, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Enter the new password:')
                 if ok:
-                    if text.isdigit():
-                        if len(text) == 4:
-                            text2, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Confirm the new password:')
-                            if ok:
-                                if text == text2:
-                                    with open('./assets/key.key', 'rb') as file:
-                                        key = file.read()
-                                        fernet = Fernet(key)
-                                        encrypted_password = fernet.encrypt(text.encode())
-                                        with open('./assets/pass.txt', 'wb') as file:
-                                            file.write(encrypted_password)
-                                            QtWidgets.QMessageBox.information(self.MainWindow, 'Success', 'Password changed successfully')
-                                        self.__encrypted_password = encrypted_password
-                                        self.password = ''
-                                else:
-                                    QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Passwords do not match')
-                        else:
-                            QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be 4 numbers')
-                    else:
-                        QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password must be a number')     
-            else:
-                QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
+                    Security.validatePassword(text)
+                    text2, ok = QtWidgets.QInputDialog.getText(self.MainWindow, 'Change password', 'Confirm the new password:')
+                    if ok:
+                        assert text == text2, 'Passwords do not match'
+                        Security.changePassword(self, text)
+                        self.password = ''
+        except AssertionError as error:
+            QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', str(error))
                 
     def setupUi(self):
         self.centralwidget = QtWidgets.QWidget(self.MainWindow)
@@ -209,7 +177,6 @@ class VideoPlayer(QMainWindow):
         self.pushhangePasswordButton.setObjectName("pushSettingsButton")
         self.pushhangePasswordButton.clicked.connect(self.changePassword)
         self.pushhangePasswordButton.setStyleSheet(self.hyperlinkStyle)
-        # TODO: Add functionality to this button
         
         self.lineEdit = QtWidgets.QLineEdit(self)
         self.lineEdit.setGeometry(QtCore.QRect(370, 175, 250, 50))
@@ -253,8 +220,6 @@ class VideoPlayer(QMainWindow):
         self.pushEnterButton.setText(_translate("MainWindow", "Enter"))
         self.pushhangePasswordButton.setText(_translate("MainWindow", "Change Password"))
         self.lineEdit.setText(_translate("MainWindow", self.asterisks))
-
-
 
     @pyqtSlot(np.ndarray)
     def display_frame(self, image):
