@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import yaml
 from PyQt5.QtWidgets import QApplication
 
@@ -37,6 +38,39 @@ async def main():
     else:
         print('Node information verified')        
 
+    try:
+        await client.compare_local_server()
+    except AssertionError as error:
+        print(error)
+        if input('Not registered on server, do you want to do it now? (y/N): ') == 'y':
+            await client.post('nodes', data=client.node_config) 
+        else:
+            print('Node not created')
+            sys.exit()
+    else:
+        try:
+            match client.status:
+                case 0: # Name and location are wrong
+                    if input('The name and location are wrong, do you want to update it now? (y/N): ') == 'y':
+                        await client.patch('nodes', data=client.node_config)
+                    else:
+                        raise PermissionError('Node was not updated')
+                case 1: # Name is wrong
+                    if input('The name is wrong, do you want to update it now? (y/N): ') == 'y':
+                        await client.patch('nodes', data=client.node_config)
+                    else:
+                        raise PermissionError('Node was not updated')
+                case 2: # Location is wrong
+                    if input('The location is wrong, do you want to update it now? (y/N): ') == 'y':
+                        await client.patch('nodes', data=client.node_config)
+                    else:
+                        raise PermissionError('Node was not updated')
+                case 3: # OK
+                    print('Node information is correct')
+        except PermissionError as error:
+            print(error)
+            sys.exit()
+    
     print('Starting...')
     app = QApplication([])
     window = MainWindow(client=client)

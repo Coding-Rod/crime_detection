@@ -14,14 +14,16 @@ from pathlib import Path
 class ApiClient:
     base_path = Path(__file__).parent
     filename = (base_path / "config.yml").resolve()
+    node_config = None
     node_data = None
+    status = None
     
     def __init__(self, base_url: str, token: str):
         print(self.filename)
         self.base_url = base_url
         self.__token = token
         
-    async def get(self, endpoint: str, id: int) -> dict:
+    async def get(self, endpoint: str) -> dict:
         """ This method is used to get data from the API
 
         Args:
@@ -34,8 +36,9 @@ class ApiClient:
         
         url = f"{self.base_url}/{endpoint}"
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, params={'id': id}, headers={'Authorization': f'Bearer {self.__token}'}) as response:
-                return await response.json()
+            async with session.get(url, params={'id': self.node_config['node_id']}, headers={'Authorization': f'Bearer {self.__token}'}) as response:
+                self.node_data = await response.json()
+                return self.node_data
             
     async def post(self, endpoint: str, data: dict) -> dict:
         """ This method is used to create a new node
@@ -51,8 +54,9 @@ class ApiClient:
         url = f"{self.base_url}/{endpoint}"
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
-                return await response.json()
-            
+                self.node_data = await response.json()
+                return self.node_data
+                        
     async def patch(self, endpoint: str, data: dict) -> dict:
         """ This method is used to update a node
 
@@ -67,7 +71,8 @@ class ApiClient:
         url = f"{self.base_url}/{endpoint}"
         async with aiohttp.ClientSession() as session:
             async with session.patch(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
-                return await response.json()
+                self.node_data = await response.json()
+                return self.node_data
             
     def save_config(self, data: dict) -> None:
         """ This method is used to save the configuration of the nodes in a file, this file must only contains node_id, name and location
@@ -78,7 +83,7 @@ class ApiClient:
         
         with open(self.filename, 'w') as file:
             yaml.dump(data, file)
-        self.node_data = data
+        self.node_config = data
             
     def verify_config(self) -> dict:
         """ This method is used to verify if the configuration file exists
@@ -94,9 +99,9 @@ class ApiClient:
             assert 'name' in data.keys(), 'The name is not defined'
             assert 'location' in data.keys(), 'The location is not defined'
             
-            self.node_data = data
+            self.node_config = data
             
-            return data
+            return self.node_config
     
     def read_config(self) -> dict:
         """ This method is used to read the configuration file
@@ -107,5 +112,21 @@ class ApiClient:
         
         with open(self.filename, 'r') as file:
             data = yaml.safe_load(file)
-            self.node_data = data
-            return data
+            self.node_config = data
+            return self.node_config
+        
+    async def compare_local_server(self):
+        """ This method is used to compare the local configuration with the server configuration
+
+        int: Number code:
+            - 0: Name and location are wrong
+            - 1: Name is wrong
+            - 2: Location is wrong
+            - 3: OK
+        """
+        
+        response = await self.get('nodes')
+        
+        assert 'name' in response.keys(), response['message']
+                
+        self.status = int(bin(int(response['name'] == self.node_config['name']) << 1 | int(response['location'] == self.node_config['location'])), 2)
