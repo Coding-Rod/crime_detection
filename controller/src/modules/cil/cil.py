@@ -2,12 +2,11 @@ import sys
 from ..auth.auth import Auth
 from modules.api.apiClient import ApiClient
 
-async def cil(config: dict) -> ApiClient:
-    auth = Auth(config['base_url'])
-    config['token'] = await auth.login(config['username'], config['password'])    
-    client = ApiClient(config['base_url'], config['token'])
+async def cil(base_url: str, username: str, password: str) -> ApiClient:
+    auth = Auth(base_url)
+    token = await auth.login(username, password)    
+    client = ApiClient(base_url, token)
     
-    del config
     try:
         print('Verifying node information...')
         client.verify_config()
@@ -30,7 +29,7 @@ async def cil(config: dict) -> ApiClient:
     except AssertionError as error:
         print(error)
         if input('Not registered on server, do you want to do it now? (y/N): ') == 'y':
-            await client.post('nodes', data=client.node_config) 
+            await client.post(data=client.node_config) 
         else:
             print('Node not created')
             sys.exit()
@@ -39,17 +38,17 @@ async def cil(config: dict) -> ApiClient:
             match client.status:
                 case 0: # Name and location are wrong
                     if input('The name and location are wrong, do you want to update it now? (y/N): ') == 'y':
-                        await client.patch('nodes', data=client.node_config)
+                        await client.patch(data=client.node_config)
                     else:
                         raise PermissionError('Node was not updated')
                 case 1: # Name is wrong
                     if input('The name is wrong, do you want to update it now? (y/N): ') == 'y':
-                        await client.patch('nodes', data=client.node_config)
+                        await client.patch(data=client.node_config)
                     else:
                         raise PermissionError('Node was not updated')
                 case 2: # Location is wrong
                     if input('The location is wrong, do you want to update it now? (y/N): ') == 'y':
-                        await client.patch('nodes', data=client.node_config)
+                        await client.patch(data=client.node_config)
                     else:
                         raise PermissionError('Node was not updated')
                 case 3: # OK

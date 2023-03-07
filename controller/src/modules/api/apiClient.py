@@ -23,7 +23,7 @@ class ApiClient:
         self.base_url = base_url
         self.__token = token
         
-    async def get(self, endpoint: str) -> dict:
+    async def get(self) -> dict:
         """ This method is used to get data from the API
 
         Args:
@@ -34,13 +34,13 @@ class ApiClient:
             dict: The response of the API
         """
         
-        url = f"{self.base_url}/{endpoint}"
+        url = f"{self.base_url}/nodes"
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params={'id': self.node_config['node_id']}, headers={'Authorization': f'Bearer {self.__token}'}) as response:
                 self.node_data = await response.json()
                 return self.node_data
             
-    async def post(self, endpoint: str, data: dict) -> dict:
+    async def post(self, data: dict) -> dict:
         """ This method is used to create a new node
 
         Args:
@@ -51,13 +51,13 @@ class ApiClient:
             dict: The response of the API
         """
         
-        url = f"{self.base_url}/{endpoint}"
+        url = f"{self.base_url}/nodes"
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
                 self.node_data = await response.json()
                 return self.node_data
-                        
-    async def patch(self, endpoint: str, data: dict) -> dict:
+
+    async def patch(self, data: dict) -> dict:
         """ This method is used to update a node
 
         Args:
@@ -68,12 +68,24 @@ class ApiClient:
             dict: The response of the API
         """
         
-        url = f"{self.base_url}/{endpoint}"
+        url = f"{self.base_url}/nodes"
         async with aiohttp.ClientSession() as session:
             async with session.patch(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
                 self.node_data = await response.json()
                 return self.node_data
-            
+
+    async def new_alert_notification(self, message: str):
+        """ This method is used to create a new notification
+
+        Args:
+            message (str): The message of the notification
+        """
+        url = f"{self.base_url}/notifications"
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, json={'message': message, type: 4}, headers={'Authorization': f'Bearer {self.__token}'}) as response:
+                self.node_data = await response.json()
+                return self.node_data
+                
     def save_config(self, data: dict) -> None:
         """ This method is used to save the configuration of the nodes in a file, this file must only contains node_id, name and location
 
@@ -125,7 +137,7 @@ class ApiClient:
             - 3: OK
         """
         
-        response = await self.get('nodes')
+        response = await self.get()
         
         assert 'name' in response.keys(), response['message']
                 
