@@ -7,17 +7,18 @@ from modules.design.design import Design_UI
 from modules.api.apiClient import ApiClient
 from modules.cil.cil import cil
 class MainWindow(VideoPlayer, Design_UI):
-    def __init__(self, client: ApiClient):
+    def __init__(self, client: ApiClient, hardware: dict):
         self.client = client
+                    
         super().__init__()
         self.setupUi()
 
 async def main():
     config = yaml.safe_load(open("config/config.yml"))
-    client = cil(**config['network'])
+    client = await cil(**config['network'])
 
     app = QApplication([])
-    window = MainWindow(client=client)
+    window = MainWindow(client=client, hardware=config['hardware'])
     window.show()
     app.exec_()
     

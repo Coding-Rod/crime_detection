@@ -2,3 +2,10 @@ network:
   username: ivan3299
   password: password123
   base_url: http://192.168.0.14:3000/api/v1
+hardware:
+  camera: 4
+  input: 4
+  output:
+    - 1
+    - 2
+    - 3
