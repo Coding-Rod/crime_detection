@@ -41,6 +41,7 @@ export class NodeService {
     if (nodes.rows.length >= 10)
       throw boom.forbidden("You can't create more than 10 nodes");
 
+    if (nodes.rows.find((node) => node.name === nodeData.name)) throw boom.conflict('You already have a node called ' + nodeData.name);
     const { name, location } = nodeData;
     const node = await client.query(
       "INSERT INTO nodes (name, location, status, recording, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
@@ -54,6 +55,12 @@ export class NodeService {
     nodeData: UpdateNodeDTO,
     userId: Node["userId"]
   ): Promise<GetOneNodeDTO | string> {
+    const nodes = await client.query("SELECT name FROM nodes WHERE user_id = $1", [
+      userId,
+    ]);
+
+    if (nodes.rows.find((node) => node.name === nodeData.name)) throw boom.conflict('You already have a node called ' + nodeData.name);
+
     const nodeToUpdate = await client.query(
       "SELECT * FROM nodes WHERE user_id = $1 LIMIT 1 OFFSET $2",
       [userId, nodeNumber - 1]

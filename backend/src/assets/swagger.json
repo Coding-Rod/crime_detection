@@ -196,6 +196,9 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict, some field must be unique"
           }
         },
         "tags": [
