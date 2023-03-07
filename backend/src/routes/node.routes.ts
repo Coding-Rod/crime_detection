@@ -20,8 +20,9 @@ router.get(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const node = await nodeService.getNodes(id);
-      res.status(200).send(node);
+      res.status(200).send(req.query.nodeNumber
+        ? await nodeService.getNode(id, parseInt(req.query.nodeNumber as string))
+        : await nodeService.getNodes(id));
     } catch (err) {
       next(err);
     }
@@ -34,7 +35,8 @@ router.post(
   validatorHandler(createNodeSchema, "body"),
   async (req, res, next) => {
     try {
-      const node = await nodeService.createNode(req.body);
+      const id = await getId(req.headers.authorization as string);
+      const node = await nodeService.createNode(id, req.body);
       res.status(201).send(node);
     } catch (err) {
       next(err);

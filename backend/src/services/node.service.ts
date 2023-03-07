@@ -21,23 +21,24 @@ export class NodeService {
     return nodes.rows;
   }
 
-  async getNode(nodeId: number): Promise<GetOneNodeDTO | string> {
+  async getNode(userId: Node["userId"], nodeNumber: number): Promise<GetOneNodeDTO | string> {
     const node = await client.query(
-      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.idnode=$1 AND no.user_id = us.iduser",
-      [nodeId]
+      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser LIMIT 1 OFFSET $2",
+      [userId, nodeNumber - 1]
     );
+    console.log(node.rows[0]);
     if (!node.rows[0]) throw boom.notFound("Node not found");
     return node.rows[0];
   }
 
-  async createNode(nodeData: CreateNodeDTO): Promise<GetOneNodeDTO | string> {
+  async createNode(userId: Node["userId"], nodeData: CreateNodeDTO) {
     const nodes = await client.query("SELECT * FROM nodes WHERE user_id = $1", [
-      nodeData.userId,
+      userId,
     ]);
     if (nodes.rows.length >= 10)
       throw boom.forbidden("You can't create more than 10 nodes");
 
-    const { name, location, userId } = nodeData;
+    const { name, location } = nodeData;
     const node = await client.query(
       "INSERT INTO nodes (name, location, status, recording, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
       [name, location, false, false, new Date(), new Date(), userId]

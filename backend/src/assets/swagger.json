@@ -135,7 +135,14 @@
     "/nodes/": {
       "get": {
         "description": "This endpoint returns a list of nodes.",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "nodeNumber",
+            "in": "query",
+            "required": false,
+            "type": "number"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -170,15 +177,9 @@
                 },
                 "location": {
                   "type": "string",
-                  "example": "123.456, 789.012",
+                  "example": "Obrajes, La Paz, Bolivia",
                   "description": "The location of the node.",
                   "required": false
-                },
-                "userId": {
-                  "type": "string",
-                  "example": "1",
-                  "description": "The id of the user that owns the node.",
-                  "required": true
                 }
               }
             }
@@ -415,7 +416,7 @@
         ]
       },
       "post": {
-        "description": "This endpoint creates a notification.",
+        "description": "This endpoint creates a notification. There are 4 types of notifications explained in the following table:\n\n| Type | Description |\n| --- | --- |\n| 1 | Node notification |\n| 2 | Contact notification |\n| 3 | Alert notification |\n| 4 | System notification |",
         "parameters": [
           {
             "name": "notification",
@@ -436,10 +437,17 @@
                 "type": {
                   "type": "number",
                   "example": "1",
-                  "description": "The type of the notification.",
+                  "description": "The type of the notification. See the table above for more information.",
                   "required": true,
-                  "minLength": 1,
-                  "maxLength": 255
+                  "minimum": 1,
+                  "maximum": 4,
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "default": 1
                 }
               }
             }

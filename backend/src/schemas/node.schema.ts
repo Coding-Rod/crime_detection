@@ -12,7 +12,6 @@ export const getNodeSchema = Joi.object({
 export const createNodeSchema = Joi.object({
     name: name.required(),
     location: location.required(),
-    userId: userId.required(),
 });
 
 export const updateNodeSchema = Joi.object({
