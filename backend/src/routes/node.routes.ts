@@ -20,8 +20,8 @@ router.get(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      res.status(200).send(req.query.nodeNumber
-        ? await nodeService.getNode(id, parseInt(req.query.nodeNumber as string))
+      res.status(200).send(req.query.id
+        ? await nodeService.getNode(id, parseInt(req.query.id as string))
         : await nodeService.getNodes(id));
     } catch (err) {
       next(err);

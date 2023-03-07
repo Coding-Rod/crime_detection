@@ -137,10 +137,12 @@
         "description": "This endpoint returns a list of nodes.",
         "parameters": [
           {
-            "name": "nodeNumber",
+            "name": "id",
             "in": "query",
             "required": false,
-            "type": "number"
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
           }
         ],
         "responses": {
@@ -209,7 +211,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
           },
           {
             "name": "node",
@@ -263,7 +267,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
           }
         ],
         "responses": {
@@ -293,7 +299,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
           }
         ],
         "responses": {
