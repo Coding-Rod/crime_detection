@@ -1,2 +1,0 @@
-1. Menu
-0. Logout

@@ -5,14 +5,14 @@
         <CRow>
             <CCol xs="12" md="4">
                 <CListGroup>
-                    <CListGroupItem v-for="contact in alphabetized_contacts" :key="contact.id">
+                    <CListGroupItem v-for="contact in sorted_contacts" :key="contact.id">
                         <CContainerFluid>
                             <CRow>
                                 <CCol md="10" xs="8" class="d-flex align-items-center justify-content-start" height="100%">
                                     <CRow>
                                         <CCol>
                                             <h5 class="mb-0">{{ contact.name }}</h5>
-                                            <p class="mb-0">{{ contact.username }}</p>
+                                            <p class="mb-0">@{{ contact.username }}</p>
                                         </CCol>
                                     </CRow>
                                 </CCol>
@@ -30,7 +30,7 @@
                 <CCard>
                     <CCardHeader>
                         <CInputGroup class="mb-3">
-                            <CFormInput placeholder="Username" aria-label="Recipient's username" aria-describedby="basic-addon2" type="search" v-model="search_text"/>
+                            <CFormInput placeholder="Enter a username or email of your emergency contact" aria-label="Recipient's username" aria-describedby="basic-addon2" type="search" v-model="search_text"/>
                             <CInputGroupText id="basic-addon2">
                                 <CButton @click="search">
                                     <CIcon name="cil-magnifying-glass"/>
@@ -40,24 +40,16 @@
                     </CCardHeader>
                     <CCardBody v-if="found_contact" class="user_card">
                         <div class="user_avatar">
-                            <CAvatar :src="found_contact.avatar" size="lg" class="me-2"/>
-                            <CCardText>{{ found_contact.username }}</CCardText>
+                            <CCardText>@{{ found_contact.username }}</CCardText>
                         </div>
                         <div class="user_info">
                             <CCardTitle>{{ found_contact.name }}</CCardTitle>
                             <CButton 
-                                v-if="!found_contact.added"
+                                v-if="!contacts_usernames.includes(found_contact.username) && found_contact.id !== user_id"
                                 color="primary" 
                                 class="text-white"
                                 @click="add_contact(found_contact.id)"
                             >Add to contacts
-                            </CButton>
-                            <CButton 
-                                v-else
-                                color="danger" 
-                                class="text-white"
-                                @click="remove_contact(found_contact.id)"
-                            >Remove from contacts
                             </CButton>
                         </div>
                     </CCardBody>
@@ -67,121 +59,115 @@
                     </CCardBody>
                     <CCardBody v-else>
                         <CCardTitle>Search a new contact</CCardTitle>
-                        <CCardText>You can add them to your emergency contacts so they will be notified when any of your nodes detect a harmful situation</CCardText>
+                        <CCardText>You can add them to your emergency contacts so they will be notified when any of your nodes detect a harmful situation, you can add a total of 10 contacts</CCardText>
                     </CCardBody>
                 </CCard>
             </CCol>                    
         </CRow>
     </CContainer>
   </div>
+    <CToaster style="position: absolute; bottom: 5px; right: 5px; z-index: 9999">
+        <CToast
+        :show="toast.show"
+        autohide="true"
+        fade="true"
+        :key="1"
+        @update:show="val => (toast.show = val)"
+        :title="toast.message"
+        :color="toast.color"
+        />
+    </CToaster>
 </template>
 
 <script>
 import verifyToken from '@/utils/verifyToken'
+import axios from 'axios'
 
 export default {
     name: "Contacts",
     data() {
         return {
             search_text: "",
+            user_id: null,
             found_contact: null,
             contact_not_found: false,
-            world: [
-                {
-                    id: 1,
-                    avatar: "https://picsum.photos/200",
-                    name: "Cras justo odio",
-                    username: "@Cras",
-                    added: true,
-                },
-                {
-                    id: 2,
-                    avatar: "https://picsum.photos/200",
-                    name: "Dapibus ac facilisis",
-                    username: "@Dapibus",
-                    added: true,
-                },
-                {
-                    id: 3,
-                    avatar: "https://picsum.photos/200",
-                    name: "Morbi leo risus",
-                    username: "@Morbi",
-                    added: true,
-                },
-                {
-                    id: 4,
-                    avatar: "https://picsum.photos/200",
-                    name: "Porta ac consectetur",
-                    username: "@Porta",
-                    added: true,
-                },
-                {
-                    id: 5,
-                    avatar: "https://picsum.photos/200",
-                    name: "Vestibulum at eros",
-                    username: "@Vestibulum",
-                    added: true,
-                },
-                {
-                    id: 6,
-                    avatar: "https://picsum.photos/200",
-                    name: "Cras justo odio",
-                    username: "@Cras2",
-                    added: false
-                },
-                {
-                    id: 7,
-                    avatar: "https://picsum.photos/200",
-                    name: "Dapibus ac facilisis",
-                    username: "@Dapibus1",
-                    added: false
-                },
-                {
-                    id: 8,
-                    avatar: "https://picsum.photos/200",
-                    name: "Morbi leo risus",
-                    username: "@Morbi3",
-                    added: true
-                },
-                {
-                    id: 9,
-                    avatar: "https://picsum.photos/200",
-                    name: "Porta ac consectetur",
-                    username: "@Porta4",
-                    added: true
-                },
-                {
-                    id: 10,
-                    avatar: "https://picsum.photos/200",
-                    name: "Vestibulum at eros",
-                    username: "@Vestibulum5",
-                    added: false
-                },
-            ],
+            contacts: [],
+            toast: {
+                show: false,
+                message: "",
+                color: ""
+            }
         };
     },
     methods: {
-        search() {
-            this.found_contact = this.world.find(contact => contact.username === this.search_text);
-            this.contact_not_found = !this.found_contact;
+        async search() {
+            try {
+                const response = await axios.get(`${this.$store.state.API_URL}/users/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    params: {
+                        search: this.search_text
+                    }
+                });
+                this.found_contact = response.data;
+            } catch (error) {
+                this.contact_not_found = true;
+                this.toast = {
+                    show: true,
+                    message: "Contact not found",
+                    color: "danger"
+                }
+            }
         },
-        add_contact(id) {
-            this.world.find(contact => contact.id === id).added = true;
-            this.contacts.push(this.world.find(contact => contact.id === id));
+        async remove_contact(id) {
+            try {
+                await axios.delete(`${this.$store.state.API_URL}/contacts/${id}`,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                this.contacts = this.contacts.filter(contact => contact.id !== id);
+            } catch (error) {
+                this.toast = {
+                    show: true,
+                    message: "Error removing contact",
+                    color: "danger"
+                }                
+            }
         },
-        remove_contact(id) {
-            this.world.find(contact => contact.id === id).added = false;
-            this.contacts = this.contacts.filter(contact => contact.id !== id);
+        async add_contact(id){
+            try {
+                await axios.post(`${this.$store.state.API_URL}/contacts/${id}`, null,{
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const response = await axios.get(`${this.$store.state.API_URL}/users/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    },
+                    params: {
+                        id
+                    }
+                });
+                this.contacts.push(response.data);
+            } catch (error) {
+                this.toast = {
+                    show: true,
+                    message: "Error adding contact",
+                    color: "danger"
+                }
+            }
         }
     },
     computed: {
-        contacts() {
-            return this.world.filter(contact => contact.added);
+        contacts_usernames() {
+            return this.contacts.map(contact => contact.username);
         },
-        world_usernames() {
-            return this.world.map(contact => contact.username);
-        },
-        alphabetized_contacts() {
+        sorted_contacts() {
             return this.contacts.sort((a, b) => a.name.localeCompare(b.name));
         }
     },
@@ -191,8 +177,25 @@ export default {
             this.contact_not_found = false;
         }
     },
-    beforeMount() {
+    async beforeMount() {
         verifyToken();
+
+        const response = await axios.get(`${this.$store.state.API_URL}/users/`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+        
+        this.user_id = response.data.id;
+    },
+    async mounted() {
+        const response = await axios.get(`${this.$store.state.API_URL}/contacts/`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        this.contacts = response.data;
     }
 }
 </script>

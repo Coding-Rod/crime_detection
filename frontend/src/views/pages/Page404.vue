@@ -9,14 +9,18 @@
             <p class="text-medium-emphasis float-start">
               The page you are looking for was not found.
             </p>
+            <!-- Go to home page button  -->
           </div>
-          <CInputGroup class="input-prepend">
-            <CInputGroupText>
-              <CIcon icon="cil-magnifying-glass" />
-            </CInputGroupText>
-            <CFormInput type="text" placeholder="What are you looking for?" />
-            <CButton color="info">Search</CButton>
-          </CInputGroup>
+        </CCol>
+      </CRow>
+      <CRow class="justify-content-center">
+        <CCol md="6" class="text-center">
+            <router-link to="/">
+              <CButton color="primary" class="mt-3 text-white">
+                <CIcon name="cil-home" />
+                &nbsp; Go to home page
+              </CButton>
+            </router-link>
         </CCol>
       </CRow>
     </CContainer>
