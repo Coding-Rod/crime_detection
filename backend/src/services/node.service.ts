@@ -47,7 +47,10 @@ export class NodeService {
       "INSERT INTO nodes (name, location, status, recording, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
       [name, location, false, false, new Date(), new Date(), userId]
     );
-    return node.rows[0];
+    return {
+      id: nodes.rows.length + 1,
+      ...node.rows[0],
+    }
   }
 
   async updateNode(
