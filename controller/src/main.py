@@ -2,26 +2,22 @@ import asyncio
 import yaml
 from PyQt5.QtWidgets import QApplication
 
-from modules.auth.auth import Auth
 from modules.camera.camera import VideoPlayer
 from modules.design.design import Design_UI
-
+from modules.api.apiClient import ApiClient
+from modules.cil.cil import cil
 class MainWindow(VideoPlayer, Design_UI):
-    def __init__(self, config: dict):
-        print(config)
-        self.token = config['token']
+    def __init__(self, client: ApiClient):
+        self.client = client
         super().__init__()
         self.setupUi()
 
 async def main():
-    config = yaml.safe_load(open('config.yml'))
-    auth = Auth(config['base_url'])
-    config['token'] = await auth.login(config['username'], config['password'])
-    del config['username']
-    del config['password']
+    
+    client = cil(yaml.load(open('config.yml', 'r'), Loader=yaml.FullLoader))
 
     app = QApplication([])
-    window = MainWindow(config=config)
+    window = MainWindow(client=client)
     window.show()
     app.exec_()
     
