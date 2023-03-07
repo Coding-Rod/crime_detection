@@ -66,8 +66,8 @@ export class NodeService {
       ...nodeData,
     };
     const node = await client.query(
-      "UPDATE nodes SET name = $1, location = $2, updated_at = $3 WHERE idnode = $4 RETURNING *",
-      [updatedNode.name, updatedNode.location, new Date(), nodeToUpdate.rows[0].idnode]
+      "UPDATE nodes SET name = $1, location = $2, status = $3, updated_at = $4 WHERE idnode = $5 RETURNING *",
+      [updatedNode.name, updatedNode.location, updatedNode.status, new Date(), nodeToUpdate.rows[0].idnode]
     );
     return node.rows[0];
   }

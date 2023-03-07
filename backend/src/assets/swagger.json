@@ -234,6 +234,12 @@
                   "example": "123.456, 789.012",
                   "description": "The location of the node.",
                   "required": false
+                },
+                "status": {
+                  "type": "boolean",
+                  "example": true,
+                  "description": "The status of the node. True if the node is active, false otherwise.",
+                  "required": false
                 }
               }
             }

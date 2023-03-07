@@ -3,7 +3,7 @@ import Joi from "joi";
 const id = Joi.number().integer().min(1);
 const name = Joi.string().min(3).max(30);
 const location = Joi.string().min(3).max(30);
-const userId = Joi.number().integer().min(1);
+const status = Joi.boolean();
 
 export const getNodeSchema = Joi.object({
     id: id.required(),
@@ -15,9 +15,9 @@ export const createNodeSchema = Joi.object({
 });
 
 export const updateNodeSchema = Joi.object({
-    id: id.required(),
     name: name,
     location: location,
+    status: status,
 });
 
 export const toggleRecordingSchema = Joi.object({
