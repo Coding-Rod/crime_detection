@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication
 from modules.camera.camera import VideoPlayer
 from modules.design.design import Design_UI
 from modules.api.apiClient import ApiClient
-from modules.cil.cil import cil
+from modules.cli.cli import cli
 class MainWindow(VideoPlayer, Design_UI):
     def __init__(self, client: ApiClient, hardware: dict):
         self.client = client
@@ -15,7 +15,7 @@ class MainWindow(VideoPlayer, Design_UI):
 
 async def main():
     config = yaml.safe_load(open("config/config.yml"))
-    client = await cil(**config['network'])
+    client = await cli(**config['network'])
 
     app = QApplication([])
     window = MainWindow(client=client, hardware=config['hardware'])

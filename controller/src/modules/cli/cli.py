@@ -2,7 +2,7 @@ import sys
 from ..auth.auth import Auth
 from modules.api.apiClient import ApiClient
 
-async def cil(base_url: str, username: str, password: str) -> ApiClient:
+async def cli(base_url: str, username: str, password: str) -> ApiClient:
     auth = Auth(base_url)
     token = await auth.login(username, password)    
     client = ApiClient(base_url, token)
