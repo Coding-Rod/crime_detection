@@ -24,7 +24,7 @@ app.use(cors());
 require('./utils/auth');
 
 app.get('/', (_req, res) => {
-    res.send('Hello World!');
+    res.send('Welcome to the API');
 });
 
 // Add the router to the app
@@ -34,7 +34,7 @@ routerApi(app);
 app.use(express.json());
 
 // Add the swagger middleware
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Error handler middlewares
 app.use(logErrors);
