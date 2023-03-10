@@ -18,10 +18,10 @@ class VideoStream(QObject):
         self.camera = camera
         self.stopped = False        
 
-    # def hidratate_video_stream(self, frame):
-    #     """ Obtain client and pinOut objects from the main window. """
-    #     self.client = frame.client
-    #     self.pinOut = frame.pinOut
+    def hidratate_video_stream(self, client, pinOut):
+        """ Obtain client and pinOut objects from the main window. """
+        self.client = client
+        self.pinOut = pinOut
 
     @pyqtSlot()
     def start(self):
@@ -29,17 +29,17 @@ class VideoStream(QObject):
         while not self.stopped:
             ret, frame = cap.read()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            # if self.pinOut.read_pin():
-            #     detection = object_detection(frame)
-            #     if sum(detection.values()) > 0:
-            #         self.pinOut.write_rgb(1, 0, 0)
-            #         self.pinOut.write_relay(0)
-            #         if detection['guns'] > 0 and detection['knives'] > 0:
-            #             self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')} and {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
-            #         elif detection['guns'] > 0:
-            #             self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')}")
-            #         elif detection['knives'] > 0:
-            #             self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
+            if self.pinOut.read_pin():
+                detection = object_detection(frame)
+                if sum(detection.values()) > 0:
+                    self.pinOut.write_rgb(1, 0, 0)
+                    self.pinOut.write_relay(0)
+                    if detection['guns'] > 0 and detection['knives'] > 0:
+                        self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')} and {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
+                    elif detection['guns'] > 0:
+                        self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')}")
+                    elif detection['knives'] > 0:
+                        self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
             if ret:
                 self.frame_signal.emit(frame)
 

@@ -10,6 +10,10 @@ class DesignMethods(Security):
     def __init__(self):
         super().__init__()
         
+    def hidratate_design_methods(self, pinOut):
+        """ Obtain pinOut object from the main window. """
+        self.pinOut = pinOut
+        
     def concatenatePasswordUI(self, number: str) -> None:
         """ Concatenate the number to the password.
 
