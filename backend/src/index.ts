@@ -1,6 +1,7 @@
 import express from 'express';
 import routerApi from './routes/';
 import cors from 'cors';
+import http from 'http';
 
 import {
     logErrors,
@@ -8,11 +9,13 @@ import {
     boomErrorHandler
 } from './middlewares/error.handler';
 
+// Swagger
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./assets/swagger.json');
 
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
+const PORT = process.env.PORT || 3000;
 
 // Add Json support
 app.use(express.json());
@@ -41,6 +44,6 @@ app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-app.listen(port, () => {
-    console.log('Server listening on port', port);
+server.listen(PORT, () => {
+    console.log('Server listening on port', PORT);
 });
