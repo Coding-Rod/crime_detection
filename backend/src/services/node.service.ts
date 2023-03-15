@@ -8,6 +8,8 @@ import {
 } from "../dtos/node.dto";
 import { client } from "../db/config";
 
+import { wss } from "../index";
+
 import boom from "@hapi/boom";
 export class NodeService {
   constructor() {}
@@ -47,6 +49,23 @@ export class NodeService {
       "INSERT INTO nodes (name, location, status, recording, created_at, updated_at, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
       [name, location, false, false, new Date(), new Date(), userId]
     );
+
+    // FIXME: Temporary websocket
+    wss.clients.forEach((client) => {
+      client.send(
+        JSON.stringify({
+          type: "node",
+          data: {
+            id: nodes.rows.length + 1,
+            name: node.rows[0].name,
+            location: node.rows[0].location,
+            status: node.rows[0].status,
+            recording: node.rows[0].recording,
+          },
+        })
+      );
+    });
+
     return {
       id: nodes.rows.length + 1,
       ...node.rows[0],
