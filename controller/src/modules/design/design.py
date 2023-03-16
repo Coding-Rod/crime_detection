@@ -5,8 +5,14 @@ from ..security.security import Security
 
 class DesignMethods(Security):
     password = ''
+    pinOut = None
+    
     def __init__(self):
         super().__init__()
+        
+    def hidratate_design_methods(self, pinOut):
+        """ Obtain pinOut object from the main window. """
+        self.pinOut = pinOut
         
     def concatenatePasswordUI(self, number: str) -> None:
         """ Concatenate the number to the password.
@@ -28,7 +34,7 @@ class DesignMethods(Security):
         """ Validate the password shows a warning QMessageBox if the password is wrong."""
         if len(self.password) == 4:
             if self.verifyPassword(self.password):
-                # TODO: Implement the rest of the code
+                self.pinOut.write_rgb(0, 1, 0)
                 print('Password correct')
             else:
                 QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
