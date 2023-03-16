@@ -17,9 +17,13 @@ router.get(
     async (req, res, next) => {
         try {
             const id = await getId(req.headers.authorization as string);
-            return res.status(200).send(req.query.types && typeof req.query.types === "string"
-            ? await notificationService.getNotifications(id, (req.query.types.split(',') as string[]).map(Number))
-            : await notificationService.getNotifications(id));
+            return res.status(200).send(
+            await notificationService.getNotifications(
+                id, 
+                typeof req.query.types === 'string' ? (req.query.types.split(',') as string[]).map(Number) : [1, 2, 3, 4],
+                req.query.limit ? parseInt(req.query.limit as string) : 10,
+                req.query.offset ? parseInt(req.query.offset as string) : 0
+            ));
         } catch (err) {
             next(err);
         }

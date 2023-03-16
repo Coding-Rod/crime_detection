@@ -415,6 +415,22 @@
             "required": false,
             "type": "array",
             "example": "types=1,2,3"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of notifications to return.",
+            "required": false,
+            "type": "number",
+            "example": "limit=10"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The offset of the notifications to return.",
+            "required": false,
+            "type": "number",
+            "example": "offset=10"
           }
         ],
         "responses": {
