@@ -9,14 +9,11 @@ import boom from "@hapi/boom";
 export class NotificationService {
     constructor() {}
 
-    async getNotifications(userId: Notification["userId"], types: Notification["type"][] = []): Promise<GetNotificationDTO[]> {
+    async getNotifications(userId: Notification["userId"], types: Notification["type"][], limit: number, offset: number): Promise<GetNotificationDTO[] | string> {
         
-        const notifications = types.length > 0 ? await client.query(
-            "SELECT idnotification id, type, message FROM notifications WHERE user_id = $1 AND type = ANY($2) ORDER BY idnotification DESC",
-            [userId, types]
-        ) : await client.query(
-            "SELECT idnotification id, type, message FROM notifications WHERE user_id = $1 ORDER BY idnotification DESC",
-            [userId]
+        const notifications = await client.query(
+            "SELECT idnotification id, type, message, created_at FROM notifications WHERE user_id = $1 AND type = ANY($2) ORDER BY created_at DESC LIMIT $3 OFFSET $4",
+            [userId, types, limit, offset]
         );
         if (!notifications.rows[0]) throw boom.notFound("No notifications found");
         return notifications.rows;
