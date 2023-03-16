@@ -90,7 +90,19 @@ const routes = [
       },
     ]
   },
-  // Configure 404 page
+  {
+    path: '/notifications',
+    name: 'Notifications',
+    component: DefaultLayout,
+    redirect: '/notifications/userNotifications',
+    children: [
+      {
+        path: 'userNotifications',
+        name: 'UserNotifications',
+        component: () => import('@/views/Notifications'),
+      }
+    ] 
+  },
   {
     path: '/:pathMatch(.*)*',
     name: '404',

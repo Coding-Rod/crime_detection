@@ -9,9 +9,29 @@
       </CHeaderNav>
       <CHeaderNav>
         <CNavItem>
-          <CButton type="button">
-            <CIcon class="mx-2" icon="cil-bell" size="lg" />
-          </CButton>
+          <CDropdown inNav>
+            <CDropdownToggle color="transparent">
+              <CIcon class="mx-2" icon="cil-bell" size="lg" />
+            </CDropdownToggle>
+            <CDropdownMenu placement="bottom-end">
+              <CDropdownItem 
+                disabled
+                v-for="notification in notifications"
+                :key="notification.id"
+                :style="{ backgroundColor: notification.type === 3 ? '#f8d7da' : ''}"
+                class="text-dark"
+                >
+                <CIcon :icon="icons[notification.type - 1]" size="lg" />
+                {{ notification.message }}
+                <br />
+                <small>{{ notification.created_at }}</small>
+              </CDropdownItem>
+              <CDropdownDivider />
+              <CDropdownItem @click="$router.push('/notifications')">
+                See all notifications
+              </CDropdownItem>
+            </CDropdownMenu>
+          </CDropdown>
         </CNavItem>
         <CNavItem>
           <CButton type="button" @click="$router.push('/settings')">
@@ -30,10 +50,22 @@
 </template>
 
 <script>
+import axios from 'axios';
 import AppBreadcrumb from "./AppBreadcrumb";
 
 export default {
   name: "AppHeader",
+  data() {
+    return {
+      icons: [
+        'cil-memory',
+        'cil-user',
+        'cil-warning',
+        'cil-laptop',
+      ],
+      notifications: [],
+    };
+  },
   components: {
     AppBreadcrumb,
   },
@@ -51,6 +83,20 @@ export default {
           },
         });
       }
+    },
+    async getNotifications(){
+      axios
+        .get(this.$store.state.API_URL + "/notifications?limit=5", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.notifications = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     logout() {
       localStorage.removeItem("token");
@@ -75,6 +121,11 @@ export default {
         }
       };
     };
+
+  },
+  async mounted() {
+    // Get notifications
+    await this.getNotifications();
   },
 };
 </script>
