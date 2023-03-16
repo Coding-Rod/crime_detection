@@ -28,11 +28,7 @@ router.patch(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const user = await userService.updateUser(
-        id,
-        req.body
-      );
-      res.status(200).send(user);
+      res.status(200).send(await userService.updateUser( id, req.body ));
     } catch (err) {
       next(err);
     }
@@ -45,8 +41,7 @@ router.delete(
   async (req, res, next) => {
     try {
       const id = await getId(req.headers.authorization as string);
-      const user = await userService.deleteUser(id);
-      res.status(200).send(user);
+      res.status(200).send(await userService.deleteUser(id));
     } catch (err) {
       next(err);
     }

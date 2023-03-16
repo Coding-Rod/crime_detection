@@ -20,12 +20,11 @@ router.get(
   async (req, res, next) => {
     try {
       const caller = await getId(req.headers.authorization as string);
-      const contact = await contactService.getContacts(
+      res.status(200).send(await contactService.getContacts(
         caller,
         req.query.limit ? parseInt(req.query.limit as string) : 10,
         req.query.offset ? parseInt(req.query.offset as string) : 0
-      );
-      res.status(200).send(contact);
+      ));
     } catch (err) {
       next(err);
     }
@@ -39,11 +38,10 @@ router.post(
   async (req, res, next) => {
     try {
       const caller = await getId(req.headers.authorization as string);
-      const contact = await contactService.createContact(
+      res.status(201).send(await contactService.createContact(
         caller,
         parseInt(req.params.id)
-      );
-      res.status(201).send(contact);
+      ));
     } catch (err) {
       next(err);
     }
@@ -57,11 +55,10 @@ router.delete(
   async (req, res, next) => {
     try {
       const caller = await getId(req.headers.authorization as string);
-      const contact = await contactService.deleteContact(
+      res.status(200).send(await contactService.deleteContact(
         caller,
         parseInt(req.params.id)
-      );
-      res.status(200).send(contact);
+      ));
     } catch (err) {
       next(err);
     }

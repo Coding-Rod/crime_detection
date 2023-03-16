@@ -13,8 +13,7 @@ router.post(
   validatorHandler(createUserSchema, "body"),
   async (req, res, next) => {
     try {
-      const user = await userService.createUser(req.body);
-      res.status(201).json(user);
+      res.status(201).json(await userService.createUser(req.body));
     } catch (error) {
       next(error);
     }
@@ -26,8 +25,7 @@ router.post(
   validatorHandler(loginUserSchema, "body"),
   async (req, res, next) => {
     try {
-      const token = await userService.loginUser(req.body);
-      res.status(200).json(token);
+      res.status(200).json(await userService.loginUser(req.body));
     } catch (error) {
       next(error);
     }

@@ -14,11 +14,17 @@ export class NodeService {
 
   async getNodes(user_id: Node["userId"]): Promise<GetOneNodeDTO[] | string> {
     const nodes = await client.query(
-      "SELECT ROW_NUMBER() OVER() id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser",
+      "SELECT ROW_NUMBER() OVER(ORDER BY idnode) id, no.name, no.location, no.status, no.recording FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser ORDER BY idnode",
       [user_id]
     );
     if (!nodes.rows[0]) throw boom.notFound("No nodes found");
-    return nodes.rows;
+    return nodes.rows.map((node) => ({
+      id: parseInt(node.id),
+      name: node.name,
+      location: node.location,
+      status: node.status,
+      recording: node.recording,
+    }));
   }
 
   async getNode(userId: Node["userId"], nodeNumber: number): Promise<GetOneNodeDTO | string> {
@@ -34,7 +40,7 @@ export class NodeService {
     }
   }
 
-  async createNode(userId: Node["userId"], nodeData: CreateNodeDTO) {
+  async createNode(userId: Node["userId"], nodeData: CreateNodeDTO): Promise<GetOneNodeDTO | string> {
     const nodes = await client.query("SELECT * FROM nodes WHERE user_id = $1", [
       userId,
     ]);
@@ -48,9 +54,15 @@ export class NodeService {
       [name, location, false, false, new Date(), new Date(), userId]
     );
 
+    delete node.rows[0].idnode;
+    delete node.rows[0].user_id;
+
     return {
       id: nodes.rows.length + 1,
-      ...node.rows[0],
+      name: node.rows[0].name,
+      location: node.rows[0].location,
+      status: node.rows[0].status,
+      recording: node.rows[0].recording,
     }
   }
 
@@ -66,36 +78,46 @@ export class NodeService {
     if (nodes.rows.find((node) => node.name === nodeData.name)) throw boom.conflict('You already have a node called ' + nodeData.name);
 
     const nodeToUpdate = await client.query(
-      "SELECT * FROM nodes WHERE user_id = $1 LIMIT 1 OFFSET $2",
+      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no WHERE no.user_id = $1 ORDER BY idnode LIMIT 1 OFFSET $2",
       [userId, nodeNumber - 1]
     );
 
     if (!nodeToUpdate.rows[0]) throw boom.notFound("Node not found");
-    if (nodeToUpdate.rows[0].user_id !== userId) throw boom.forbidden("You can't edit this node");
     const updatedNode = {
       ...nodeToUpdate.rows[0],
       ...nodeData,
     };
     const node = await client.query(
       "UPDATE nodes SET name = $1, location = $2, status = $3, updated_at = $4 WHERE idnode = $5 RETURNING *",
-      [updatedNode.name, updatedNode.location, updatedNode.status, new Date(), nodeToUpdate.rows[0].idnode]
+      [updatedNode.name, updatedNode.location, updatedNode.status, new Date(), nodeToUpdate.rows[0].id]
     );
-    return node.rows[0];
+
+    delete node.rows[0].idnode;
+    delete node.rows[0].user_id;
+
+    return {
+      id: nodeNumber,
+      name: node.rows[0].name,
+      location: node.rows[0].location,
+      status: node.rows[0].status,
+      recording: node.rows[0].recording,
+    }
   }
 
   async deleteNode(userId: Node['userId'], nodeNumber: number): Promise<DeleteNodeDTO | string> {
+    console.log(userId, nodeNumber)
     const nodeToDelete = await client.query(
-      "SELECT * FROM nodes WHERE user_id = $1 LIMIT 1 OFFSET $2",
+      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no WHERE no.user_id = $1 ORDER BY idnode LIMIT 1 OFFSET $2",
       [userId, nodeNumber - 1]
     );
     if (!nodeToDelete.rows[0]) throw boom.notFound("Node not found");
-    if (nodeToDelete.rows[0].user_id !== userId) throw boom.forbidden("You can't edit this node");
+
     const node = await client.query(
       "DELETE FROM nodes WHERE idnode = $1 RETURNING *",
-      [nodeToDelete.rows[0].idnode]
+      [nodeToDelete.rows[0].id]
     );
     return {
-      id: node.rows[0].idnode,
+      id: node.rows[0].id,
       name: node.rows[0].name,
     }
   }
@@ -105,15 +127,18 @@ export class NodeService {
     nodeNumber: number
     ): Promise<StartRecordingDTO | string> {
     const nodeToToggle = await client.query(
-      "SELECT * FROM nodes WHERE user_id = $1 LIMIT 1 OFFSET $2",
+      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no WHERE no.user_id = $1 ORDER BY idnode LIMIT 1 OFFSET $2",
       [userId, nodeNumber - 1]
     );
     if (!nodeToToggle.rows[0]) throw boom.notFound("Node not found");
-    if (nodeToToggle.rows[0].user_id !== userId) throw boom.forbidden("You are not the owner of this node");
     const node = await client.query(
       "UPDATE nodes SET recording = $1, updated_at = $2 WHERE idnode = $3 RETURNING *",
-      [!nodeToToggle.rows[0].recording, new Date(), nodeToToggle.rows[0].idnode]
+      [!nodeToToggle.rows[0].recording, new Date(), nodeToToggle.rows[0].id]
     );
-    return node.rows[0];
+    return {
+      id: nodeNumber,
+      status: node.rows[0].status,
+      recording: node.rows[0].recording,
+    }
   }
 }
