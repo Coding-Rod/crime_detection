@@ -31,14 +31,30 @@
 
 <script>
 import AppBreadcrumb from "./AppBreadcrumb";
+
 export default {
   name: "AppHeader",
   components: {
     AppBreadcrumb,
   },
   methods: {
+    async showNotification(message) {
+      // Request permission to show notifications
+      const permission = await Notification.requestPermission();
+      
+      // If the user granted permission, show the notification
+      if (permission === "default" || permission === "granted") {
+        new Notification("Weapon Detected!", {
+          body: message,
+          onClick: () => {
+            window.focus();
+          },
+        });
+      }
+    },
     logout() {
       localStorage.removeItem("token");
+      localStorage.removeItem("id");
       location.reload();
     },
   },
@@ -52,6 +68,7 @@ export default {
         try {
           if (data.data.type === 3 && localStorage.getItem("id") in data.data.users) {            
             console.log("New notification");
+            this.showNotification(data.data.message);
           }
         } catch (e) {
           console.log(data);
