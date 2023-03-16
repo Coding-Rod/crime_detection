@@ -1,4 +1,5 @@
 <template>
+  <div>
   <CContainer>
     <h1 class="h3 mb-3 text-center">Active Nodes</h1>
     <!-- for with accordions -->
@@ -40,7 +41,7 @@
                       color="danger"
                       type="button"
                       class="text-white"
-                      @click="deleteNode(node.id)"
+                      @click="nodeToErase = node.id"
                     >
                       <CIcon name="cil-trash" />
                     </CButton>
@@ -63,6 +64,28 @@
     </template>
     <Loader v-else />
   </CContainer>
+  <CModal
+    :visible="nodeToErase"
+      @close="
+        () => {
+          nodeToErase = null;
+        }
+      "
+  >
+    <CModalHeader>
+      <CModalTitle>Confirmation</CModalTitle>
+    </CModalHeader>
+    <CModalBody>
+      <p>Are you sure you want to delete this node?</p>
+    </CModalBody>
+    <CModalFooter>
+      <CButton color="secondary" @click="nodeToErase = null">Cancel</CButton>
+      <CButton color="danger" @click="deleteNode(nodeToErase)">
+        Delete
+      </CButton>
+    </CModalFooter>
+  </CModal>
+  </div>
 </template>
 0 auto
 <script>
@@ -77,6 +100,7 @@ export default {
       screenwidth: window.innerWidth,
       nodes: [],
       error: null,
+      nodeToErase: null,
     };
   },
   components: {
