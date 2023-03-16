@@ -14,7 +14,7 @@
           </CButton>
         </CNavItem>
         <CNavItem>
-          <CButton type="button" @click="$router.push('/settings')" >
+          <CButton type="button" @click="$router.push('/settings')">
             <CIcon class="mx-2" icon="cil-settings" size="lg" />
           </CButton>
         </CNavItem>
@@ -30,17 +30,34 @@
 </template>
 
 <script>
-import AppBreadcrumb from './AppBreadcrumb'
+import AppBreadcrumb from "./AppBreadcrumb";
 export default {
-  name: 'AppHeader',
+  name: "AppHeader",
   components: {
     AppBreadcrumb,
   },
   methods: {
     logout() {
-      localStorage.removeItem('token')
+      localStorage.removeItem("token");
       location.reload();
     },
   },
-}
+  created() {
+    // Websocket connection
+    this.connection = new WebSocket(this.$store.state.SOCKET_URL);
+
+    this.connection.onopen = () => {
+      this.connection.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        try {
+          if (data.data.type === 3 && localStorage.getItem("id") in data.data.users) {            
+            console.log("New notification");
+          }
+        } catch (e) {
+          console.log(data);
+        }
+      };
+    };
+  },
+};
 </script>
