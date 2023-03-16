@@ -57,7 +57,8 @@ wss.on('connection', function connection(ws) {
     console.log('received: %s', data);
   });
 
-  ws.send('hola');
+  // send JSON
+  ws.send(JSON.stringify({ message: 'Connection established' }));
 });
 
 export { wss };

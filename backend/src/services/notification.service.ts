@@ -2,6 +2,7 @@ import { Notification } from "../models/notification.model";
 import { GetNotificationDTO, CreateNotificationDTO } from "../dtos/notification.dto";
 
 import { client } from "../db/config";
+import { wss } from "../index";
 
 import boom from "@hapi/boom";
 
@@ -30,6 +31,26 @@ export class NotificationService {
             "INSERT INTO notifications (type, message, user_id, created_at) VALUES ($1, $2, $3, $4) RETURNING idnotification id, type, message",
             [type, message, userId, new Date()]
         );
+
+        const contacts = await client.query(
+            "SELECT called FROM contacts WHERE caller = $1",
+            [userId]
+        );
+
+        const contactsIds = Object.values(contacts.rows).map((contact) => contact.called);
+        wss.clients.forEach((client) => {
+            client.send(
+                JSON.stringify({
+                    type: "notification",
+                    data: {
+                        id: newNotification.rows[0].id,
+                        type: newNotification.rows[0].type,
+                        message: newNotification.rows[0].message,
+                        users: [...contactsIds, userId]
+                    },
+                })
+            );
+        });
 
         return newNotification.rows[0];
     }
