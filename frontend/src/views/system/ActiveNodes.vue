@@ -5,12 +5,12 @@
     <template v-if="nodes.length > 0">
       <CAccordion v-for="node in nodes" :key="node.id">
         <CAccordionItem :item-key="node.id">
-          <CAccordionHeader> {{ node.name }} </CAccordionHeader>
+          <CAccordionHeader> Node {{ node.id }} - {{ node.name }} </CAccordionHeader>
           <CAccordionBody>
             <CContainer>
               <CRow>
                 <CCol>
-                  <h1 class="h4 mb-3 text-center">Node ID: {{ node.id }}</h1>
+                  <h1 class="h4 mb-3 text-center">Node {{ node.id }}</h1>
                 </CCol>
               </CRow>
               <CRow>
@@ -21,9 +21,9 @@
                     Node status: {{ node.status ? "Active 🟢" : "Inactive 🔴" }}
                   </p>
                 </CCol>
-                <CCol md="9" xs="12">
+                <!-- <CCol md="9" xs="12">
                   <img :src="node.video" alt="node image" class="img-fluid" />
-                </CCol>
+                </CCol> -->
               </CRow>
               <CRow>
                 <CCol class="d-grid gap-2 mt-3">
@@ -33,9 +33,9 @@
                       'text-white': true,
                     }"
                   >
-                    <CButton color="primary" type="button" class="text-white"
+                    <!-- <CButton color="primary" type="button" class="text-white"
                       >Record
-                    </CButton>
+                    </CButton> -->
                     <CButton
                       color="danger"
                       type="button"
