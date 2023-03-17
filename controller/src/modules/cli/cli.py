@@ -29,7 +29,7 @@ async def cli(base_url: str, username: str, password: str) -> ApiClient:
     except AssertionError as error:
         print(error)
         if input('Not registered on server, do you want to do it now? (y/N): ') == 'y':
-            await client.post(data=client.node_config) 
+            await client.post(data={ 'name': client.node_config['name'], 'location': client.node_config['location'] })
         else:
             print('Node not created')
             sys.exit()
@@ -38,17 +38,17 @@ async def cli(base_url: str, username: str, password: str) -> ApiClient:
             match client.status:
                 case 0: # Name and location are wrong
                     if input('The name and location are wrong, do you want to update it now? (y/N): ') == 'y':
-                        await client.patch(data=client.node_config)
+                        await client.patch(data={ 'name': client.node_config['name'], 'location': client.node_config['location'] })
                     else:
                         raise PermissionError('Node was not updated')
                 case 1: # Name is wrong
                     if input('The name is wrong, do you want to update it now? (y/N): ') == 'y':
-                        await client.patch(data=client.node_config)
+                        await client.patch(data={ 'name': client.node_config['name'] })
                     else:
                         raise PermissionError('Node was not updated')
                 case 2: # Location is wrong
                     if input('The location is wrong, do you want to update it now? (y/N): ') == 'y':
-                        await client.patch(data=client.node_config)
+                        await client.patch(data={ 'location': client.node_config['location'] })
                     else:
                         raise PermissionError('Node was not updated')
                 case 3: # OK

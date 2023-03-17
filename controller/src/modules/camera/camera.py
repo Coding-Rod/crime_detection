@@ -25,6 +25,7 @@ class VideoStream(QObject):
 
     @pyqtSlot()
     def start(self):
+        print(self.client.node_data)
         cap = cv2.VideoCapture(self.camera)
         while not self.stopped:
             ret, frame = cap.read()

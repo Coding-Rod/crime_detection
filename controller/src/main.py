@@ -18,9 +18,9 @@ class MainWindow(VideoPlayer, Design_UI):
         
         super().__init__()
         self.set_video_stream(camera)
+        
         self.hidratate_design_methods(self.pinOut)
         self.video_stream.hidratate_video_stream(self.client, self.pinOut)
-        
         
         self.setupUi()
 

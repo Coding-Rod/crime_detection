@@ -8,7 +8,7 @@ verify configuration
 
 import aiohttp
 import yaml
-
+import sys
 from pathlib import Path
 
 class ApiClient:
@@ -52,10 +52,16 @@ class ApiClient:
         """
         
         url = f"{self.base_url}/nodes"
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
-                self.node_data = await response.json()
-                return self.node_data
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
+                    data = await response.json()
+                    assert 'error' not in data.keys(), data['message']
+                    self.node_data = data
+                    return self.node_data
+        except AssertionError as error:
+            print(error)
+            sys.exit()
 
     async def patch(self, data: dict) -> dict:
         """ This method is used to update a node
@@ -68,11 +74,17 @@ class ApiClient:
             dict: The response of the API
         """
         
-        url = f"{self.base_url}/nodes"
-        async with aiohttp.ClientSession() as session:
-            async with session.patch(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
-                self.node_data = await response.json()
-                return self.node_data
+        url = f"{self.base_url}/nodes/{self.node_config['node_id']}"
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.patch(url, json=data, headers={'Authorization': f'Bearer {self.__token}'}) as response:
+                    data = await response.json()
+                    assert 'error' not in data.keys(), data['message']
+                    self.node_data = data
+                    return self.node_data
+        except AssertionError as error:
+            print(error)
+            sys.exit()
 
     async def new_alert_notification(self, message: str):
         """ This method is used to create a new notification
