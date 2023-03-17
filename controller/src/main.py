@@ -1,5 +1,6 @@
 import asyncio
 import yaml
+import sys
 from PyQt5.QtWidgets import QApplication
 
 from modules.camera.camera import VideoPlayer
@@ -25,13 +26,23 @@ class MainWindow(VideoPlayer, Design_UI):
         self.setupUi()
 
 async def main():
-    config = yaml.safe_load(open("config/config.yml"))
-    client = await cli(**config['network'])
+    try:
+        config = yaml.safe_load(open("config/config.yml"))
+        client = await cli(**config['network'])
 
-    app = QApplication([])
-    window = MainWindow(client=client, hardware=config['hardware'], camera=config['camera'])
-    window.show()
-    app.exec_()
+        await client.patch({'status': True})
+
+        app = QApplication([])
+        window = MainWindow(client=client, hardware=config['hardware'], camera=config['camera'])
+        window.show()
+        app.exec_()
+    except KeyboardInterrupt:
+        print("Exiting...")
+        await client.patch({'status': False})
+        sys.exit()
+    finally:
+        print("Closing...")
+        await client.patch({'status': False})
     
 
 if __name__ == "__main__":
