@@ -1,11 +1,3 @@
-'''
-Get node
-Post node
-Update node
-Save configuration
-verify configuration
-'''
-
 import aiohttp
 import yaml
 import sys
