@@ -27,12 +27,12 @@ export default [
     to: '/system/nodes',
     icon: 'cil-memory'
   },
-  {
-    component: 'CNavItem',
-    name: 'Recorded Videos',
-    to: '/system/videos',
-    icon: 'cil-media-play'
-  },
+  // {
+  //   component: 'CNavItem',
+  //   name: 'Recorded Videos',
+  //   to: '/system/videos',
+  //   icon: 'cil-media-play'
+  // },
   {
     component: 'CNavTitle',
     name: 'Contacts',

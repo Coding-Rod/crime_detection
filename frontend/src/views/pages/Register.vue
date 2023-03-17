@@ -57,7 +57,7 @@
                   </CInputGroupText>
                   <CFormInput
                     type="password"
-                    placeholder="Repeat password"
+                    placeholder="Repeat passwouseridrd"
                     autocomplete="new-password"
                     v-model="password_confirmation"
                   />
@@ -125,6 +125,7 @@ export default {
         );
         if (response.status === 201) {
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("id", response.data.id);
           this.waiting = false;
           this.$router.push({ name: "Home" });
         } else {
