@@ -15,7 +15,8 @@ class MainWindow(VideoPlayer, Design_UI):
         self.client = client
         self.pinOut = PinOut(**hardware)
 
-        self.pinOut.write_rgb(0, 0, 0)
+        # Set RGB led to Green
+        self.pinOut.write_rgb(0, 255, 0)
         
         super().__init__()
         self.set_video_stream(camera)
@@ -30,7 +31,8 @@ async def main():
         config = yaml.safe_load(open("config/config.yml"))
         client = await cli(**config['network'])
 
-        await client.patch({'status': True})
+        # Send status to server
+        await client.patch({'status': True})        
 
         app = QApplication([])
         window = MainWindow(client=client, hardware=config['hardware'], camera=config['camera'])
@@ -38,10 +40,14 @@ async def main():
         app.exec_()
     except KeyboardInterrupt:
         print("Exiting...")
+        
+        # Send status to server
         await client.patch({'status': False})
         sys.exit()
     finally:
         print("Closing...")
+        
+        # Send status to server
         await client.patch({'status': False})
     
 

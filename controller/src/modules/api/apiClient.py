@@ -1,6 +1,8 @@
 import aiohttp
-import yaml
+import requests
 import sys
+import yaml
+
 from pathlib import Path
 
 class ApiClient:
@@ -78,17 +80,20 @@ class ApiClient:
             print(error)
             sys.exit()
 
-    async def new_alert_notification(self, message: str):
-        """ This method is used to create a new notification
+    def new_alert_notification(self, message: str):
+        """ This method is used to create a new notification synchronously with requests
 
         Args:
             message (str): The message of the notification
         """
         url = f"{self.base_url}/notifications"
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json={'message': message, type: 4}, headers={'Authorization': f'Bearer {self.__token}'}) as response:
-                self.node_data = await response.json()
-                return self.node_data
+        
+        try:
+            response = requests.post(url, json={ "message": message, "type": 3 }, headers={'Authorization': f'Bearer {self.__token}'})
+            data = response.json()
+            assert 'error' not in data.keys(), data['message']
+        except AssertionError as error:
+            print(error)
                 
     def save_config(self, data: dict) -> None:
         """ This method is used to save the configuration of the nodes in a file, this file must only contains node_id, name and location

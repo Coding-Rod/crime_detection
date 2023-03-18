@@ -1,3 +1,4 @@
+import time
 try:
     import RPi.GPIO as GPIO
 except ImportError:
@@ -12,6 +13,9 @@ class PinOut:
         self.relay_pin = relay_pin
         self.led_pins = led_pins
         
+        self.status = 'Starting...'
+        self.write_rgb(False, True, False)
+        
         try:
             self.gpio.setmode(self.gpio.BOARD)
             self.gpio.setwarnings(False)
@@ -19,7 +23,8 @@ class PinOut:
             self.gpio.setup(self.input_pin, self.gpio.IN)
             [self.gpio.setup(pin, self.gpio.OUT) for pin in self.led_pins]
         except AttributeError:
-            print('No GPIO module found. Using mock.')
+            # print('No GPIO module found. Using mock.')
+            pass
 
     def read_pin(self) -> bool:
         ''' Read the value of a pin. '''
@@ -33,7 +38,8 @@ class PinOut:
         try:
             [self.gpio.output(pin, value) for pin, value in zip(self.led_pins, (red, green, blue))]
         except AttributeError:
-            print('No GPIO module found. Using mock.')
+            # print('No GPIO module found. Using mock.')
+            pass
         
     def write_relay(self, value: bool):
         """ Write a value to a relay pin.
@@ -44,4 +50,13 @@ class PinOut:
         try:
             self.gpio.output(self.relay_pin, value)
         except AttributeError:
-            print('No GPIO module found. Using mock.')
+            # print('No GPIO module found. Using mock.')
+            pass
+            
+            
+    def set_sent_status(self):
+        """ Set the status to sent and start the timer. """
+        self.status = 'sent'
+        self.start_time = time.time()
+        self.write_rgb(True, True, False)
+        self.write_relay(False)

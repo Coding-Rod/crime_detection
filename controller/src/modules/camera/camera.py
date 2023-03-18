@@ -1,4 +1,5 @@
 import cv2
+import time
 import numpy as np
 
 from PyQt5.QtCore import Qt, pyqtSlot, QThread
@@ -25,22 +26,46 @@ class VideoStream(QObject):
 
     @pyqtSlot()
     def start(self):
-        print(self.client.node_data)
         cap = cv2.VideoCapture(self.camera)
         while not self.stopped:
+            print(self.pinOut.status)
+            
+            # If the alarm is on and the time is greater than 3 minutes, turn off the alarm and set the RGB led to Green
+            if self.pinOut.status == 'sent' and time.time() - self.pinOut.start_time > 180:
+                self.pinOut.status = 'starting...'
+                self.pinOut.write_rgb(False, True, False)
+                self.pinOut.start_time = 0
+                
+            
             ret, frame = cap.read()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            if self.pinOut.read_pin():
-                detection = object_detection(frame)
-                if sum(detection.values()) > 0:
-                    self.pinOut.write_rgb(1, 0, 0)
-                    self.pinOut.write_relay(0)
-                    if detection['guns'] > 0 and detection['knives'] > 0:
-                        self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')} and {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
-                    elif detection['guns'] > 0:
-                        self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')}")
-                    elif detection['knives'] > 0:
-                        self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
+            if self.pinOut.status != 'alarm' and self.pinOut.status != 'sent':
+                if self.pinOut.read_pin():
+                    
+                    # Set RGB led to Cyan and Status to Running
+                    self.pinOut.status = 'running'
+                    self.pinOut.write_rgb(False, True, True)
+                    
+                    # Detect guns and/or knives
+                    detection = object_detection(frame)
+                    
+                    if sum(detection.values()) > 0:
+                        
+                        if detection['guns'] > 0 and detection['knives'] > 0:
+                            self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')} and {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
+                        elif detection['guns'] > 0:
+                            self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['guns'])+(' gun' + 's' if detection['guns'] > 1 else ' gun')}")
+                        elif detection['knives'] > 0:
+                            self.client.new_alert_notification(f"{self.client.node_data['name']} - {self.client.node_data['location']} detected {str(detection['knives'])+(' knives' if detection['knives'] > 1 else ' knife')}")
+                            
+                        # Set RGB led to Red, Status to Alarm and turn on the alarm with the relay
+                        self.pinOut.status = 'alarm'
+                        self.pinOut.write_rgb(True, False, False)
+                        self.pinOut.write_relay(True)
+                else:
+                    # Set RGB led to Blue and Status to Standby
+                    self.pinOut.status = 'standby'
+                    self.pinOut.write_rgb(False, False, True)
             if ret:
                 self.frame_signal.emit(frame)
 

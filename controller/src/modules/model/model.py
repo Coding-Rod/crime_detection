@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 def object_detection(image: np.ndarray) -> dict:
     """ This function is used to detect guns and/or knives in an image.
@@ -9,10 +10,15 @@ def object_detection(image: np.ndarray) -> dict:
     Returns:
         dict: A dictionary containing the amount of the detected guns and/or knives.
     """
-    print('Not implemented yet.')
+    # Check if screen is black
+    if np.mean(image) < 10:
+        return {
+            "guns": 1,
+            "knives": 0
+        }        
     
-    weapons = np.random.randint(0, image.shape[0]*image.shape[1])
-    return {
-        "guns": 5 if weapons == 0 else weapons, 
-        "knives": 5 if weapons == 0 else weapons
-    }    
+    weapons = {
+        "guns": 0,
+        "knives": 0
+    }
+    return weapons

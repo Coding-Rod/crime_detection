@@ -34,8 +34,8 @@ class DesignMethods(Security):
         """ Validate the password shows a warning QMessageBox if the password is wrong."""
         if len(self.password) == 4:
             if self.verifyPassword(self.password):
-                self.pinOut.write_rgb(0, 1, 0)
                 print('Password correct')
+                self.pinOut.set_sent_status()
             else:
                 QtWidgets.QMessageBox.warning(self.MainWindow, 'Error', 'Password incorrect')
         else:
