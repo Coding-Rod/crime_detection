@@ -1,5 +1,4 @@
 <template>
-  <!-- FIXME: Remove space between image and margin -->
   <CRow class="mb-4">
     <CCol>
       <CCard style="border-radius: 30px;">

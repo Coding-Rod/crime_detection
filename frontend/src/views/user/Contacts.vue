@@ -65,18 +65,24 @@
             </CCol>                    
         </CRow>
     </CContainer>
-  </div>
-    <CToaster style="position: absolute; bottom: 5px; right: 5px; z-index: 9999">
-        <CToast
+    <!-- Toast of erros -->
+    <CToaster style="position: absolute; bottom: 5px; right: 5px; z-index: 9999" v-if="toast.show">
+      <CToast
         :show="toast.show"
         autohide="true"
         fade="true"
-        :key="1"
-        @update:show="val => (toast.show = val)"
-        :title="toast.message"
-        :color="toast.color"
-        />
+        @hide="toast.show = false"
+      >
+        <CToastHeader>
+          <CIcon name="cil-check-circle" class="me-2" />
+          Error
+        </CToastHeader>
+        <CToastBody>
+            {{ toast.message }}
+        </CToastBody>
+      </CToast>
     </CToaster>
+  </div>
 </template>
 
 <script>
@@ -95,7 +101,6 @@ export default {
             toast: {
                 show: false,
                 message: "",
-                color: ""
             }
         };
     },
@@ -133,7 +138,6 @@ export default {
                 this.toast = {
                     show: true,
                     message: "Error removing contact",
-                    color: "danger"
                 }                
             }
         },
@@ -158,7 +162,6 @@ export default {
                 this.toast = {
                     show: true,
                     message: "Error adding contact",
-                    color: "danger"
                 }
             }
         }

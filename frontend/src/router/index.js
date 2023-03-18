@@ -14,12 +14,12 @@ const routes = [
         path: '/',
         name: 'Information',
         component: () =>
-          import('@/views/Home.vue'),
+          import('@/views/docs/Home.vue'),
       },      
       {
         path: '/howto',
         name: 'HowTo',
-        component: () => import('@/views/HowTo.vue'),
+        component: () => import('@/views/docs/HowTo.vue'),
       },
 
     ],
@@ -73,7 +73,7 @@ const routes = [
       {
         path: 'userContacts',
         name: 'UserContacts',
-        component: () => import('@/views/Contacts'),
+        component: () => import('@/views/user/Contacts'),
       },
     ]
   },
@@ -86,7 +86,7 @@ const routes = [
       {
         path: 'userSettings',
         name: 'UserSettings',
-        component: () => import('@/views/Settings'),
+        component: () => import('@/views/user/Settings'),
       },
     ]
   },
@@ -99,7 +99,7 @@ const routes = [
       {
         path: 'userNotifications',
         name: 'UserNotifications',
-        component: () => import('@/views/Notifications'),
+        component: () => import('@/views/user/Notifications'),
       }
     ] 
   },
