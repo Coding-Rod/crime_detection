@@ -2,7 +2,7 @@ import Joi from "joi";
 
 const id = Joi.number().integer().min(1);
 const type = Joi.number().integer().min(1);
-const message = Joi.string().min(3).max(30);
+const message = Joi.string().min(3);
 const userId = Joi.number().integer().min(1);
 const createdAt = Joi.date();
 
