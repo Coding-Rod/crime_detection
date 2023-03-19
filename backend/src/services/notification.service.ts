@@ -34,6 +34,11 @@ export class NotificationService {
             [userId]
         );
 
+        const userName = await client.query(
+            "SELECT name FROM users WHERE iduser = $1",
+            [userId]
+        );
+
         const contactsIds = Object.values(contacts.rows).map((contact) => contact.called);
         wss.clients.forEach((client) => {
             client.send(
@@ -43,7 +48,8 @@ export class NotificationService {
                         id: newNotification.rows[0].id,
                         type: newNotification.rows[0].type,
                         message: newNotification.rows[0].message,
-                        users: [...contactsIds, userId]
+                        users: [...contactsIds, userId],
+                        owner: userName.rows[0].name,
                     },
                 })
             );
