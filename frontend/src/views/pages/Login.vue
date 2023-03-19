@@ -117,6 +117,7 @@ export default {
           }
         );
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("id", response.data.id);
         this.waiting = false;
         this.$router.push("/");
       } catch (error) {
