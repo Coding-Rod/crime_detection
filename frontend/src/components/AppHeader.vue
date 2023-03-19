@@ -114,7 +114,7 @@ export default {
         try {
           if (data.data.type === 3 && localStorage.getItem("id") in data.data.users) {            
             console.log("New notification");
-            this.showNotification(data.data.message);
+            this.showNotification(data.data.message+"\nOwner: "+data.data.owner);
           }
         } catch (e) {
           console.log(data);
