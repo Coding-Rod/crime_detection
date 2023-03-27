@@ -8,12 +8,12 @@ class Os_script:
         self.__output_folder = os.path.join(self.__current_folder, output_folder)
 
     def move_file(self, path, destination):
-        shutil.copyfile(path, destination)
+        shutil.move(path, destination)
         print(f"{path.split('/')[-1]} moved")
 
     def move_xml_file(self, path, destination, image_extension):
         try:
-            shutil.copyfile(path.replace(image_extension, 'xml'), destination.replace(image_extension, "xml"))
+            shutil.move(path.replace(image_extension, 'xml'), destination.replace(image_extension, "xml"))
             print(f"{path.split('/')[-1]} moved with its xml file")
         except FileNotFoundError:
             print(f"{path.split('/')[-1]} has no xml file")

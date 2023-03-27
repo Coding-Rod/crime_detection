@@ -1,14 +1,12 @@
-#TODO: Move files
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 import sys
 import os
 import glob
-from operator import itemgetter
 
 from .os_script import Os_script as osp
 from .tmp_script import Tmp_script as tsp
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 class EDF:    
     def __init__(self,
                  input_folder='data', 
@@ -180,7 +178,6 @@ class EDF:
         msgBox.setWindowTitle(title)
         msgBox.setText(message)
         msgBox.setStandardButtons(QMessageBox.Ok)
-        msgBox.buttonClicked.connect(msgButtonClick)
         msgBox.exec()
         sys.exit()
     
@@ -225,7 +222,7 @@ class EDF:
         try:
             self.image = self.files[self.image_index]
         except IndexError:
-            showDialog("ERROR 404", "Image not found")
+            self.showDialog("ERROR 404", "Image not found")
         self.xml_exists = self.osp.has_xml_file(path=self.image, image_extension=self.image_extension)
         self.xml_badge.setStyleSheet("QLabel {background-color: "+('green;' if self.xml_exists else 'red;')+"\nborder: 1px solid black;\ncolor: white;\npadding-left: 3px;\nfont-weight: 700;\nfont-size: 10px;\nborder-radius: 3px;}")
         self.tsp.save_checkpoint({
