@@ -20,7 +20,7 @@
           :color="colors[notification.type - 1]"
         >
           <CTableHeaderCell scope="row">{{ index + 1 }}</CTableHeaderCell>
-          <CTableDataCell>{{ notification.message }}</CTableDataCell>
+          <CTableDataCell><CIcon :icon="icons[notification.type - 1]" size="lg" /> {{ notification.message }}</CTableDataCell>
           <CTableDataCell>{{ notification.created_at }}</CTableDataCell>
         </CTableRow>
         <CTableRow color="light" v-if="more">
@@ -46,6 +46,12 @@ export default {
       offset: 0,
       more: true,
       colors: ["primary", "secondary", "danger"],
+      icons: [
+        'cil-memory',
+        'cil-user',
+        'cil-warning',
+        'cil-laptop',
+      ],
     };
   },
   computed: {
