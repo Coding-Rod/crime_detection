@@ -1,13 +1,13 @@
 import asyncio
 import yaml
-import sys
+
 from PyQt5.QtWidgets import QApplication
+from aiohttp import client_exceptions
 
-from modules.camera.camera import VideoPlayer
-from modules.design.design import Design_UI
 from modules.api.apiClient import ApiClient
-
+from modules.camera.camera import VideoPlayer
 from modules.cli.cli import cli
+from modules.design.design import Design_UI
 from modules.pinOut.pinOut import PinOut
 
 class MainWindow(VideoPlayer, Design_UI):
@@ -38,17 +38,13 @@ async def main():
         window = MainWindow(client=client, hardware=config['hardware'], camera=config['camera'])
         window.show()
         app.exec_()
-    except KeyboardInterrupt:
-        print("Exiting...")
-        
+    except client_exceptions.ClientConnectorError:
+        print('Server is not available')
+    else:        
         # Send status to server
         await client.patch({'status': False})
-        sys.exit()
     finally:
         print("Closing...")
-        
-        # Send status to server
-        await client.patch({'status': False})
     
 
 if __name__ == "__main__":
