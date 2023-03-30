@@ -1,0 +1,7 @@
+name: edf
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pyqt
+prefix: /home/rodri/anaconda3/envs/edf

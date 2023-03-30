@@ -10,6 +10,7 @@
         <CTableRow color="dark">
           <CTableHeaderCell scope="col">#</CTableHeaderCell>
           <CTableHeaderCell scope="col">Message</CTableHeaderCell>
+          <CTableHeaderCell scope="col">Owner</CTableHeaderCell>
           <CTableHeaderCell scope="col">Date</CTableHeaderCell>
         </CTableRow>
       </CTableHead>
@@ -20,7 +21,8 @@
           :color="colors[notification.type - 1]"
         >
           <CTableHeaderCell scope="row">{{ index + 1 }}</CTableHeaderCell>
-          <CTableDataCell>{{ notification.message }}</CTableDataCell>
+          <CTableDataCell><CIcon :icon="icons[notification.type - 1]" size="lg" /> {{ notification.message }}</CTableDataCell>
+          <CTableDataCell>{{ notification.name }}</CTableDataCell>
           <CTableDataCell>{{ notification.created_at }}</CTableDataCell>
         </CTableRow>
         <CTableRow color="light" v-if="more">
@@ -32,6 +34,7 @@
         </CTableRow>
       </CTableBody>
     </CTable>
+    <span>{{format_date_notification}}</span>
   </CContainer>
 </template>
 
@@ -46,6 +49,12 @@ export default {
       offset: 0,
       more: true,
       colors: ["primary", "secondary", "danger"],
+      icons: [
+        'cil-memory',
+        'cil-user',
+        'cil-warning',
+        'cil-laptop',
+      ],
     };
   },
   computed: {

@@ -7,8 +7,8 @@ export default createStore({
     sidebarUnfoldable: false,
     nodes: [],
     videos: [],
-    API_URL: 'http://192.168.0.13:3000/api/v1',
-    SOCKET_URL: 'ws://192.168.0.13:3000',
+    API_URL: 'http://192.168.0.14:3000/api/v1',
+    SOCKET_URL: 'ws://192.168.0.14:3000',
   },
   mutations: {
     setName(state, payload) {
