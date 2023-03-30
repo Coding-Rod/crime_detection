@@ -1,15 +1,7 @@
 import { Notification } from "../models/notification.model";
+import { User } from "../models/user.model";
 
-import {
-    IsNotEmpty,
-    IsString,
-    IsEmail,
-    Length,
-    IsNumber,
-    Min,
-} from "class-validator";
-
-export interface GetNotificationDTO extends Pick<Notification, "id" | "type" | "message" > {}
+export interface GetNotificationDTO extends Pick<Notification, "id" | "type" | "message" >, Pick<User, 'name'> {}
 
 export interface CreateNotificationDTO extends Pick<Notification, "type" | "message" | "userId" > {}
 
