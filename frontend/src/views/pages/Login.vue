@@ -61,7 +61,7 @@
                 </CForm>
               </CCardBody>
             </CCard>
-            <CCard class="text-white bg-primary py-5" style="width: 44%">
+            <CCard class="text-white bg-primary py-5">
               <CCardBody class="text-center">
                 <div>
                   <h2>Sign up</h2>
@@ -88,6 +88,11 @@
           </CCardGroup>
         </CCol>
       </CRow>
+      <CRow>
+        <CCol>
+          <span>Message: {{ server_message }}</span>
+        </CCol>
+      </CRow>
     </CContainer>
   </div>
 </template>
@@ -103,6 +108,7 @@ export default {
       password: "",
       error: '',
       waiting: false,
+      server_message: '',
     };
   },
   methods: {
@@ -125,6 +131,14 @@ export default {
         this.error = error.response.data.message;
       }
     },
+  },
+  async beforeMount() {
+    try {
+      const response = await axios.get(`${this.$store.state.API_URL}/`);
+      this.server_message = response;
+    } catch (error) {
+      this.server_message = error;
+    }
   },
 };
 </script>

@@ -34,7 +34,6 @@
         </CTableRow>
       </CTableBody>
     </CTable>
-    <span>{{format_date_notification}}</span>
   </CContainer>
 </template>
 
