@@ -6,14 +6,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-<<<<<<< Updated upstream
-    "test:unit": "vue-cli-service test:unit",
-    "build:app": "vue-cli-service build --dest ../app/www && cd ../app && cordova build android && cd ../frontend"
-=======
-    "lint": "vue-cli-service lint"
->>>>>>> Stashed changes
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "@coreui/chartjs": "^3.0.0",
