@@ -2,22 +2,18 @@
   "name": "@coreui/coreui-free-vue-admin-template",
   "version": "4.2.0",
   "description": "CoreUI Free Vue Admin Template",
-  "bugs": {
-    "url": "https://github.com/coreui/coreui-free-vue-admin-template/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:coreui/coreui-free-vue-admin-template.git"
-  },
-  "license": "MIT",
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
   "scripts": {
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
+<<<<<<< Updated upstream
     "test:unit": "vue-cli-service test:unit",
     "build:app": "vue-cli-service build --dest ../app/www && cd ../app && cordova build android && cd ../frontend"
+=======
+    "lint": "vue-cli-service lint"
+>>>>>>> Stashed changes
   },
   "dependencies": {
     "@coreui/chartjs": "^3.0.0",
@@ -29,6 +25,7 @@
     "@coreui/vue-chartjs": "2.0.1",
     "axios": "^1.3.4",
     "core-js": "^3.26.1",
+    "register-service-worker": "^1.7.2",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0"
@@ -39,6 +36,7 @@
     "@faker-js/faker": "^7.6.0",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-e2e-cypress": "~5.0.8",
+    "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.8",
     "@vue/cli-plugin-unit-jest": "~5.0.8",
     "@vue/cli-plugin-vuex": "~5.0.8",
@@ -56,5 +54,13 @@
     "prettier": "^2.8.3",
     "sass": "^1.56.1",
     "sass-loader": "^12.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/coreui/coreui-free-vue-admin-template/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:coreui/coreui-free-vue-admin-template.git"
   }
 }
