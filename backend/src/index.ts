@@ -28,7 +28,7 @@ app.use(cors());
 // add passport middleware
 require('./utils/auth');
 
-app.get('/', (_req, res) => {
+app.get('/api/v1', (_req, res) => {
     res.send('Welcome to the API');
 });
 
