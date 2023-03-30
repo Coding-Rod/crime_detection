@@ -14,13 +14,15 @@
               <CIcon class="mx-2" icon="cil-bell" size="lg" />
             </CDropdownToggle>
             <CDropdownMenu placement="bottom-end">
-              <CDropdownItem 
+              <CDropdownItem
                 disabled
                 v-for="notification in notifications"
                 :key="notification.id"
-                :style="{ backgroundColor: notification.type === 3 ? '#f8d7da' : ''}"
+                :style="{
+                  backgroundColor: notification.type === 3 ? '#f8d7da' : '',
+                }"
                 class="text-dark"
-                >
+              >
                 <CIcon :icon="icons[notification.type - 1]" size="lg" />
                 {{ notification.message }}
                 <br />
@@ -50,19 +52,14 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 import AppBreadcrumb from "./AppBreadcrumb";
 
 export default {
   name: "AppHeader",
   data() {
     return {
-      icons: [
-        'cil-memory',
-        'cil-user',
-        'cil-warning',
-        'cil-laptop',
-      ],
+      icons: ["cil-memory", "cil-user", "cil-warning", "cil-laptop"],
       notifications: [],
     };
   },
@@ -73,18 +70,56 @@ export default {
     async showNotification(message) {
       // Request permission to show notifications
       const permission = await Notification.requestPermission();
-      
+
       // If the user granted permission, show the notification
       if (permission === "default" || permission === "granted") {
-        new Notification("Weapon Detected!", {
-          body: message,
-          onClick: () => {
-            window.focus();
-          },
-        });
+        // Check if push messaging is supported
+        if ("PushManager" in window) {
+          navigator.serviceWorker.getRegistration().then((registration) => {
+            // Request push subscription
+            registration.pushManager
+              .subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array("your_public_key"),
+              })
+              .then((subscription) => {
+                console.log(
+                  "Push notifications subscription successful:",
+                  subscription
+                );
+
+                // Send push message to server
+                const payload = JSON.stringify({ message: message });
+                fetch("/send-push-notification", {
+                  method: "POST",
+                  body: payload,
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+
+                // Show native notification on mobile device
+                registration.showNotification("Weapon Detected!", {
+                  body: message,
+                  data: { url: "/" },
+                });
+              })
+              .catch((error) => {
+                console.error("Push notifications subscription error:", error);
+              });
+          });
+        } else {
+          // Fallback to desktop notification if push messaging is not supported
+          new Notification("Weapon Detected!", {
+            body: message,
+            onClick: () => {
+              window.focus();
+            },
+          });
+        }
       }
     },
-    async getNotifications(){
+    async getNotifications() {
       axios
         .get(this.$store.state.API_URL + "/notifications?limit=5", {
           headers: {
@@ -112,16 +147,20 @@ export default {
       this.connection.onmessage = (e) => {
         const data = JSON.parse(e.data);
         try {
-          if (data.data.type === 3 && localStorage.getItem("id") in data.data.users) {            
+          if (
+            data.data.type === 3 &&
+            localStorage.getItem("id") in data.data.users
+          ) {
             console.log("New notification");
-            this.showNotification(data.data.message+"\nOwner: "+data.data.owner);
+            this.showNotification(
+              data.data.message + "\nOwner: " + data.data.owner
+            );
           }
         } catch (e) {
           console.log(data);
         }
       };
     };
-
   },
   async mounted() {
     // Get notifications

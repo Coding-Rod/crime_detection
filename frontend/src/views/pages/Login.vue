@@ -88,11 +88,6 @@
           </CCardGroup>
         </CCol>
       </CRow>
-      <CRow>
-        <CCol>
-          <span>Message: {{ server_message }}</span>
-        </CCol>
-      </CRow>
     </CContainer>
   </div>
 </template>

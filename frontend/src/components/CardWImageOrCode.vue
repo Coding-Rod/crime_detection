@@ -35,6 +35,7 @@
     <CCard v-else>
       <CRow class="g-0">
         <CCol :md="4">
+          <CCardHeader component="h5">{{ header }}</CCardHeader>
           <CCardImage class="rounded-0" :src="image" alt="image" />
         </CCol>
         <CCol :md="8">
