@@ -103,3 +103,4 @@ cython_debug/
 ./**/node_modules/
 app/platforms
 app/plugins
+backend/yarn-error.log
