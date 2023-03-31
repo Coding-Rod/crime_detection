@@ -1,7 +1,0 @@
-__pycache__
-*/__pycache__
-data/*.jpg
-data/*.xml
-public/*
-data/*
-tmp/*.json

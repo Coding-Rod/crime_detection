@@ -1,9 +1,0 @@
-name: crime
-channels:
-  - defaults
-dependencies:
-  - cryptography
-  - numpy
-  - opencv
-  - pyqt
-prefix: /home/rodri/miniconda3/envs/crime
