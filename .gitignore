@@ -101,3 +101,5 @@ cython_debug/
 
 # Node
 ./**/node_modules/
+app/platforms
+app/plugins
