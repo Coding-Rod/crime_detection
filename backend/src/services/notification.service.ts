@@ -12,7 +12,7 @@ export class NotificationService {
     async getNotifications(userId: Notification["userId"], types: Notification["type"][], limit: number, offset: number): Promise<GetNotificationDTO[] | string> {
         
         const notifications = await client.query(
-            "SELECT DISTINCT no.idnotification id, no.type, no.message, no.created_at, us.name as name FROM notifications no, contacts co, users us  WHERE ((no.user_id = ANY(select caller from contacts c where c.called = $1) AND no.type = 3 AND us.iduser != 7)  OR  (no.user_id = $1  AND no.type = ANY($2)) AND co.caller = no.user_id) AND us.iduser = co.caller ORDER BY created_at DESC LIMIT $3  OFFSET $4",
+            "SELECT DISTINCT no.idnotification id, no.type, no.message, no.created_at, u.name FROM notifications no JOIN users u ON no.user_id = u.iduser JOIN contacts c ON no.user_id = c.caller WHERE (no.type = 3 AND u.iduser != 7 AND c.called = $1) OR (no.type = ANY($2) AND no.user_id = $1) ORDER BY no.created_at DESC LIMIT $3 OFFSET $4",
             [userId, types, limit, offset]
         );
         if (!notifications.rows[0]) throw boom.notFound("No notifications found");
