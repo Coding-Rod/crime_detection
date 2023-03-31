@@ -101,3 +101,4 @@ cython_debug/
 
 # Node
 ./**/node_modules/
+ai/notebooks/.ipynb_checkpoints
