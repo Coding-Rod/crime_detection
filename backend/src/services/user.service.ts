@@ -83,14 +83,12 @@ export class UserService {
       updatedAt: new Date(),
     };
     await client.query(
-      "INSERT INTO users (name, username, email, password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)",
+      "INSERT INTO users (name, username, email, password) VALUES ($1, $2, $3, $4)",
       [
         newUser.name,
         newUser.username,
         newUser.email,
-        newUser.password,
-        newUser.createdAt,
-        newUser.updatedAt,
+        newUser.password
       ]
     );
     
