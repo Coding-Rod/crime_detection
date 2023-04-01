@@ -4,6 +4,7 @@
   "description": "CoreUI Free Vue Admin Template",
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
   "scripts": {
+    "start": "serve -s dist",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
