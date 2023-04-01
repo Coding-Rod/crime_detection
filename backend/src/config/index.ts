@@ -13,6 +13,4 @@ const config = {
     jwtSecret: process.env.JWT_SECRET,
 };
 
-console.log(config)
-
 export { config };
