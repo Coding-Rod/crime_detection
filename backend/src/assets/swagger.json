@@ -18,7 +18,7 @@
     "title": "REST API",
     "description": "REST API for the project."
   },
-  "host": "https://monkfish-app-pb6xv.ondigitalocean.app/",
+  "host": "https://monkfish-app-pb6xv.ondigitalocean.app",
   "basePath": "/api/v1/",
   "schemes": [
     "http"
