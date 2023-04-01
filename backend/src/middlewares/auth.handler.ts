@@ -1,11 +1,8 @@
 import Boom from "@hapi/boom";
 import { Request, Response, NextFunction } from "express";
 import { LoginUserDTO } from "../dtos/user.dto";
-import jwt from "jsonwebtoken";
-import { JwtPayload } from "jsonwebtoken";
 
 import { config } from "../config";
-import { client } from "../db/config";
 interface RequestWithUser extends Request {
     user: LoginUserDTO;
 }
