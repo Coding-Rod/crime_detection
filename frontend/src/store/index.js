@@ -8,9 +8,9 @@ export default createStore({
     nodes: [],
     videos: [],
     // API_URL: 'http://192.168.0.10:3000/api/v1',
-    // SOCKET_URL: 'ws://192.168.0.10:3000',
+    // SOCKET_URL: 'wss://192.168.0.10:3000',
     API_URL: 'https://monkfish-app-pb6xv.ondigitalocean.app/api/v1',
-    SOCKET_URL: 'ws://monkfish-app-pb6xv.ondigitalocean.app/',
+    SOCKET_URL: 'wss://monkfish-app-pb6xv.ondigitalocean.app/',
   },
   mutations: {
     setName(state, payload) {
