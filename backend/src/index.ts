@@ -28,8 +28,8 @@ app.use(cors());
 // add passport middleware
 require('./utils/auth');
 
-app.get('/api/v1', (_req, res) => {
-    res.send('Welcome to the API');
+app.get('/', (_req, res) => {
+    res.redirect('/api/v1/docs');
 });
 
 // Add the router to the app
