@@ -102,3 +102,9 @@ cython_debug/
 # Node
 ./**/node_modules/
 ai/notebooks/.ipynb_checkpoints
+
+# PyCache
+./**/__pycache__/
+
+# Docker volumes
+backend/data
