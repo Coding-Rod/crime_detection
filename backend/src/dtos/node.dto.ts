@@ -8,7 +8,7 @@ import {
     Length
 } from 'class-validator';
 
-export interface GetOneNodeDTO extends Pick<Node, 'id' | 'name' | 'location' | 'status' | 'recording'> {}
+export interface GetOneNodeDTO extends Pick<Node, 'id' | 'name' | 'location' | 'status'> {}
 
 export interface ICreateNodeDTO extends Pick<Node, 'name' | 'location' | 'userId'> {}
 
@@ -49,20 +49,3 @@ export class UpdateNodeDTO implements IUpdateNodeDTO {
 }
 
 export interface DeleteNodeDTO extends Pick<Node, 'id' | 'name'> {}
-
-export interface IStartRecordingDTO extends Pick<Node, 'id' | 'status' | 'recording'> {}
-
-export class StartRecordingDTO implements IStartRecordingDTO {
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(1)
-    id: number;
-
-    @IsNotEmpty()
-    @IsBoolean()
-    status: boolean;
-
-    @IsNotEmpty()
-    @IsBoolean()
-    recording: boolean;
-}

@@ -17,7 +17,7 @@ EXECUTE FUNCTION add_notification_one();
 
 CREATE OR REPLACE FUNCTION add_notification_two() RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notifications (type, message, user_id)
+    INSERT INTO notification (type, message, user_id)
     SELECT 2, CONCAT(u.username, ' added you as a contact'), c.called
     FROM contacts c
     JOIN users u ON u.iduser = c.caller
