@@ -104,3 +104,6 @@ cython_debug/
 app/platforms
 app/plugins
 backend/yarn-error.log
+
+# PyCache
+./**/__pycache__/
