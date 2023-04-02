@@ -300,38 +300,6 @@
         ]
       }
     },
-    "/nodes/{id}/toggle-recording": {
-      "patch": {
-        "description": "This endpoint toggles the recording state of a node.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "number",
-            "minimum": 1,
-            "maximum": 10
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "403": {
-            "description": "Forbidden, you are not the owner of the node"
-          }
-        },
-        "tags": [
-          "Nodes"
-        ]
-      }
-    },
     "/contacts/": {
       "get": {
         "description": "This endpoint returns a list of contacts.",

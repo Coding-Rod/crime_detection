@@ -4,7 +4,6 @@ import {
   CreateNodeDTO,
   UpdateNodeDTO,
   DeleteNodeDTO,
-  StartRecordingDTO,
 } from "../dtos/node.dto";
 import { client } from "../db/config";
 
@@ -119,26 +118,6 @@ export class NodeService {
     return {
       id: node.rows[0].id,
       name: node.rows[0].name,
-    }
-  }
-
-  async toggleRecording(
-    userId: Node["userId"],
-    nodeNumber: number
-    ): Promise<StartRecordingDTO | string> {
-    const nodeToToggle = await client.query(
-      "SELECT no.idnode id, no.name, no.location, no.status, no.recording FROM nodes no WHERE no.user_id = $1 ORDER BY idnode LIMIT 1 OFFSET $2",
-      [userId, nodeNumber - 1]
-    );
-    if (!nodeToToggle.rows[0]) throw boom.notFound("Node not found");
-    const node = await client.query(
-      "UPDATE nodes SET recording = $1, updated_at = $2 WHERE idnode = $3 RETURNING *",
-      [!nodeToToggle.rows[0].recording, new Date(), nodeToToggle.rows[0].id]
-    );
-    return {
-      id: nodeNumber,
-      status: node.rows[0].status,
-      recording: node.rows[0].recording,
     }
   }
 }

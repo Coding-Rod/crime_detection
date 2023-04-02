@@ -20,10 +20,6 @@ export const updateNodeSchema = Joi.object({
     status: status,
 });
 
-export const toggleRecordingSchema = Joi.object({
-    id: id.required(),
-});
-
 export const deleteNodeSchema = Joi.object({
     id: id.required(),
 });

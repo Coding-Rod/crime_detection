@@ -57,19 +57,6 @@ router.patch(
   }
 );
 
-router.patch(
-  "/:id/toggle-recording",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res, next) => {
-    try {
-      const id = await getId(req.headers.authorization as string);
-      res.status(200).send(await nodeService.toggleRecording(id, parseInt(req.params.id)));
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
 router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
