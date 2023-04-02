@@ -101,3 +101,6 @@ cython_debug/
 
 # Node
 ./**/node_modules/
+
+# PyCache
+./**/__pycache__/
