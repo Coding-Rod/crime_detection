@@ -1,0 +1,7 @@
+{
+  "name": "crime.detection",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

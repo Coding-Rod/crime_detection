@@ -1,5 +1,5 @@
 {
-  "name": "@coreui/coreui-free-vue-admin-template",
+  "name": "crime.detection",
   "version": "4.2.0",
   "description": "CoreUI Free Vue Admin Template",
   "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
@@ -8,9 +8,18 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "ionic:build": "npm run build",
+    "ionic:serve": "npm run serve"
   },
   "dependencies": {
+    "@capacitor/android": "5.0.1",
+    "@capacitor/app": "5.0.1",
+    "@capacitor/cli": "5.0.1",
+    "@capacitor/core": "5.0.1",
+    "@capacitor/haptics": "5.0.1",
+    "@capacitor/keyboard": "5.0.1",
+    "@capacitor/status-bar": "5.0.1",
     "@coreui/chartjs": "^3.0.0",
     "@coreui/coreui": "^4.2.3",
     "@coreui/icons": "^2.1.0",
