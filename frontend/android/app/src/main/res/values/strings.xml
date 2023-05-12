@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">crime.detection</string>
-    <string name="title_activity_main">crime.detection</string>
+    <string name="app_name">Crime Detection</string>
+    <string name="title_activity_main">Crime Detection</string>
     <string name="package_name">crime.detection</string>
     <string name="custom_url_scheme">crime.detection</string>
 </resources>

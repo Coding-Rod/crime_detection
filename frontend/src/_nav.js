@@ -6,7 +6,7 @@ export default [
   {
     component: 'CNavItem',
     name: 'Information',
-    to: '/',
+    to: '/home',
     icon: 'cil-info'
   },
   {

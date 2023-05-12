@@ -29,8 +29,11 @@
     "@coreui/vue-chartjs": "2.0.1",
     "axios": "^1.3.4",
     "core-js": "^3.26.1",
+    "formidable": "^2.1.1",
     "register-service-worker": "^1.7.2",
     "serve": "^14.2.0",
+    "superagent": "^8.0.9",
+    "uuid": "^9.0.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0"
