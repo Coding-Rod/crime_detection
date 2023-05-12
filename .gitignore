@@ -108,3 +108,5 @@ backend/yarn-error.log
 # PyCache
 ./**/__pycache__/
 backend/data
+frontend/android
+frontend/.vscode
