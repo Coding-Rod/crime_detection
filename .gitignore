@@ -108,3 +108,5 @@ ai/notebooks/.ipynb_checkpoints
 
 # Docker volumes
 backend/data
+frontend/.vscode
+frontend/android
