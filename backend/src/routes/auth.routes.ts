@@ -38,7 +38,6 @@ router.patch(
   '/token/',
   passport.authenticate('jwt', { session: false }),
   async (req, res, next) => {
-    console.log(req.headers.authorization);
     try {
       const id = await getId(req.headers.authorization as string);
       res.status(200).send(await userService.setFcmToken(id, req.body.token));
