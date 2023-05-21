@@ -12,7 +12,7 @@ import { object } from "joi";
 export class NotificationService {
     credential: string;
     constructor() {
-        this.credential = require('../config/firebase-admin.json');
+        this.credential = require('../assets/firebase-admin.json');
         admin.initializeApp({
             credential: admin.credential.cert(this.credential),
         });
