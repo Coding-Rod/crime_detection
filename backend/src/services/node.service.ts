@@ -16,6 +16,7 @@ export class NodeService {
       "SELECT ROW_NUMBER() OVER(ORDER BY idnode) id, no.name, no.location, no.status FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser ORDER BY idnode",
       [user_id]
     );
+    console.log(nodes.rows);
     if (!nodes.rows[0]) throw boom.notFound("No nodes found");
     return nodes.rows.map((node) => ({
       id: parseInt(node.id),
@@ -28,14 +29,16 @@ export class NodeService {
   async getNode(userId: Node["userId"], nodeNumber: number): Promise<GetOneNodeDTO | string> {
     console.log("Get node", userId, nodeNumber);
     const node = await client.query(
-      "SELECT no.name, no.location, no.status FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser LIMIT 1 OFFSET $2",
+      "SELECT ROW_NUMBER() OVER(ORDER BY idnode) id, no.name, no.location, no.status FROM nodes no, users us WHERE no.user_id=$1 AND no.user_id = us.iduser ORDER BY idnode LIMIT 1 OFFSET $2",
       [userId, nodeNumber - 1]
     );
     console.log(node.rows[0]);
     if (!node.rows[0]) throw boom.notFound("Node not found");
     return {
-      id: nodeNumber,
-      ...node.rows[0]
+      id: parseInt(node.rows[0].id),
+      name: node.rows[0].name,
+      location: node.rows[0].location,
+      status: node.rows[0].status,
     }
   }
 

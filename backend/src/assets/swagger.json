@@ -18,10 +18,10 @@
     "title": "REST API",
     "description": "REST API for the project."
   },
-  "host": "monkfish-app-pb6xv.ondigitalocean.app",
+  "host": "localhost:8000",
   "basePath": "/api/v1/",
   "schemes": [
-    "https"
+    "http"
   ],
   "paths": {
     "/users/": {
@@ -566,6 +566,44 @@
           },
           "401": {
             "description": "Unauthorized, invalid password"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/token":{
+      "patch": {
+        "description": "This endpoint is used to set the FCM token of a user.",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "FCM token of the user.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "token",
+                  "description": "The FCM token of the user.",
+                  "required": true
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "404": {
             "description": "Not Found"
