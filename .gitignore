@@ -107,3 +107,6 @@ backend/yarn-error.log
 
 # PyCache
 **/__pycache__/
+
+# Other branches
+controller
