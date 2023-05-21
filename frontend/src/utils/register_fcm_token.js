@@ -1,8 +1,9 @@
 import axios from "axios"
 
 const register_fcm_token = () => {
+    const store = this.$store;
     try{
-        axios.patch(this.$store.state.api_url + 'auth/set_fcm_token', 
+        axios.patch(this.$store.state.api_url + 'auth/token/', 
             {
                 headers: {
                     Authorization: 'Bearer ' + localStorage.getItem('access_token')
