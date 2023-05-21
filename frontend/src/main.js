@@ -12,6 +12,8 @@ import { iconsSet as icons } from '@/assets/icons'
 import DocsExample from '@/components/DocsExample'
 import '../public/firebase-messaging-sw.'
 
+import axios from 'axios'
+
 const app = createApp(App)
 app.use(store)
 app.use(router)
@@ -20,8 +22,6 @@ app.use(CoreuiVue)
 app.provide('icons', icons)
 app.component('CIcon', CIcon)
 app.component('DocsExample', DocsExample)
-
-// Messaging token: BOkDxL7FM4fvNS6eXgqDrstRTnjBRpDp6Rv5JUMy9EgMIEuuCVui1kA9pqQNlkVFwN_v5NeZ6KDywBnf7ZrWuqM
 
 const firebaseConfig = {
     apiKey: "AIzaSyDOiVXW7-HuQ8K9Fo5ROuMPHpdiV_IS9c0",
@@ -46,7 +46,8 @@ Notification.requestPermission().then((permission) => {
             { vapidKey: 'BOkDxL7FM4fvNS6eXgqDrstRTnjBRpDp6Rv5JUMy9EgMIEuuCVui1kA9pqQNlkVFwN_v5NeZ6KDywBnf7ZrWuqM' }
         ).then((currentToken) => {
             if (currentToken) {
-                console.log(currentToken);
+                console.log('current token for client: ', currentToken);
+                localStorage.setItem('fcm_token', currentToken);
             } else {
                 console.log('No Instance ID token available. Request permission to generate one.');
             }

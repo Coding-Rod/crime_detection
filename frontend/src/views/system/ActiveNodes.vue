@@ -112,7 +112,7 @@ export default {
     },
     async deleteNode(id) {
       try {
-        const response = await axios.delete(
+        await axios.delete(
           `${this.$store.state.API_URL}/nodes/${id}/`,
           {
             headers: {
