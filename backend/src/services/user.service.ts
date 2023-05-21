@@ -130,4 +130,19 @@ export class UserService {
       token
     }
   }
+
+  async setFcmToken(id: User["id"], fcmToken: User['token']): Promise<void | string> {
+    const user = await client.query(
+      "SELECT * FROM users WHERE iduser = $1",
+      [id]
+    );
+    if (!user.rows[0]) throw boom.notFound("User not found");
+    await client.query(
+      "UPDATE users SET token = $1 WHERE iduser = $2",
+      [fcmToken, id]
+    );
+
+    return "Token updated";
+  }
+
 }

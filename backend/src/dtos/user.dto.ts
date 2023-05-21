@@ -78,6 +78,20 @@ export class LoginUserDTO implements ILoginUserDTO {
     password: string;
 }
 
+export interface ISetFcmTokenDTO extends Pick<User, "id" | "token"> {}
+
+export class SetFcmTokenDTO implements ISetFcmTokenDTO {
+    @IsNotEmpty()
+    @IsNumber()
+    @Min(1)
+    id: number;
+
+    @IsNotEmpty()
+    @IsString()
+    @Length(8, 50)
+    fcmToken: string;
+}
+
 export interface IChangePasswordDTO extends Pick<User, "id" | "password"> {}
 
 export class ChangePasswordDTO implements IChangePasswordDTO {

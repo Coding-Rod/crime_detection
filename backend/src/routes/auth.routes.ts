@@ -1,9 +1,11 @@
 import express from "express";
+import passport from "passport";
 
 import validatorHandler from "../middlewares/validator.handler";
 import { createUserSchema, loginUserSchema } from "../schemas/user.schema";
 
 import { UserService } from "../services/user.service";
+import { getId } from "../utils/db/getId";
 
 const router = express.Router();
 const userService = new UserService();
@@ -31,5 +33,18 @@ router.post(
     }
   }
 );
+
+router.patch(
+  '/token/',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const id = await getId(req.headers.authorization as string);
+      res.status(200).send(await userService.setFcmToken(id, req.body));
+    } catch (err) {
+      next(err);
+    }
+  }
+)
 
 export default router;
