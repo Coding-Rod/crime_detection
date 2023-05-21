@@ -18,7 +18,7 @@
     "title": "REST API",
     "description": "REST API for the project."
   },
-  "host": "localhost:8000",
+  "host": "localhost:3000",
   "basePath": "/api/v1/",
   "schemes": [
     "http"

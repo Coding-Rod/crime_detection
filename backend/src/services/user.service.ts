@@ -132,6 +132,7 @@ export class UserService {
   }
 
   async setFcmToken(id: User["id"], fcmToken: User['token']): Promise<void | string> {
+    console.log(id, fcmToken);
     const user = await client.query(
       "SELECT * FROM users WHERE iduser = $1",
       [id]
