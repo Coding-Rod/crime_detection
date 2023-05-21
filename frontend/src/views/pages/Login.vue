@@ -127,13 +127,5 @@ export default {
       }
     },
   },
-  async beforeMount() {
-    try {
-      const response = await axios.get(`${this.$store.state.API_URL}/`);
-      this.server_message = response;
-    } catch (error) {
-      this.server_message = error;
-    }
-  },
 };
 </script>
