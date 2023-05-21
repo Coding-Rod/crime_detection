@@ -120,8 +120,8 @@ export default {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("id", response.data.id);
         this.waiting = false;
-        register_fcm_token();
-        // this.$router.push("/");
+        await register_fcm_token();
+        this.$router.push("/");
       } catch (error) {
         this.waiting = false;
         console.log('error', error);
