@@ -67,58 +67,6 @@ export default {
     AppBreadcrumb,
   },
   methods: {
-    async showNotification(message) {
-      // Request permission to show notifications
-      const permission = await Notification.requestPermission();
-
-      // If the user granted permission, show the notification
-      if (permission === "default" || permission === "granted") {
-        // Check if push messaging is supported
-        if ("PushManager" in window) {
-          navigator.serviceWorker.getRegistration().then((registration) => {
-            // Request push subscription
-            registration.pushManager
-              .subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: urlBase64ToUint8Array("your_public_key"),
-              })
-              .then((subscription) => {
-                console.log(
-                  "Push notifications subscription successful:",
-                  subscription
-                );
-
-                // Send push message to server
-                const payload = JSON.stringify({ message: message });
-                fetch("/send-push-notification", {
-                  method: "POST",
-                  body: payload,
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                });
-
-                // Show native notification on mobile device
-                registration.showNotification("Weapon Detected!", {
-                  body: message,
-                  data: { url: "/" },
-                });
-              })
-              .catch((error) => {
-                console.error("Push notifications subscription error:", error);
-              });
-          });
-        } else {
-          // Fallback to desktop notification if push messaging is not supported
-          new Notification("Weapon Detected!", {
-            body: message,
-            onClick: () => {
-              window.focus();
-            },
-          });
-        }
-      }
-    },
     async getNotifications() {
       axios
         .get(this.$store.state.API_URL + "/notifications?limit=5", {
@@ -145,22 +93,31 @@ export default {
 
     this.connection.onopen = () => {
       this.connection.onmessage = (e) => {
-        const data = JSON.parse(e.data);
         try {
+          console.log("-----------------------------------------------------");
+          const data = JSON.parse(e.data);
+          console.log(data.data);
+
+          const users = data.data.users;
+          console.log(users);
+
+          console.log(localStorage.getItem("id") in users);
           if (
             data.data.type === 3 &&
-            localStorage.getItem("id") in data.data.users
-          ) {
-            console.log("New notification");
-            this.showNotification(
-              data.data.message + "\nOwner: " + data.data.owner
-            );
+            users.includes(parseInt(localStorage.getItem("id")))
+            ) {
+            alert(data.data.message + "\nOwner: " + data.data.owner);
+            new Notification("New notification", {
+              body: data.data.message,
+              icon: "https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png",
+            });
           }
-        } catch (e) {
-          console.log(data);
+        } catch (error) {
+          console.log("Connected to websocket");
         }
       };
     };
+
   },
   async mounted() {
     // Get notifications
