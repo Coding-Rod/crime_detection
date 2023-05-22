@@ -1,23 +1,14 @@
 import { Notification } from "../models/notification.model";
 import { GetNotificationDTO, CreateNotificationDTO } from "../dtos/notification.dto";
 
-import * as admin from 'firebase-admin';
-
 import { client } from "../db/config";
 import { wss } from "../index";
 
 import boom from "@hapi/boom";
-import { object } from "joi";
 
 export class NotificationService {
     credential: string;
-    constructor() {
-        this.credential = require('../assets/firebase-admin.json');
-        admin.initializeApp({
-            credential: admin.credential.cert(this.credential),
-        });
-
-    }
+    constructor() {}
 
     async getNotifications(userId: Notification["userId"], types: Notification["type"][], limit: number, offset: number): Promise<GetNotificationDTO[] | string> {
         
@@ -50,42 +41,21 @@ export class NotificationService {
         );
 
         const contactsIds = Object.values(contacts.rows).map((contact) => contact.called);
-        const tokens = await client.query(
-            "SELECT token FROM users WHERE iduser = ANY($1)",
-            [contactsIds]
-        );
 
-        if (notification.type == 3 && tokens.rows.length > 0) {
-            const message = {
-                notification: {
-                    title: "Arma detectada",
-                    body: notification.message,
-                },
-                tokens: tokens.rows.map(r => r.token),
-            };
-            admin.messaging().sendMulticast(message)
-                .then((response) => {
-                    console.log(response.successCount + ' messages were sent successfully');
+        wss.clients.forEach((client) => {
+            client.send(
+                JSON.stringify({
+                    type: "notification",
+                    data: {
+                        id: newNotification.rows[0].id,
+                        type: newNotification.rows[0].type,
+                        message: newNotification.rows[0].message,
+                        users: [...contactsIds, userId],
+                        owner: userName.rows[0].name,
+                    },
                 })
-                .catch((error) => {
-                    console.log('Error sending message:', error);
-                });
-        }
-
-        // wss.clients.forEach((client) => {
-        //     client.send(
-        //         JSON.stringify({
-        //             type: "notification",
-        //             data: {
-        //                 id: newNotification.rows[0].id,
-        //                 type: newNotification.rows[0].type,
-        //                 message: newNotification.rows[0].message,
-        //                 users: [...contactsIds, userId],
-        //                 owner: userName.rows[0].name,
-        //             },
-        //         })
-        //     );
-        // });
+            );
+        });
 
         return newNotification.rows[0];
     }
