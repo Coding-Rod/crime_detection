@@ -10,7 +10,8 @@
               <p class="content-text">{{ text }}</p>
             </CCol>
             <CCol :md="imgSize" >
-              <img :src="image" :class="reverse ? 'image_reverse' : 'image'" alt="Image" />
+              <img v-if="cover" :src="image" class="image_cover" alt="Image" />
+              <img v-else :src="image" :class="reverse ? 'image_reverse' : 'image'" alt="Image" />
             </CCol>
           </CRow>
         </CCardBody>
@@ -46,6 +47,10 @@ export default {
       type: Number,
       default: 4,
     },
+    cover: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
@@ -68,6 +73,17 @@ export default {
   height: 100%;
   border-radius: 0 30px 30px 0;
 }
+.image_cover {
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 30px 0 0 30px;
+  flex-wrap: wrap-reverse;
+}
+
 .image_reverse {
   margin: 0;
   padding: 0;

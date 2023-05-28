@@ -10,6 +10,7 @@
       :text="value.text"
       :reverse="index % 2 === 0"
       :img-size="value.imgSize"
+      :cover="value.cover"
     />
   </div>
 </template>
@@ -29,6 +30,7 @@ export default {
           image: require('@/assets/images/gun.jpg'),
           text:
             "Currently, the use of weapons to commit robberies and assaults has become increasingly recurrent, generating a growing sense of insecurity among the population. These weapons represent a threat both to people's physical integrity and to their lives. Current video surveillance systems are not capable of generating rapid responses to these types of criminal situations. In order to achieve early action to avoid possible tragedies, these passive video surveillance systems must be constantly monitored, which implies considerable monthly costs for the hiring of security personnel.",
+          cover: true
         },
         {
           title: 'Objective',
