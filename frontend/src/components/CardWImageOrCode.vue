@@ -1,6 +1,6 @@
 <template>
   <div class="mb-4">
-    <CCard v-if="!image">
+    <CCard v-if="image.length === 0 && code.length === 0">
       <CCardHeader component="h5">{{ header }}</CCardHeader>
       <CCardBody>
         <CCardTitle>{{ title }}</CCardTitle>
@@ -40,11 +40,9 @@
         </CCol>
         <CCol :md="8">
           <CCardBody>
-            <CCardTitle>Card title</CCardTitle>
+            <CCardTitle>{{ title }}</CCardTitle>
             <CCardText
-              >This is a wider card with supporting text below as a natural
-              lead-in to additional content. This content is a little bit
-              longer.</CCardText
+              >{{ text }}</CCardText
             >
             <CCardText
               ><small class="text-muted"
@@ -75,7 +73,7 @@ export default {
     },
     image: {
       type: String,
-      default: "https://picsum.photos/300/200",
+      default: '',
     },
     code: {
       type: String,
