@@ -112,8 +112,7 @@ export default {
     async register() {
       try {
         this.waiting = true;
-        if (this.password !== this.password_confirmation)
-          throw new Error("Passwords do not match");
+        if (this.password !== this.password_confirmation) throw new Error("Passwords do not match");
         const response = await axios.post(
           `${this.$store.state.API_URL}/auth/register`,
           {

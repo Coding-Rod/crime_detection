@@ -9558,6 +9558,18 @@ utils-merge@1.0.1:
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
+uuid-token-generator@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/uuid-token-generator/-/uuid-token-generator-1.0.0.tgz#36db091f66b94c93f0adc248568fa473711637db"
+  integrity sha512-chfbuC/sl9VHdEERTf1bJKTeXOTjk1L6hDZseRN0ZyBoxAK0a/xZNgRm0U2Q+b0muaAOkfSBretAy4q6FElgVQ==
+  dependencies:
+    uuid "^3.0.0"
+
+uuid@^3.0.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
+  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
 uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"

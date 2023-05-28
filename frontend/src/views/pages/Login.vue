@@ -94,7 +94,6 @@
 
 <script>
 import axios from "axios";
-import { register_fcm_token } from "../../utils/register_fcm_token";
 export default {
   name: "Login",
   data() {
@@ -120,12 +119,11 @@ export default {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("id", response.data.id);
         this.waiting = false;
-        register_fcm_token();
-        // this.$router.push("/");
+        this.$router.push("/");
       } catch (error) {
         this.waiting = false;
         console.log('error', error);
-        // this.error = error.response.data.message;
+        this.error = error.response.data.message;
       }
     },
   },

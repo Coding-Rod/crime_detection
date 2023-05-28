@@ -4,12 +4,12 @@
       <CCard style="border-radius: 30px;">
         <CCardBody style="padding: 0;">
           <CRow :class="reverse ? 'card_inside_reverse' : 'card_inside'">
-            <CCol md="8" class="mt-4 mb-4 pe-4 ps-4">
+            <CCol :md="12-imgSize" class="mt-4 mb-4 pe-4 ps-4">
               <h2>{{ title }}</h2>
-              <p class="text-medium-emphasis">{{ subtitle }}</p>
-              <p>{{ text }}</p>
+              <p class="text-medium-emphasis h4">{{ subtitle }}</p>
+              <p class="content-text">{{ text }}</p>
             </CCol>
-            <CCol md="4" style="margin: 0; padding: 0; border: 0;">
+            <CCol :md="imgSize" >
               <img :src="image" :class="reverse ? 'image_reverse' : 'image'" alt="Image" />
             </CCol>
           </CRow>
@@ -42,6 +42,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    imgSize: {
+      type: Number,
+      default: 4,
+    },
   },
 };
 </script>
@@ -56,23 +60,27 @@ export default {
   flex-direction: row-reverse;
 }
 .image {
+  object-fit: contain;
   margin: 0;
-  padding: 0 11px;
-  border: 0;
+  padding: 0;
+  background-color: white;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   border-radius: 0 30px 30px 0;
 }
 .image_reverse {
   margin: 0;
-  padding: 0 11px;
-  border: 0;
+  padding: 0;
+  background-color: white;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 30px 0 0 30px;
   flex-wrap: wrap-reverse;
+}
+
+.content-text {
+  font-size: 1.1em;
 }
 
 @media screen {
