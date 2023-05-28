@@ -125,6 +125,7 @@ export default {
         if (response.status === 201) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("id", response.data.id);
+          await register_fcm_token();
           this.waiting = false;
           this.$router.push({ name: "Home" });
         } else {
