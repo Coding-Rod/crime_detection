@@ -15,8 +15,8 @@ export class UserService {
   async getUser(id: User["id"], search: User['email'] | User['username'] | undefined = undefined): Promise<GetUserDTO | string> {    
     const user = await client.query(
       search
-      ? `SELECT iduser id, name, username, email FROM users WHERE username = '${search}' OR email = '${search}'`
-      : `SELECT iduser id, name, username, email FROM users WHERE iduser = '${id}'`
+      ? `SELECT iduser id, name, username, email, phone FROM users WHERE username = '${search}' OR email = '${search}'`
+      : `SELECT iduser id, name, username, email, phone FROM users WHERE iduser = '${id}'`
     );
 
     if (!user.rows[0]) throw boom.notFound("User not found");
@@ -36,21 +36,22 @@ export class UserService {
       ...userToUpdate.rows[0],
       ...user,
     };
-    const { name, username, email, password } = updatedUser;
+    const { name, username, email, password, phone } = updatedUser;
 
 
     if (user.username !== userToUpdate.rows[0].username && user.username) await unique("users", "username", username);
     if (user.email !== userToUpdate.rows[0].email && user.email) await unique("users", "username", username);
     
     await client.query(
-      "UPDATE users SET name = $1, username = $2, email = $3, password = $4, updated_at = $5 WHERE iduser = $6",
-      [name, username, email, password, new Date(), id]
+      "UPDATE users SET name = $1, username = $2, email = $3, password = $4, phone = $5, updated_at = $6 WHERE iduser = $7",
+      [name, username, email, password, phone, new Date(), id]
     );
     return {
       id,
       name,
       username,
       email,
+      phone,
     };
   }
 
@@ -69,7 +70,7 @@ export class UserService {
   }
 
   async createUser(user: CreateUserDTO): Promise< AuthUserDTO| string> {
-    const { name, username, email, password } = user;
+    const { name, username, email, password, phone } = user;
     await unique("users", "username", username);
     await unique("users", "email", email);
     
@@ -78,17 +79,19 @@ export class UserService {
       name,
       username,
       email,
+      phone,
       password: hashedPassword,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     await client.query(
-      "INSERT INTO users (name, username, email, password) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO users (name, username, email, password, phone) VALUES ($1, $2, $3, $4, $5)",
       [
         newUser.name,
         newUser.username,
         newUser.email,
-        newUser.password
+        newUser.password,
+        newUser.phone,
       ]
     );
     
@@ -129,21 +132,6 @@ export class UserService {
       id: userToLogin.rows[0].iduser,
       token
     }
-  }
-
-  async setFcmToken(id: User["id"], fcmToken: User['token']): Promise<void | string> {
-    console.log(id, fcmToken);
-    const user = await client.query(
-      "SELECT * FROM users WHERE iduser = $1",
-      [id]
-    );
-    if (!user.rows[0]) throw boom.notFound("User not found");
-    await client.query(
-      "UPDATE users SET token = $1 WHERE iduser = $2",
-      [fcmToken, id]
-    );
-
-    return "Token updated";
   }
 
 }

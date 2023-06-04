@@ -9,11 +9,11 @@ import {
     Min,
 } from "class-validator";
 
-export interface GetUserDTO extends Pick<User, "id" | "name" | "username" | "email"> {}
+export interface GetUserDTO extends Pick<User, "id" | "name" | "username" | "email" | "phone"> {}
 
 export interface DeleteUserDTO extends Pick<User, "id" | "name"> {}
 
-export interface IUpdateUserDTO extends Pick<User, "id" | "name" | "username" | "email" | "password"> {}
+export interface IUpdateUserDTO extends Pick<User, "id" | "name" | "username" | "email" | "password" | "phone"> {}
 
 export class UpdateUserDTO implements IUpdateUserDTO {
     @IsNotEmpty()
@@ -41,7 +41,7 @@ export class UpdateUserDTO implements IUpdateUserDTO {
     password: string;
 }
 
-export interface ICreateUserDTO extends Pick<User, "name" | "username" | "email" | "password"> {}
+export interface ICreateUserDTO extends Pick<User, "name" | "username" | "email" | "password" | "phone"> {}
 
 export class CreateUserDTO implements ICreateUserDTO {
     @IsNotEmpty()
@@ -62,6 +62,11 @@ export class CreateUserDTO implements ICreateUserDTO {
     @IsString()
     @Length(8, 50)
     password: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @Length(8, 50)
+    phone: number;
 }
 
 export interface ILoginUserDTO extends Pick<User, "username" | "password"> {}
@@ -76,20 +81,6 @@ export class LoginUserDTO implements ILoginUserDTO {
     @IsString()
     @Length(8, 50)
     password: string;
-}
-
-export interface ISetFcmTokenDTO extends Pick<User, "id" | "token"> {}
-
-export class SetFcmTokenDTO implements ISetFcmTokenDTO {
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(1)
-    id: number;
-
-    @IsNotEmpty()
-    @IsString()
-    @Length(8, 50)
-    fcmToken: string;
 }
 
 export interface IChangePasswordDTO extends Pick<User, "id" | "password"> {}

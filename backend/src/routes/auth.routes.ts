@@ -34,17 +34,4 @@ router.post(
   }
 );
 
-router.patch(
-  '/token/',
-  passport.authenticate('jwt', { session: false }),
-  async (req, res, next) => {
-    try {
-      const id = await getId(req.headers.authorization as string);
-      res.status(200).send(await userService.setFcmToken(id, req.body.token));
-    } catch (err) {
-      next(err);
-    }
-  }
-)
-
 export default router;

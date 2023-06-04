@@ -5,6 +5,7 @@ const name = Joi.string().min(3).max(30);
 const username = Joi.string().min(3).max(30);
 const email = Joi.string().email();
 const password = Joi.string().min(8).max(30);
+const phone = Joi.number().integer().min(8).max(30);
 const createdAt = Joi.date();
 const updatedAt = Joi.date();
 
@@ -13,6 +14,7 @@ export const createUserSchema = Joi.object({
     username: username.required(),
     email: email.required(),
     password: password.required(),
+    phone: phone.required(),
 });
 
 export const getUserSchema = Joi.object({
@@ -25,6 +27,7 @@ export const updateUserSchema = Joi.object({
     username: username,
     email: email,
     password: password,
+    phone: phone,
 });
 
 export const deleteUserSchema = Joi.object({
@@ -44,4 +47,5 @@ export const userSchema = Joi.object({
     password: password,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    phone: phone,
 });

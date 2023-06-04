@@ -85,6 +85,12 @@
                   "description": "The email of the user.",
                   "required": false
                 },
+                "phone": {
+                  "type": "number",
+                  "example": "12345678",
+                  "description": "The phone of the user.",
+                  "required": false
+                },
                 "password": {
                   "type": "string",
                   "example": "password",
@@ -499,6 +505,14 @@
                   "type": "string",
                   "example": "john123@fakermail.com",
                   "description": "The email of the user.",
+                  "required": true,
+                  "minLength": 1,
+                  "maxLength": 255
+                },
+                "phone": {
+                  "type": "number",
+                  "example": "123456789",
+                  "description": "The phone number of the user.",
                   "required": true,
                   "minLength": 1,
                   "maxLength": 255
