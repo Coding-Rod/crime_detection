@@ -39,6 +39,11 @@ export class UpdateUserDTO implements IUpdateUserDTO {
     @IsString()
     @Length(8, 50)
     password: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @Length(8, 30)
+    phone: string;
 }
 
 export interface ICreateUserDTO extends Pick<User, "name" | "username" | "email" | "password" | "phone"> {}
@@ -66,7 +71,7 @@ export class CreateUserDTO implements ICreateUserDTO {
     @IsNotEmpty()
     @IsString()
     @Length(8, 50)
-    phone: number;
+    phone: string;
 }
 
 export interface ILoginUserDTO extends Pick<User, "username" | "password"> {}

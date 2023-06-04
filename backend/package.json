@@ -43,6 +43,7 @@
     "@hapi/boom": "^10.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/passport-jwt": "^3.0.8",
+    "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.14.0",
@@ -50,6 +51,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "firebase-admin": "^11.8.0",
+    "form-data": "^4.0.0",
     "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.0",
     "passport": "^0.6.0",
@@ -61,8 +63,8 @@
     "sequelize": "^6.28.0",
     "sequelize-typescript": "^2.1.5",
     "socket.io": "^4.6.1",
-    "typescript": "^5.0.4",
     "swagger-ui-express": "^4.6.0",
+    "typescript": "^5.0.4",
     "ws": "^8.13.0"
   }
 }

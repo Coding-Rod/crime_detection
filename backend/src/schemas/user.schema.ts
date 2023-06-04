@@ -5,7 +5,7 @@ const name = Joi.string().min(3).max(30);
 const username = Joi.string().min(3).max(30);
 const email = Joi.string().email();
 const password = Joi.string().min(8).max(30);
-const phone = Joi.number().integer().min(8).max(30);
+const phone = Joi.string().min(8).max(30);
 const createdAt = Joi.date();
 const updatedAt = Joi.date();
 

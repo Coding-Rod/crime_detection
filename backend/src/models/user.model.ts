@@ -6,6 +6,6 @@ export interface User {
     password: string;
     createdAt: Date;
     updatedAt: Date;
-    phone?: number;
+    phone?: string;
     token?: string;
 }

@@ -3,6 +3,10 @@ import { GetNotificationDTO, CreateNotificationDTO } from "../dtos/notification.
 
 import { client } from "../db/config";
 import { wss } from "../index";
+import { config } from "../config";
+
+import axios from 'axios';
+import FormData from 'form-data';
 
 import boom from "@hapi/boom";
 
@@ -36,26 +40,93 @@ export class NotificationService {
         );
 
         const userName = await client.query(
-            "SELECT name FROM users WHERE iduser = $1",
+            "SELECT name, phone FROM users WHERE iduser = $1",
             [userId]
         );
 
         const contactsIds = Object.values(contacts.rows).map((contact) => contact.called);
 
-        wss.clients.forEach((client) => {
-            client.send(
-                JSON.stringify({
-                    type: "notification",
-                    data: {
-                        id: newNotification.rows[0].id,
-                        type: newNotification.rows[0].type,
-                        message: newNotification.rows[0].message,
-                        users: [...contactsIds, userId],
-                        owner: userName.rows[0].name,
-                    },
+        if (type == 3) {
+
+            wss.clients.forEach((client) => {
+                client.send(
+                    JSON.stringify({
+                        type: "notification",
+                        data: {
+                            id: newNotification.rows[0].id,
+                            type: newNotification.rows[0].type,
+                            message: newNotification.rows[0].message,
+                            users: [...contactsIds, userId],
+                            owner: userName.rows[0].name,
+                        },
+                    })
+                );
+            });
+
+            // Send notification to whatsapp
+
+            let data = new FormData();
+            data.append('secret', config.whatsappSecret);
+            data.append('account', config.whatsappAccountNumber);
+            data.append('type', 'text');
+
+            // For owner
+            data.append('recipient', userName.rows[0].phone);
+            data.append('message', message);
+
+            let req_config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
+                headers: { 
+                'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e', 
+                ...data.getHeaders()
+                },
+                data : data
+            };
+
+            axios.request(req_config)
+                .then((response) => {
+                    console.log(JSON.stringify(response.data));
                 })
-            );
-        });
+                .catch((error) => {
+                    console.log(error);
+                });
+
+            // For contacts
+            contactsIds.forEach(async (contact) => {
+                data = new FormData();
+                data.append('secret', config.whatsappSecret);
+                data.append('account', config.whatsappAccountNumber);
+                data.append('type', 'text');
+
+                data.append('recipient', await client.query(
+                    "SELECT phone FROM users WHERE iduser = $1",
+                    [contact]
+                ).then((res) => res.rows[0].phone));
+                data.append('message', message + '\nfrom user ' + userName.rows[0].name+ '\nwith phone number ' + userName.rows[0].phone);
+
+                let req_config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
+                    headers: {
+                        'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e',
+                        ...data.getHeaders()
+                    },
+                    data: data
+                };
+
+                axios.request(req_config)
+                    .then((response) => {
+                        console.log(JSON.stringify(response.data));
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            });
+        }
+
 
         return newNotification.rows[0];
     }
