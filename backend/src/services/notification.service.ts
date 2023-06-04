@@ -65,14 +65,13 @@ export class NotificationService {
 
             // Send notification to whatsapp
 
-            let data = new FormData();
-            data.append('secret', config.whatsappSecret);
-            data.append('account', config.whatsappAccountNumber);
-            data.append('type', 'text');
-
-            // For owner
-            data.append('recipient', userName.rows[0].phone);
-            data.append('message', message);
+            let data = {
+                secret: config.whatsappSecret,
+                account: config.whatsappAccountNumber,
+                type: 'text',
+                recipient: userName.rows[0].phone,
+                message: message
+            };
 
             let req_config = {
                 method: 'post',
@@ -80,7 +79,7 @@ export class NotificationService {
                 url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
                 headers: { 
                 'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e', 
-                ...data.getHeaders()
+                'Content-Type': 'application/json'
                 },
                 data : data
             };
@@ -95,35 +94,44 @@ export class NotificationService {
 
             // For contacts
             contactsIds.forEach(async (contact) => {
-                data = new FormData();
-                data.append('secret', config.whatsappSecret);
-                data.append('account', config.whatsappAccountNumber);
-                data.append('type', 'text');
-
-                data.append('recipient', await client.query(
+                let contact_data = {
+                    secret: config.whatsappSecret,
+                    account: config.whatsappAccountNumber,
+                    type: 'text',
+                    recipient: '',
+                    message: message + '\nfrom user ' + userName.rows[0].name+ '\nwith phone number ' + userName.rows[0].phone
+                }
+                
+                let recipient = await client.query(
                     "SELECT phone FROM users WHERE iduser = $1",
                     [contact]
-                ).then((res) => res.rows[0].phone));
-                data.append('message', message + '\nfrom user ' + userName.rows[0].name+ '\nwith phone number ' + userName.rows[0].phone);
+                );
 
-                let req_config = {
-                    method: 'post',
-                    maxBodyLength: Infinity,
-                    url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
-                    headers: {
-                        'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e',
-                        ...data.getHeaders()
-                    },
-                    data: data
-                };
+                contact_data.recipient = recipient.rows[0].phone;
+                if (contact_data.recipient) {
+                    let req_config = {
+                        method: 'post',
+                        maxBodyLength: Infinity,
+                        url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
+                        headers: {
+                            'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e',
+                            'Content-Type': 'application/json'
+                        },
+                        data: contact_data
+                    };
 
-                axios.request(req_config)
-                    .then((response) => {
-                        console.log(JSON.stringify(response.data));
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                    axios.request(req_config)
+                        .then((response) => {
+                            console.log("Message sent successfully")
+                            console.log(JSON.stringify(contact_data));
+                            console.log(JSON.stringify(response.data));
+                        })
+                        .catch((error) => {
+                            console.log("Error sending message")
+                            console.log(JSON.stringify(contact_data));
+                            console.log(error);
+                        });
+                }
             });
         }
 
