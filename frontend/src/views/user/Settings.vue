@@ -263,6 +263,9 @@ export default {
         if (this.email === "") {
           throw new Error("Email is required");
         }
+        if (this.phone === "") {
+          throw new Error("Phone is required");
+        }
 
         // Update Vuex store name
         this.$store.commit({
@@ -280,15 +283,17 @@ export default {
           name: this.$store.state.name,
           username: this.username,
           email: this.email,
+          phone: this.phone,
         };
 
         console.log(previous_data.data.name, this.name);
 
-        if (previous_data.data.name === this.name) delete new_data.name;
-        if (previous_data.data.username === this.username) delete new_data.username;
-        if (previous_data.data.email === this.email) delete new_data.email;
+        if (previous_data.data.name === this.name) delete previous_data.name;
+        if (previous_data.data.username === this.username) delete previous_data.username;
+        if (previous_data.data.email === this.email) delete previous_data.email;
+        if (previous_data.data.phone === this.phone) delete previous_data.phone;
 
-        if (Object.keys(new_data).length === 0) throw new Error("No changes were made");
+        if (Object.keys(previous_data).length === 0) throw new Error("No changes were made");
 
         const response = await axios.patch(`${this.$store.state.API_URL}/users`, new_data,
          {
