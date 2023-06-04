@@ -48,6 +48,20 @@
             />
             <CFormText id="emailHelp">Your email must be unique.</CFormText>
           </div>
+          <div class="mb-3">
+            <CFormLabel for="InputPhone1">Phone</CFormLabel>
+            <CFormInput
+              :disabled="!enabled"
+              type="tel"
+              id="InputPhone1"
+              aria-describedby="PhoneHelp"
+              name="phone"
+              v-model="phone"
+            />
+            <CFormText id="PhoneHelp"
+              >Your phone number must be unique.</CFormText
+            >
+          </div>
         </CForm>
       </CCol>
     </CRow>
@@ -175,6 +189,7 @@ export default {
       name: "",
       username: "",
       email: "",
+      phone: "",
       password: "",
       modalVisible: false,
       error: "",
@@ -218,6 +233,7 @@ export default {
           this.name = response.data.name;
           this.username = response.data.username;
           this.email = response.data.email;
+          this.phone = response.data.phone;
           this.password = "";
         } else {
           this.waiting = false;

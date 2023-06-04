@@ -42,6 +42,16 @@
                 </CInputGroup>
                 <CInputGroup class="mb-3">
                   <CInputGroupText>
+                    <CIcon icon="cil-phone" />
+                  </CInputGroupText>
+                  <CFormInput
+                    placeholder="Phone"
+                    autocomplete="phone"
+                    v-model="phone"
+                  />
+                </CInputGroup>
+                <CInputGroup class="mb-3">
+                  <CInputGroupText>
                     <CIcon icon="cil-lock-locked" />
                   </CInputGroupText>
                   <CFormInput
@@ -119,6 +129,7 @@ export default {
             name: this.name,
             username: this.username,
             email: this.email,
+            phone: this.phone,
             password: this.password,
           }
         );
