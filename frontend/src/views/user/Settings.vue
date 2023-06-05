@@ -327,6 +327,7 @@ export default {
     this.name = response.data.name;
     this.username = response.data.username;
     this.email = response.data.email;
+    this.phone = response.data.phone;
   },
 };
 </script>
