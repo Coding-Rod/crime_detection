@@ -103,11 +103,12 @@ export class NotificationService {
                 }
                 
                 let recipient = await client.query(
-                    "SELECT phone FROM users WHERE iduser = $1",
+                    "SELECT name, phone FROM users WHERE iduser = $1",
                     [contact]
                 );
 
                 contact_data.recipient = recipient.rows[0].phone;
+                contact_data.message = 'Hi ' + recipient.rows[0].name + ',\n' + contact_data.message;
                 if (contact_data.recipient) {
                     let req_config = {
                         method: 'post',
