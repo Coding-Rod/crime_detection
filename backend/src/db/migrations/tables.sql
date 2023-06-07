@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS thesis.public.users (
     username character varying(45) NOT NULL,
     created_at timestamp NOT NULL DEFAULT now(),
     updated_at timestamp NOT NULL DEFAULT now(),
+    phone character varying(45),
     PRIMARY KEY (iduser)
 );
 CREATE TABLE IF NOT EXISTS thesis.public.nodes (
