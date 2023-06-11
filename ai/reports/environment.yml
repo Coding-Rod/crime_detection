@@ -1,0 +1,8 @@
+name: ai
+channels:
+  - defaults
+dependencies:
+  - pip
+  - ipykernel
+  - opencv
+prefix: /home/rodri/miniconda3/envs/ai
