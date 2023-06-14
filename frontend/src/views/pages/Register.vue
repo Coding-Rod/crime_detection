@@ -138,6 +138,7 @@ export default {
           localStorage.setItem("id", response.data.id);
           await register_fcm_token();
           this.waiting = false;
+          location.reload();
           this.$router.push({ name: "Home" });
         } else {
           throw new Error(response.data.message);
