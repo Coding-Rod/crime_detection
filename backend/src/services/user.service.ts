@@ -5,7 +5,6 @@ import { hashPassword } from "../utils/auth/pass-hash";
 import { client } from "../db/config";
 import { comparePassword } from "../utils/auth/pass-hash";
 import { config } from "../config";
-import unique from "../utils/db/unique";
 
 import jwt from "jsonwebtoken";
 import boom from "@hapi/boom";
@@ -39,9 +38,6 @@ export class UserService {
     const { name, username, email, password, phone } = updatedUser;
 
 
-    if (user.username !== userToUpdate.rows[0].username && user.username) await unique("users", "username", username);
-    if (user.email !== userToUpdate.rows[0].email && user.email) await unique("users", "username", username);
-    
     await client.query(
       "UPDATE users SET name = $1, username = $2, email = $3, password = $4, phone = $5, updated_at = $6 WHERE iduser = $7",
       [name, username, email, password, phone, new Date(), id]
@@ -71,8 +67,6 @@ export class UserService {
 
   async createUser(user: CreateUserDTO): Promise< AuthUserDTO| string> {
     const { name, username, email, password, phone } = user;
-    await unique("users", "username", username);
-    await unique("users", "email", email);
     
     const hashedPassword = await hashPassword(password);
     const newUser = {
