@@ -114,6 +114,7 @@ export default {
       email: "",
       password: "",
       password_confirmation: "",
+      phone: "",
       error: "",
       waiting: false,
     };
@@ -136,15 +137,14 @@ export default {
         if (response.status === 201) {
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("id", response.data.id);
-          await register_fcm_token();
           this.waiting = false;
-          location.reload();
           this.$router.push({ name: "Home" });
         } else {
           throw new Error(response.data.message);
         }
       } catch (error) {
         this.waiting = false;
+        console.log(error);
         this.error = error.response.data.message;
       }
     },
