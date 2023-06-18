@@ -44,6 +44,12 @@ class Parameters:
         
     def set_lines_max_line_gap(self, value):
         self.lines_max_line_gap = value
+        
+    def set_alpha(self, value):
+        self.alpha = value/100
+    
+    def set_beta(self, value):
+        self.beta = value/100
 
 class EdgePreprocessor(Parameters):
     load_dotenv()
@@ -155,27 +161,51 @@ class EdgePreprocessor(Parameters):
         # Apply the color to the edges        
         return np.where(bw == (255, 255, 255), self.color, bw).astype(np.uint8)
 
-if __name__ == '__main__':
-    preprocessor = EdgePreprocessor()
+class ImagePreprocessor(Parameters):
+    alpha = float(os.getenv("ALPHA"))
+    beta = float(os.getenv("BETA"))
+    
+    def change_contrast_and_brightness(self, image):
+        return cv2.convertScaleAbs(image, alpha=self.alpha, beta=self.beta)
+    
+    def pipeline(self, img, *args):
+        self.image = img
 
+        for preprocessing_method in args:
+            self.image = preprocessing_method(self.image)
+
+        return self.image
+    
+    def get_preprocessed_image(self):
+        """ 
+        Returns the preprocessed image with the original image, multiplying both images
+        """
+        return self.image
+
+if __name__ == '__main__':
+    edgePreprocessor = EdgePreprocessor()
+    imagePreprocessor = ImagePreprocessor()
+    
     cv2.namedWindow("Calibration")
 
     # Create trackbars for every attribute
-    cv2.createTrackbar("Desired Width", "Calibration", preprocessor.desired_width, 1000, preprocessor.set_desired_width)
-    cv2.createTrackbar("Desired Height", "Calibration", preprocessor.desired_height, 1000, preprocessor.set_desired_height)
-    cv2.createTrackbar("Clip Limit", "Calibration", int(preprocessor.clip_limit * 100), 1000, preprocessor.set_clip_limit)
-    cv2.createTrackbar("Tile Grid Size Width", "Calibration", preprocessor.tile_grid_size[0], 128, preprocessor.set_tile_grid_size_width)
-    cv2.createTrackbar("Tile Grid Size Height", "Calibration", preprocessor.tile_grid_size[1], 128, preprocessor.set_tile_grid_size_height)
-    cv2.createTrackbar("Canny Threshold 1", "Calibration", preprocessor.canny_threshold1, 255, preprocessor.set_canny_threshold1)
-    cv2.createTrackbar("Canny Threshold 2", "Calibration", preprocessor.canny_threshold2, 255, preprocessor.set_canny_threshold2)
-    cv2.createTrackbar("Color Red Channel", "Calibration", preprocessor.color[0], 255, preprocessor.set_red_color)
-    cv2.createTrackbar("Color Green Channel", "Calibration", preprocessor.color[1], 255, preprocessor.set_green_color)
-    cv2.createTrackbar("Color Blue Channel", "Calibration", preprocessor.color[2], 255, preprocessor.set_blue_color)
-    cv2.createTrackbar("Lines Threshold", "Calibration", preprocessor.lines_threshold, 255, preprocessor.set_lines_threshold)
-    cv2.createTrackbar("Lines Min Line Length", "Calibration", preprocessor.lines_min_line_length, 255, preprocessor.set_lines_min_line_length)
-    cv2.createTrackbar("Lines Max Line Gap", "Calibration", preprocessor.lines_max_line_gap, 255, preprocessor.set_lines_max_line_gap)
+    cv2.createTrackbar("Desired Width", "Calibration", edgePreprocessor.desired_width, 1000, edgePreprocessor.set_desired_width)
+    cv2.createTrackbar("Desired Height", "Calibration", edgePreprocessor.desired_height, 1000, edgePreprocessor.set_desired_height)
+    cv2.createTrackbar("Clip Limit", "Calibration", int(edgePreprocessor.clip_limit * 100), 1000, edgePreprocessor.set_clip_limit)
+    cv2.createTrackbar("Tile Grid Size Width", "Calibration", edgePreprocessor.tile_grid_size[0], 128, edgePreprocessor.set_tile_grid_size_width)
+    cv2.createTrackbar("Tile Grid Size Height", "Calibration", edgePreprocessor.tile_grid_size[1], 128, edgePreprocessor.set_tile_grid_size_height)
+    cv2.createTrackbar("Canny Threshold 1", "Calibration", edgePreprocessor.canny_threshold1, 255, edgePreprocessor.set_canny_threshold1)
+    cv2.createTrackbar("Canny Threshold 2", "Calibration", edgePreprocessor.canny_threshold2, 255, edgePreprocessor.set_canny_threshold2)
+    cv2.createTrackbar("Color Red Channel", "Calibration", edgePreprocessor.color[0], 255, edgePreprocessor.set_red_color)
+    cv2.createTrackbar("Color Green Channel", "Calibration", edgePreprocessor.color[1], 255, edgePreprocessor.set_green_color)
+    cv2.createTrackbar("Color Blue Channel", "Calibration", edgePreprocessor.color[2], 255, edgePreprocessor.set_blue_color)
+    cv2.createTrackbar("Lines Threshold", "Calibration", edgePreprocessor.lines_threshold, 255, edgePreprocessor.set_lines_threshold)
+    cv2.createTrackbar("Lines Min Line Length", "Calibration", edgePreprocessor.lines_min_line_length, 255, edgePreprocessor.set_lines_min_line_length)
+    cv2.createTrackbar("Lines Max Line Gap", "Calibration", edgePreprocessor.lines_max_line_gap, 255, edgePreprocessor.set_lines_max_line_gap)
+    cv2.createTrackbar("Alpha", "Calibration", int(imagePreprocessor.alpha * 100), 200, imagePreprocessor.set_alpha)
+    cv2.createTrackbar("Beta", "Calibration", int(imagePreprocessor.beta), 255, imagePreprocessor.set_beta)
     
-    cv2.imshow("Calibration", np.zeros((1, 512, 3), np.uint8))
+    cv2.imshow("Calibration", np.zeros((1, 10, 3), np.uint8))
     
     cap = cv2.VideoCapture(0)
 
@@ -188,19 +218,24 @@ if __name__ == '__main__':
         
         cv2.imshow('Input', frame)
 
-        result = preprocessor.pipeline(frame,
-            preprocessor.resize_image,
-            # preprocessor.apply_high_pass_filter,
-            preprocessor.convert_to_grayscale,
-            preprocessor.apply_clahe,
+        image = imagePreprocessor.pipeline(frame,
+            imagePreprocessor.change_contrast_and_brightness,
+        )
+        
+        cv2.imshow('Preprocessed', image)
+
+        result = edgePreprocessor.pipeline(image,
+            edgePreprocessor.resize_image,
+            edgePreprocessor.convert_to_grayscale,
+            edgePreprocessor.apply_clahe,
             # preprocessor.perform_histogram_equalization,
-            preprocessor.detect_edges,
-            preprocessor.detect_lines,
-            preprocessor.dilate_image,
-            preprocessor.invert_image,
+            edgePreprocessor.detect_edges,
+            edgePreprocessor.detect_lines,
+            edgePreprocessor.dilate_image,
+            edgePreprocessor.invert_image,
         )
         # Inverted edges
-        cv2.imshow('Edges', cv2.bitwise_not(preprocessor.get_edges()))
+        cv2.imshow('Edges', cv2.bitwise_not(edgePreprocessor.get_edges()))
         
         # result = preprocessor.get_preprocessed_image_with_original(frame)
         cv2.imshow('Result', result)
@@ -211,3 +246,15 @@ if __name__ == '__main__':
 
     cap.release()
     cv2.destroyAllWindows()
+    
+    # Save changes into .env file
+    with open('.env', 'w') as f:
+        f.write(f"DESIRED_WIDTH={edgePreprocessor.desired_width}\n")
+        f.write(f"DESIRED_HEIGHT={edgePreprocessor.desired_height}\n")
+        f.write(f"CLIP_LIMIT={edgePreprocessor.clip_limit}\n")
+        f.write(f"TILE_GRID_SIZE={edgePreprocessor.tile_grid_size_width},{edgePreprocessor.tile_grid_size_height}\n")
+        f.write(f"CANNY_THRESHOLD={edgePreprocessor.canny_threshold1},{edgePreprocessor.canny_threshold2}\n")
+        f.write(f"COLOR={edgePreprocessor.color[0]},{edgePreprocessor.color[1]},{edgePreprocessor.color[2]}\n")
+        f.write(f"LINES={edgePreprocessor.lines_threshold},{edgePreprocessor.lines_min_line_length},{edgePreprocessor.lines_max_line_gap}\n")
+        f.write(f"ALPHA={imagePreprocessor.alpha}\n")
+        f.write(f"BETA={imagePreprocessor.beta}\n")
