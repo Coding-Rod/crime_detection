@@ -37,7 +37,7 @@ export default {
           title: 'Clone github repository',
           text: 'Clone the github repo to Jetson Nano',
           small_text: 'You can also download the zip file and unzip it',
-          code: 'git clone -b controller https://github.com/Rod5919/crime_detection.git'
+          code: 'git clone https://github.com/Rod5919/Weapon-detector.git'
         },
         {
           title: 'Install dependencies',
