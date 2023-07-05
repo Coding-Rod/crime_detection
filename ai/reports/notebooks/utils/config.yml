@@ -1,0 +1,16 @@
+base_url: https://monkfish-app-pb6xv.ondigitalocean.app/api/v1
+camera: 0
+hardware:
+  input_pin: 18
+  led_pins: [21, 20, 16]
+  relay_pin: 25
+preprocessing:
+  edge:
+    canny_threshold: [122, 172]
+    clip_limit: 3.49
+    color: [0, 0, 0]
+    lines_max_line_gap: 10
+    lines_min_line_length: 100
+    lines_threshold: 100
+    tile_grid_size: [8, 8]
+  image: {alpha: 0.54, beta: 95, height: 600, width: 800}
