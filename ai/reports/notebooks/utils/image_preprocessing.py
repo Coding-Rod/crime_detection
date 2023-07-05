@@ -1,5 +1,5 @@
 import cv2
-from .parameters import Parameters
+from parameters import Parameters
 
 class ImagePreprocessor(Parameters):
     
