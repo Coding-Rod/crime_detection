@@ -1,8 +1,0 @@
-{
-	"appId": "crime.detection",
-	"appName": "Crime Detection",
-	"webDir": "public",
-	"server": {
-		"androidScheme": "https"
-	}
-}
