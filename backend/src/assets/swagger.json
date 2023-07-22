@@ -556,7 +556,7 @@
               "properties": {
                 "username": {
                   "type": "string",
-                  "example": "ivan3299",
+                  "example": "user123",
                   "description": "The username of the user.",
                   "required": true,
                   "minLength": 1,
