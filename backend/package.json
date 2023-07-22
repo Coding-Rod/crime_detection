@@ -13,7 +13,8 @@
     "migrations:undo": "sequelize-cli db:migrate:undo",
     "migrations:drop": "sequelize-cli db:migrate:undo:all",
     "sequelize:init": "sequelize-cli init",
-    "swagger": "npx ts-node ./src/utils/swagger.ts"
+    "swagger": "npx ts-node ./src/utils/swagger.ts",
+    "test_sample": "node src/sample.js"
   },
   "keywords": [],
   "author": "Sergio Rodrigo Fernandez Testa",

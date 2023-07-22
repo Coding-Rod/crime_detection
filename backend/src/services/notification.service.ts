@@ -25,7 +25,7 @@ export class NotificationService {
     }
 
     async createNotification(userId: Notification["userId"], notification: CreateNotificationDTO): Promise<GetNotificationDTO | string> {
-        const { type, message } = notification;
+        const { type, message } = notification;  
 
         if (type < 0 || type > 4) throw boom.badRequest("Invalid notification type");
 
@@ -65,23 +65,29 @@ export class NotificationService {
 
             // Send notification to whatsapp
 
-            let data = {
-                secret: config.whatsappSecret,
-                account: config.whatsappAccountNumber,
+            const base_url = 'https://whatsapp.toolhero.tech/api/send';
+
+            let data = {                
                 type: 'text',
-                recipient: userName.rows[0].phone,
-                message: message
+                number: userName.rows[0].phone,
+                message: message,
+                instance_id: config.whatsappInstanceId,
+                access_token: config.whatsappAccessToken
             };
+
+            const url = base_url 
+                        +'?type='+data.type
+                        +'&number='+data.number.replace('+', '')
+                        +'&message='+data.message
+                        +'&instance_id='+data.instance_id
+                        +'&access_token='+data.access_token;
 
             let req_config = {
                 method: 'post',
-                maxBodyLength: Infinity,
-                url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
+                url: url,
                 headers: { 
-                'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e', 
-                'Content-Type': 'application/json'
+                    'Content-Type': 'application/json'
                 },
-                data : data
             };
 
             axios.request(req_config)
@@ -89,36 +95,42 @@ export class NotificationService {
                     console.log(JSON.stringify(response.data));
                 })
                 .catch((error) => {
+                    console.log("Whatsapp ERROR");
                     console.log(error);
                 });
 
             // For contacts
             contactsIds.forEach(async (contact) => {
                 let contact_data = {
-                    secret: config.whatsappSecret,
-                    account: config.whatsappAccountNumber,
+                    number: '',
                     type: 'text',
-                    recipient: '',
-                    message: message + '\nfrom user ' + userName.rows[0].name+ '\nwith phone number ' + userName.rows[0].phone
+                    message: message + ' from user ' + userName.rows[0].name+ ' with phone number +' + userName.rows[0].phone,
+                    instance_id: config.whatsappInstanceId,
+                    access_token: config.whatsappAccessToken
                 }
                 
-                let recipient = await client.query(
+                let number = await client.query(
                     "SELECT name, phone FROM users WHERE iduser = $1",
                     [contact]
                 );
 
-                contact_data.recipient = recipient.rows[0].phone;
-                contact_data.message = 'Hi ' + recipient.rows[0].name + ',\n' + contact_data.message;
-                if (contact_data.recipient) {
+                contact_data.number = number.rows[0].phone.replace('+', '');
+                contact_data.message = 'Hi ' + number.rows[0].name + ',\n' + contact_data.message;
+                if (contact_data.number) {
+                    
+                    const url = base_url
+                                +'?type='+contact_data.type
+                                +'&number='+contact_data.number
+                                +'&message='+contact_data.message
+                                +'&instance_id='+contact_data.instance_id
+                                +'&access_token='+contact_data.access_token;
+
                     let req_config = {
                         method: 'post',
-                        maxBodyLength: Infinity,
-                        url: 'https://wsp2.desarrollamelo.com/v2/api/send/whatsapp',
+                        url: url,
                         headers: {
-                            'Cookie': 'PHPSESSID=558ae6c75d632cbfc3c382777d99435e',
                             'Content-Type': 'application/json'
                         },
-                        data: contact_data
                     };
 
                     axios.request(req_config)
