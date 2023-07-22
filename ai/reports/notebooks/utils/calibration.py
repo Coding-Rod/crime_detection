@@ -10,13 +10,16 @@ places = {
     "outside house": "/media/rodri/Files/Datasets/Evaluation videos/Images/Result/O_House.jpg",
 }
 
-
-with open("config.yml", 'r') as ymlfile:
-    cfg = yaml.safe_load(ymlfile)
     
 if __name__ == '__main__':
     key = list(places.keys())[int(input("Choose a place to calibrate: \n" + "\n".join([f"{i+1}: {k}" for i, k in enumerate(places.keys())]) + "\nSelect a number: "))-1] 
     image_path = places[key]
+    
+    print("File: config/"+key+".yml")
+    
+    with open('config/'+key+'.yml', 'r') as ymlfile:
+        cfg = yaml.safe_load(ymlfile)
+        
     
     imagePreprocessor = ImagePreprocessor(cfg)
     

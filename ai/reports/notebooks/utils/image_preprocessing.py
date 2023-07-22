@@ -15,6 +15,9 @@ class ImagePreprocessor(Parameters):
     def change_contrast_and_brightness(self, image):
         return cv2.convertScaleAbs(image, alpha=self.alpha, beta=self.beta)
     
+    def convert_to_gray(self, image):
+        return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
     def pipeline(self, img, *args):
         self.image = img
 

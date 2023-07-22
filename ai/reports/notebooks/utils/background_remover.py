@@ -43,26 +43,29 @@ class BackgroundRemover:
         return change_black_to_white(result)
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('http://...')
     background_remover = BackgroundRemover()
 
     while True:
-        _, frame = cap.read()
-        frame = cv2.flip(frame, 0)
+        ret, frame = cap.read()
+        
+        if ret:
+            cv2.imshow('Original', frame)
+            # if time.time() - background_remover.start_time <= background_remover.learning_time:
+            #     print("Learning...")
+            #     background_remover.learn_background(frame)
+            #     continue
+            # elif background_remover.static_background is None:
+            #     background_remover.set_static_background()
+            #     print("Static background set")
+            #     print(f"Background learned in {time.time() - background_remover.start_time} seconds")
 
-        if time.time() - background_remover.start_time <= background_remover.learning_duration:
-            print("Learning...")
-            background_remover.learn_background(frame)
-            continue
-        elif background_remover.static_background is None:
-            background_remover.set_static_background()
-            print("Static background set")
-            print(f"Background learned in {time.time() - background_remover.start_time} seconds")
-
-        result_frame = background_remover.remove_background(frame)
-        cv2.imshow('Background Removal', result_frame)
+            # result_frame = background_remover.remove_background(frame)
+            # cv2.imshow('Background Removal', result_frame)
 
         if cv2.waitKey(1) == 27:  # ESC key
+            break
+        else:
             break
 
     cap.release()
