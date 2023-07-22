@@ -42,7 +42,7 @@ export default {
         {
           title: 'Software',
           subtitle: 'How is the software architecture?',
-          image: require('@/assets/images/Software_Diagram.png'),
+          image: require('@/assets/images/Software_Diagram.jpeg'),
           text:
             'In this project, the software is divided into three main groups: Mobile, Server and IoT Node. In the Mobile section, Ionic and Android are used to develop hybrid mobile applications. The Server, hosted on Digital Ocean droplets, uses Node.js, Vue.js and PostgreSQL to receive notifications, store information and display it in user interfaces. Finally, the IoT Node, on a Jetson Nano, uses Docker and Flask to run a weapon detection model, receive camera images and send information to the server. Together, these technologies enable the integral operation of the project in the areas of Mobile, Server and IoT Node.',
           imgSize: 5
