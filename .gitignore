@@ -106,7 +106,8 @@ app/plugins
 backend/yarn-error.log
 
 # PyCache
-**/__pycache__/
-
-# Other branches
+./**/__pycache__/
+backend/data
+frontend/android
+frontend/.vscode
 controller
