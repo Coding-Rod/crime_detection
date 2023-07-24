@@ -101,13 +101,14 @@ cython_debug/
 
 # Node
 ./**/node_modules/
-app/platforms
-app/plugins
-backend/yarn-error.log
+ai/notebooks/.ipynb_checkpoints
 
 # PyCache
 ./**/__pycache__/
+
+# Docker volumes
 backend/data
-frontend/android
 frontend/.vscode
+frontend/android
+
 controller
