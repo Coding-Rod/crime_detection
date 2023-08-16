@@ -15,13 +15,21 @@ const routes = [
         name: 'Information',
         component: () =>
           import('@/views/docs/Home.vue'),
-      },      
+      },
+    ],
+  },
+  {
+    path: '/howto',
+    name: 'HowTo',
+    component: DefaultLayout,
+    redirect: '/howto',
+    children: [
       {
         path: '/howto',
         name: 'HowTo',
-        component: () => import('@/views/docs/HowTo.vue'),
+        component: () =>
+          import('@/views/docs/HowTo.vue'),
       },
-
     ],
   },
   {
@@ -56,12 +64,7 @@ const routes = [
         path: 'nodes',
         name: 'ActiveNodes',
         component: () => import('@/views/system/ActiveNodes'),
-      },
-      {
-        path: 'videos',
-        name: 'RecordedVideos',
-        component: () => import('@/views/system/RecordedVideos'),
-      },
+      }
     ]
   },
   {
