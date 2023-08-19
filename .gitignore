@@ -112,3 +112,4 @@ frontend/.vscode
 frontend/android
 
 controller
+ai/reports/paper/**/*.mp4
