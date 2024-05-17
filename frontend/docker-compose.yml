@@ -1,0 +1,11 @@
+version: '2.1'
+services:
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/app
+    network_mode: "host"
