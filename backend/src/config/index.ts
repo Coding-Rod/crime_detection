@@ -10,9 +10,7 @@ const config = {
     dbHost: process.env.DB_HOST,
     dbName: process.env.DB_NAME,
     dbPort: process.env.DB_PORT,
-    jwtSecret: process.env.JWT_SECRET,
-    whatsappInstanceId: process.env.WHATSAPP_INSTANCE_ID,
-    whatsappAccessToken: process.env.WHATSAPP_ACCESS_TOKEN,
+    jwtSecret: process.env.JWT_SECRET
 };
 
 export { config };

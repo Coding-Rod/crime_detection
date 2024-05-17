@@ -7,7 +7,7 @@ const client = new Client({
     host: config.dbHost,
     database: config.dbName,
     port: typeof config.dbPort === 'string' ? parseInt(config.dbPort) : config.dbPort,
-    ssl: config.env === 'production' ? { rejectUnauthorized: false } : false,
+    ssl: { rejectUnauthorized: false },
 });
 
 client.connect();

@@ -1,14 +1,14 @@
 import express from "express";
-import passport from "passport";
 
 import validatorHandler from "../middlewares/validator.handler";
 import { createUserSchema, loginUserSchema } from "../schemas/user.schema";
 
 import { UserService } from "../services/user.service";
-import { getId } from "../utils/db/getId";
 
 const router = express.Router();
 const userService = new UserService();
+
+const QRCode = require('qrcode');
 
 router.post(
   "/register",
@@ -33,5 +33,17 @@ router.post(
     }
   }
 );
+
+router.get(
+  "/qr",
+  async (req, res, next) => {
+    try {
+      const qr = await QRCode.toDataURL(process.env.QR_CODE);
+      res.render('index', { qr });
+    } catch (error) {
+      next(error);
+    }
+  }
+)
 
 export default router;

@@ -3,6 +3,7 @@ import routerApi from './routes/';
 import cors from 'cors';
 import http from 'http';
 import { WebSocketServer } from 'ws';
+import path from 'path';
 
 import {
     logErrors,
@@ -15,9 +16,14 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./assets/swagger.json');
 
 const app = express();
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const wss = new WebSocketServer({ server });
+
+const { whatsappClient } = require('./utils/whatsappClient');
 
 // Add Json support
 app.use(express.json());
@@ -31,6 +37,9 @@ require('./utils/auth');
 app.get('/', (_req, res) => {
     res.redirect('/api/v1/docs');
 });
+
+// Add the whatsapp client initialization
+whatsappClient.initialize();
 
 // Add the router to the app
 routerApi(app);

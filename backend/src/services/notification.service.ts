@@ -70,17 +70,13 @@ export class NotificationService {
             let data = {                
                 type: 'text',
                 number: userName.rows[0].phone,
-                message: message,
-                instance_id: config.whatsappInstanceId,
-                access_token: config.whatsappAccessToken
+                message: message
             };
 
             const url = base_url 
                         +'?type='+data.type
                         +'&number='+data.number.replace('+', '')
                         +'&message='+data.message
-                        +'&instance_id='+data.instance_id
-                        +'&access_token='+data.access_token;
 
             let req_config = {
                 method: 'post',
@@ -105,8 +101,6 @@ export class NotificationService {
                     number: '',
                     type: 'text',
                     message: message + ' from user ' + userName.rows[0].name+ ' with phone number +' + userName.rows[0].phone,
-                    instance_id: config.whatsappInstanceId,
-                    access_token: config.whatsappAccessToken
                 }
                 
                 let number = await client.query(
@@ -122,8 +116,6 @@ export class NotificationService {
                                 +'?type='+contact_data.type
                                 +'&number='+contact_data.number
                                 +'&message='+contact_data.message
-                                +'&instance_id='+contact_data.instance_id
-                                +'&access_token='+contact_data.access_token;
 
                     let req_config = {
                         method: 'post',

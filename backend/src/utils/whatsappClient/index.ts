@@ -1,5 +1,6 @@
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const axios = require('axios');    
+const fs = require('fs');
 
 interface Message {
     body: string;
@@ -46,24 +47,13 @@ whatsapp.on('qr', (qr: any) => {
         const qrcode = require('qrcode-terminal');
         qrcode.generate(qr, {small: true});
     } else {
-        console.log('QR code sent');
-        axios.post(`${process.env.API_URL}/pepr/whatsapp/qr`, {
-            qr: qr
-        }).then((response: any) => {
-            console.log(response.data.message);
-        }).catch((error: any) => {
-            console.log(error.response ? error.response.data : error);
-        });
+        process.env.QR_CODE = qr;
+        console.log('QR Code generated');
     }
 });
 
 whatsapp.on('ready', () => {
     console.log('Client is ready from Javascript');
-    axios.post(`${process.env.API_URL}/pepr/whatsapp/ready`).then((response: any) => {
-        console.log(response.data.message);
-    }).catch((error: any) => {
-        console.log(error.response ? error.response.data : error);
-    });
 });
 
 const extract_numbers = (phone_number: string) => {
@@ -101,21 +91,10 @@ whatsapp.on('message', async (message: Message) => {
     const user_phone_number = message.from;
     if (message.from === 'status@broadcast') return;
 
-    const media = message.hasMedia && message.downloadMedia ? await message.downloadMedia() : null;
-    if (user_phone_number === null) return;
-
-    await axios.post(`${process.env.API_URL}/pepr/chat/${extract_numbers(user_phone_number)}`, {
-        message: message.body,
-        media: media
-    }).then((response: any) => {
-        if (typeof response.data.message === 'string')
-            send_message(user_phone_number, response.data.message);
-        else if (typeof(response.data.message) === 'object') {
-            send_message(user_phone_number, response.data.message);
-    }}).catch((error: any) => {
-        console.log(error.response ? error.response.data : undefined)
-        send_message(user_phone_number, 'Hay un error en el servidor, por favor intente en unos minutos...');
-    });
+    if (message.body.toUpperCase() === 'WORKING?') {
+        send_message(user_phone_number, 'Yes, I am working!');
+        return;
+    }
 });
 
 module.exports = { whatsappClient: whatsapp, send_message };
