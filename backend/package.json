@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc && cp -r src/assets/ dist/assets/",
+    "build": "tsc && cp -r src/assets/ dist/assets/ && cp -r src/views/ dist/views/",
     "migrations:generate": "sequelize-cli migration:generate --name",
     "migrations:run": "sequelize-cli db:migrate",
     "migrations:undo": "sequelize-cli db:migrate:undo",
