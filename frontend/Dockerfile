@@ -1,12 +1,22 @@
-# Use the official Node.js base image
-FROM node:18.4.0-slim as build
+FROM node:lts-alpine
 
-WORKDIR /usr/app
-COPY . /usr/app
-RUN yarn install --frozen-lockfile
+# install yarn
+RUN npm install -g yarn
+
+# make the 'app' folder the current working directory
+WORKDIR /app
+
+# copy both 'package.json' and 'yarn.lock' (if available)
+COPY package*.json yarn.lock ./
+
+# install project dependencies leaving out dev dependencies
+RUN yarn install --production
+
+# copy project files and folders to the current working directory (i.e. 'app' folder)
+COPY . .
+
+# build app for production with minification
 RUN yarn build
 
-FROM nginx:1.23.1-alpine
-EXPOSE 80
-COPY ./docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /usr/app/dist /usr/share/nginx/html
+EXPOSE 8080
+CMD [ "yarn", "run", "start" ]
