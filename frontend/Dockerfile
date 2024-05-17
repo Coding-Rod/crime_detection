@@ -4,12 +4,14 @@ FROM node:16.10.0-alpine3.13 as build-stage
 WORKDIR /app
 # Copy the working directory in the container
 COPY package*.json ./
-# Install the project dependencies
-RUN npm install
+# Install yarn globally
+RUN npm install -g yarn
+# Install the project dependencies using yarn
+RUN yarn install
 # Copy the rest of the project files to the container
 COPY . .
 # Build the Vue.js application to the production mode to dist folder
-RUN npm run build
+RUN yarn build
 # Use the lightweight Nginx image from the previous stage for the nginx container
 FROM nginx:stable-alpine as production-stage
 # Copy the build application from the previous stage to the Nginx container
