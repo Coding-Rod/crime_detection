@@ -1,7 +1,0 @@
-name: ai
-channels:
-  - defaults
-dependencies:
-  - pip
-  - ipykernel
-prefix: /home/rodri/miniconda3/envs/ai
