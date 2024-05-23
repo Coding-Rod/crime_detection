@@ -1,10 +1,8 @@
 import cv2
 import queue
 import numpy as np
-import imageio
 from tqdm import tqdm
-import os
-
+import requests
 
 # Initialize the queue
 frame_queue = queue.Queue(maxsize=60)
@@ -42,14 +40,18 @@ while not frame_queue.empty():
 # Convert frames from BGR to RGB
 frames = [cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) for frame in tqdm(frames)]
 
-# Save the GIF to the computer
-# Create a directory to store the GIFs if it doesn't exist
-if not os.path.exists('gifs'):
-    os.makedirs('gifs')
+# Make it JSON serializable
+json_frames = [frame.tolist() for frame in tqdm(frames)]
 
-# Generate a unique filename for each GIF
-gif_filename = f'gifs/gif{len(os.listdir("gifs")) + 1}.gif'
+# Save into a JSON file
+import json
+with open('frames.json', 'w') as f:
+    json.dump(json_frames, f)
 
-# Save the GIF to the computer
-imageio.mimsave(gif_filename, frames)
-print(f'GIF saved to {gif_filename}')
+# Send the JSON file to the receiver
+# url = 'http://localhost:8000/convert_to_gif'
+# data = {'frames': json_frames}
+# response = requests.post(url, json=data)
+
+# # Print the response
+# print(response.json())
