@@ -8,7 +8,7 @@ import requests
 frame_queue = queue.Queue(maxsize=60)
 
 # Start capturing video from the webcam
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 while True:
     # Read a frame from the webcam
