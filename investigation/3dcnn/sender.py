@@ -43,15 +43,12 @@ frames = [cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) for frame in tqdm(frames)]
 # Make it JSON serializable
 json_frames = [frame.tolist() for frame in tqdm(frames)]
 
-# Save into a JSON file
-import json
-with open('frames.json', 'w') as f:
-    json.dump(json_frames, f)
-
 # Send the JSON file to the receiver
-# url = 'http://localhost:8000/convert_to_gif'
-# data = {'frames': json_frames}
-# response = requests.post(url, json=data)
+url = 'http://192.168.0.50:8000/convert_to_gif'
+data = {'frames': json_frames}
+
+print("")
+response = requests.post(url, json=data, stream=True)
 
 # # Print the response
-# print(response.json())
+print(response.json())
