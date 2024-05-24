@@ -1,14 +1,15 @@
 import cv2
 import queue
-import numpy as np
 from tqdm import tqdm
 import requests
+import imageio
+import hashlib
 
 # Initialize the queue
 frame_queue = queue.Queue(maxsize=20)
 
 # Start capturing video from the webcam
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     # Read a frame from the webcam
@@ -40,15 +41,19 @@ while not frame_queue.empty():
 # Convert frames from BGR to RGB
 frames = [cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) for frame in tqdm(frames)]
 
-# Make it JSON serializable
-json_frames = [frame.tolist() for frame in tqdm(frames)]
+# Save frames as a GIF
+# imageio.mimsave('gifsoutput.gif', frames, fps=10)
+filename = 'gifs/' + hashlib.md5(str(frames).encode()).hexdigest() + '.gif'
+imageio.mimsave(
+    filename,
+    frames,
+    fps=10
+)
 
 # Send the JSON file to the receiver
-url = 'http://192.168.0.50:8000/convert_to_gif'
-data = {'frames': json_frames}
-
-print("")
-response = requests.post(url, json=data, stream=True)
+url = 'http://http://192.168.0.11:8000/convert_to_gif'
+data = {'filename': filename}
+response = requests.post(url, data=data)
 
 # # Print the response
 print(response.json())
