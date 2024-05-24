@@ -10,4 +10,3 @@ services:
       - .env
     volumes:
       - .:/app
-    network_mode: "host"
