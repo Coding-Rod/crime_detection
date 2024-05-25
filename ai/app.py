@@ -81,8 +81,8 @@ def inference(video):
     # top_k probabilities of the predictions
     return top_label
 
-@app.post("/convert_to_gif")
-async def convert_to_gif(file: UploadFile = File(...)):
+@app.post("/get_inference")
+async def get_inference(file: UploadFile = File(...)):
     # Create gifs folder if it doesn't exist
     os.makedirs("uploads", exist_ok=True)
 
