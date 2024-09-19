@@ -112,3 +112,6 @@ frontend/.vscode
 frontend/android
 
 controller
+ai/videos
+ai/output
+ai/__pycache__
