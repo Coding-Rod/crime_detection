@@ -1,36 +1,14 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
 import hashlib as hl
 import numpy as np
-import pathlib
 import os
-
 import tensorflow as tf
-import tensorflow_hub as hub
+import cv2
 
-
+# Initialize FastAPI app
 app = FastAPI()
-
-# Tensorflow configuration
-
-# TODO: Modify the configuration to use the new model
-labels_path = tf.keras.utils.get_file(
-    fname='labels.txt',
-    origin='https://raw.githubusercontent.com/tensorflow/models/f8af2291cced43fc9f1d9b41ddbf772ae7b0d7d2/official/projects/movinet/files/kinetics_600_labels.txt'
-)
-labels_path = pathlib.Path(labels_path)
-
-lines = labels_path.read_text().splitlines()
-LABEL_MAP = np.array([line.strip() for line in lines])
-
-id = 'a2'
-mode = 'base'
-version = '3'
-hub_url = f'https://tfhub.dev/tensorflow/movinet/{id}/{mode}/kinetics-600/classification/{version}'
-model = hub.load(hub_url)
 
 # Add CORS middleware
 app.add_middleware(
@@ -40,61 +18,77 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def load_gif(file_path, image_size=(224, 224)):
-    """Loads a gif file into a TF tensor.
+# Load your custom saved TensorFlow model
+model = tf.saved_model.load('./model')
+class_names = ["normal", "robbery"]
 
-    Use images resized to match what's expected by your model.
-    The model pages say the "A2" models expect 224 x 224 images at 5 fps
+# Load MP4 file using OpenCV and preprocess it for model input
+def load_mp4(file_path, image_size=(224, 224), num_frames=30, every_n_frame=2):
+    """
+    Loads an mp4 file, extracts and preprocesses frames.
 
     Args:
-        file_path: path to the location of a gif file.
-        image_size: a tuple of target size.
+        file_path (str): Path to the mp4 file.
+        image_size (tuple): Size to which each frame will be resized (width, height). Default is (224, 224).
+        num_frames (int): Number of frames to extract from the video. Default is 30.
+        every_n_frame (int): Interval at which frames are extracted. For example, if set to 2, every second frame is extracted. Default is 2.
 
     Returns:
-        a video of the gif file
+        np.ndarray: A NumPy array of shape (1, num_frames, image_size[0], image_size[1]) containing the preprocessed frames.
     """
-    
-    # Load a gif file, convert it to a TF tensor
-    raw = tf.io.read_file(file_path)
-    video = tf.io.decode_gif(raw)
-    # Resize the video
-    video = tf.image.resize(video, image_size)
-    # change dtype to a float32
-    # Hub models always want images normalized to [0,1]
-    # ref: https://www.tensorflow.org/hub/common_signatures/images#input
-    video = tf.cast(video, tf.float32) / 255.
-    return video
+    cap = cv2.VideoCapture(file_path)
+    frames = []
+    counter = 0
+    while len(frames) < num_frames:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        if counter % every_n_frame == 0:
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+            resized_frame = cv2.resize(gray_frame, image_size)  # Resize to model's input size
+            normalized_frame = resized_frame / 255.0  # Normalize pixel values to [0, 1]
+            frames.append(normalized_frame)
+        counter += 1
+    cap.release()
 
+    # Convert the frames list to a NumPy array
+    frames_array = np.array(frames)
+    frames_array = np.expand_dims(frames_array, axis=0)  # Add batch dimension
+    frames_array = frames_array.astype(np.float32)
+    return frames_array
+
+# Perform inference using the loaded model
 def inference(video):
-    sig = model.signatures['serving_default']
-    video = tf.cast(video, tf.float32) / 255.
-    sig(image = video[tf.newaxis, :1])
-    probs = sig(image = video[tf.newaxis, ...])
-    probs = probs['classifier_head'][0]
-    
-    # Sort predictions to find top_k
-    top_prediction = tf.argsort(probs, axis=-1, direction='DESCENDING')[0]
-    # collect the labels of top_k predictions
-    top_label = tf.gather(LABEL_MAP, top_prediction, axis=-1)
-    # decode lablels
-    top_label = top_label.numpy().decode('utf8')
-    # top_k probabilities of the predictions
-    return top_label
+    video = np.transpose(video, (0, 3, 2, 1))  # Adjust dimensions to match model input
+    video = np.expand_dims(video, axis=4)  # Add the extra dimension
+    score = model.signatures.get('serving_default')(tf.constant(video))['output_0']
+    final_score = score.numpy().tolist()[0][0]
+    class_name = "robbery" if final_score < 0.5 else "normal"
+    return class_name, 2*abs(final_score-0.5)  # Return the class with the highest score
 
+# FastAPI endpoint to handle MP4 video file uploads and perform inference
 @app.post("/get_inference")
 async def get_inference(file: UploadFile = File(...)):
-    # Create gifs folder if it doesn't exist
+    # Ensure the uploaded file is an MP4 file
+    if not file.filename.endswith(".mp4"):
+        return {"error": "Only MP4 files are supported."}
+
+    # Create uploads folder if it doesn't exist
     os.makedirs("uploads", exist_ok=True)
 
-    # Save the received gif file
-    filename = hl.md5(file.filename.encode()).hexdigest() + ".gif"
-    with open(filename, "wb") as f:
+    # Save the received video file
+    file_location = f"uploads/{hl.md5(file.filename.encode()).hexdigest()}_{file.filename}"
+    with open(file_location, "wb") as f:
         f.write(await file.read())
-    
-    # Make predictions
-    result = inference(load_gif(filename))
-    
-    return {"message": result}
 
+    # Process the MP4 video
+    video = load_mp4(file_location)
+
+    # Perform inference and return the result
+    result, score = inference(video)
+
+    return {"message": result, "score": score}
+
+# Run the FastAPI app
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
