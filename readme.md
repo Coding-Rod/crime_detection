@@ -14,7 +14,7 @@ Here's how it works:
 In addition, this repository provides a web app and a mobile app for interacting with the system. You can find the complete code for deploying the models on an IoT node hosted on a Jetson Nano [here](https://github.com/Rod5919/Weapon-detector). 
 
 <p align="center">
-    <img src="images/pipeline.png" width="700" align="center">
+    <img src="images/pipeline.png" width="500" align="center">
 </p>
 
 ## Repository Structure
@@ -34,7 +34,7 @@ The design of the end devices prioritizes two main goals:
 - Monitoring diverse environments: The devices are designed to effectively monitor both public and private spaces.
 - Edge computing: Deep learning pipelines are embedded directly into the devices, bringing processing power closer to the source of data.
 
-| **3D Design (Posterior)**  | **3D Design (Frontal)** | 
+| **3D Design (Frontal)**  | **3D Design (Posterior)** | 
 |-----------|-----------|
 | <img src="images/3d-design-enddevice-2.png" alt="Main Menu" width="350" style="margin-right: 20px;"/> | <img src="images/3d-design-enddevice-1.png" alt="Main Menu" width="350" style="margin-right: 20px;"/> |
 
@@ -44,11 +44,11 @@ The design of the end devices prioritizes two main goals:
 
 ## Datasets
 
-Find below the three datasets prepared for the project: 
+Find below the three datasets prepared for the present project: 
 
-1. The [Weapon Detection Dataset]() containing guns and knives.
-2. The [Armed Robbery Detection](https://drive.google.com/file/d/1JqMqG5l9jaXZ1SF_CP7ZtL0acimZcZYl/view?usp=sharing) containing videos with armed robberies and normal videos.
-3. The [Simulation dataset](https://drive.google.com/drive/folders/18_gmn4qohngT7pbf0JBTlW7DemHEBowp?usp=sharing) prepared to test the performance of the entire system. 
+1. Weapon Detection Dataset: It contains guns and knives of variable dimensions. This dataset will be shared on request. 
+2. [Armed Robbery Detection](https://drive.google.com/file/d/1Z_B09R4UONPpkRVynjnxuIt8C7dLPNpc/view?usp=sharing): It contains videos of armed robberies and normal situations, all with a resolution of 224x224.
+3. [Simulation dataset](https://drive.google.com/drive/folders/18_gmn4qohngT7pbf0JBTlW7DemHEBowp?usp=sharing): It has videos with situations similar to real armed robberies. This dataset was used to test the performance of the entire system. 
 
 ## Citation
 
