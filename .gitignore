@@ -115,3 +115,5 @@ controller
 ai/videos
 ai/output
 ai/__pycache__
+
+.DS_Store
